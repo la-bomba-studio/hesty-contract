@@ -1,31 +1,55 @@
-# Hesty PropertyFactory
+## Hesty Property and ITO Smart Contracts
 
-PropertyFactory is a smart contract built on Polygon that allows users to create and manage digital properties. Each property is represented by an ERC1155 token, which can be purchased and owned by other users.
+***
 
-## Getting Started
+#### Clone repository
+```bash
+git clone https://github.com/{REPO_URL}
+```
+```bash
+git checkout development
+```
+***
+#### Installation
+```bash
+cd hest-smart-contracts
+npm install
+```
+***
+#### Compile smart contracts
+```bash
+npx hardhat compile
+```
+***
+#### Test smart contracts
+```bash
+npx hardhat test
+```
+***
+#### Deployment
+Create a .env file in the root directory and add the following variables
+- ALCHEMY_POLYGON_URL = ""
+- ALCHEMY_GOERLI_URL = ""
+- ADMIN_WALLET_ADDRESS = ""
+- SIGNER_PRIV_KEY = ""
+- POLYGON_API_KEY = ""
+- ETHERSCAN_API_KEY = ""
 
-To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for transaction fees. You can interact with the contract using a tool like [Metamask](https://metamask.io/).
+Supported networks for deployment
+-   localhost
+-   goerli
+-   polygon (mumbai testnet)
 
-### Prerequisites
-
-- Node.js v12.18.3 or later
-- Hardhat v2.6.2 or later
-- Ethers.js v5.4.5 or later
-- Chai v4.3.4 or later
-### Installation
-
-1. Clone the repository: `git clone ${REPO_URL}`
-2. Install dependencies: `npm install`
-3. Compile the contracts: `npx hardhat compile`
-
-## Usage
-
-1. Deploy the contract: `npx hardhat run scripts/deploy.js --network polygon-mumbai`
-2. Create a new property: `const tokenId = await propertyFactory.createProperty(totalSupply, tokenUri, pricePerToken)`
-3. Transfer a property: `await propertyFactory.safeTransferFrom(fromAddress, toAddress, tokenId, amount, data)`
-4. Check property details: `const property = await propertyFactory.properties(tokenId)`
-
-## Testing
-
-1. Run the tests: `npx hardhat test`
-
+##### Deploying Property Token Smart Contract
+```bash
+npx hardhat run --network polygonTestnet scripts/deploy-property-token.js
+```
+##### Deploying ITO Smart Contract
+```bash
+npx hardhat run --network polygonTestnet scripts/deploy-hesty-ito.js
+```
+***
+#### Smart contract verfication
+```bash
+npx hardhat verify --network polygon DEPLOYED_CONTRACT_ADDRESS "Constructor argument 1"
+```
