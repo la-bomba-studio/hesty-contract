@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/contracts/Property.sol" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/PropertyFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyFactory.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/hardhat.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/hardhat.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/deploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +58,7 @@
       <workItem from="1713360634301" duration="2327000" />
       <workItem from="1713396110934" duration="1018000" />
       <workItem from="1713433145747" duration="1189000" />
-      <workItem from="1713543438229" duration="13666000" />
+      <workItem from="1713543438229" duration="16223000" />
     </task>
     <servers />
   </component>

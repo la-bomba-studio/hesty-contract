@@ -1,6 +1,7 @@
 require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("dotenv").config();
+require('hardhat-abi-exporter');
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -31,5 +32,10 @@ module.exports = {
     apiKey: {
       bscTestnet: "https://api-testnet.bscscan.com/api",
     },
-  }
+  },
+  abiExporter: {
+    path: './data/abi',
+    runOnCompile: true,
+    clear: true
+  },
 };

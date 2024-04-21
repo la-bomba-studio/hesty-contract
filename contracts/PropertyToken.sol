@@ -27,7 +27,7 @@ contract PropertyToken is ERC20{
     ) ERC20(name_, symbol_) {
 
         //Pre-Seed Share
-        _mint(address(tokenManagerContract_), initialSupply_);
+        _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
     }
 }

@@ -9,6 +9,9 @@ contract TokenManager{
 
     mapping(uint256 => PropertyInfo) property;
 
+    //Event
+    event CreateProperty(uint256 id);
+
     struct PropertyInfo{
         uint256 price;
         address owner;
@@ -24,6 +27,7 @@ contract TokenManager{
 
     }
 
+
     function createProperty(
         uint256 amount,
         uint tokenPrice,
@@ -35,6 +39,8 @@ contract TokenManager{
         address newAsset = address(new PropertyToken(address(this), amount, name, symbol));
         address newVault = address(new Property(IERC20(newAsset), IERC20(revenueToken)));
         property[propertyCounter++] = PropertyInfo(tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
+
+        emit CreateProperty(propertyCounter - 1);
         return propertyCounter - 1;
     }
 
