@@ -64,10 +64,10 @@ contract PropertyFactory is
         uint256 _pricePerToken
     ) external returns (uint256) {
         console.log("in create");
-        require(
+     /*   require(
             hasRole(PROPERTY_MANAGER, msg.sender),
             "Must have minter role to create property"
-        );
+        );*/
 
         // Mint tokens to escrow account
         uint256 tokenId = _tokenCounter;
