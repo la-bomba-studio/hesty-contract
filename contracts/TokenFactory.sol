@@ -28,6 +28,7 @@ contract TokenManager{
     }
 
 
+
     function createProperty(
         uint256 amount,
         uint tokenPrice,
@@ -37,34 +38,48 @@ contract TokenManager{
         string memory symbol
     ) external returns(uint256){
         address newAsset = address(new PropertyToken(address(this), amount, name, symbol));
-        address newVault = address(new Property(IERC20(newAsset), IERC20(revenueToken)));
+        address newVault = address(new Property(IERC20(newAsset), revenueToken));
         property[propertyCounter++] = PropertyInfo(tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
 
         emit CreateProperty(propertyCounter - 1);
         return propertyCounter - 1;
     }
 
-    function buyTokens(uint256 id, uint256 amount) external{
+    function buyTokens(uint256 id, uint256 amount) external payable{
 
         PropertyInfo storage p = property[id];
 
         uint256 boughtTokensPrice = amount * p.price;
 
-        IERC20(p.paymentToken).transferFrom(msg.sender, address(this), boughtTokensPrice);
+        if(p.paymentToken != address(0)){
+            IERC20(p.paymentToken).transferFrom(msg.sender, address(this), boughtTokensPrice);
+        }else{
+            require(msg.value >= boughtTokensPrice, "Invalid Amount");
+        }
 
         //Deposit Tokens in Vault
-        Property(p.vault).deposit(amount, msg.sender);
+        //Property(p.vault).deposit(amount, msg.sender);
 
     }
 
-    function distributeRevenue(uint256 id, uint256 amount) external{
+    function distributeRevenue(uint256 id, uint256 amount) public payable{
+
+        require(msg.value >= amount, "Revenue");
 
         PropertyInfo storage p = property[id];
 
         IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
 
-        Property(p.vault).distributeRewards(amount);
+        PropertyToken(p.asset).distributionRewards{value: msg.value}();
 
     }
+
+    function withdrawAssets(uint256 id) external{
+
+        PropertyInfo storage p = property[id];
+
+        Property(p.vault).withdrawRewards(msg.sender);
+    }
+
 
 }

@@ -144,6 +144,13 @@
   },
   {
     "inputs": [],
+    "name": "claimDividensExternal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "decimals",
     "outputs": [
       {
@@ -177,6 +184,13 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "distributionRewards",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {

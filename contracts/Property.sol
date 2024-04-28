@@ -21,11 +21,11 @@ contract Property is ERC4626, ReentrancyGuard{
 
     IERC20 rewardAsset;
 
-    constructor(IERC20 asset_, IERC20 rewardAsset_) ERC4626(asset_) ERC20("asset1", "asset"){
-        rewardAsset = rewardAsset_;
+    constructor(IERC20 asset_, address rewardAsset_) ERC4626(asset_) ERC20("asset1", "asset"){
+        rewardAsset = IERC20(rewardAsset_);
     }
 
-    function distributeRewards(uint256 amount) external nonReentrant{
+    function distributeRewards(uint256 amount) external payable nonReentrant{
 
         require(amount > 0, "Amount Invalid");
 
@@ -38,23 +38,30 @@ contract Property is ERC4626, ReentrancyGuard{
 
     }
 
-    function withdrawRewards() external nonReentrant{
+    function withdrawRewards(address user)  external nonReentrant returns(uint256) {
 
-        uint256 holderBalance = balanceOf(msg.sender);
+        uint256 holderBalance = balanceOf(user);
 
         require(holderBalance != 0, "Caller possess no shares");
 
         uint256 amount = ( (dividendPerToken - xDividendPerToken[msg.sender]) * holderBalance / MULTIPLIER);
 
-        amount += credit[msg.sender];
+        amount += credit[user];
 
-        credit[msg.sender] = 0;
+        credit[user] = 0;
 
-        xDividendPerToken[msg.sender] = dividendPerToken;
+        xDividendPerToken[user] = dividendPerToken;
 
-        (bool success) = rewardAsset.transfer(msg.sender, amount);
+        if(address(rewardAsset) != address(0)){
+            (bool success) = rewardAsset.transfer(user, amount);
+            require(success, "Send failed");
+        }else{
+            (bool success,) = payable(user).call{value:amount}("");
+            require(success, "Send failed");
+        }
 
-        require(success, "Couldn't withdraw Asset");
+
+        return amount;
 
     }
 

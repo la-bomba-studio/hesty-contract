@@ -32,7 +32,7 @@
     ],
     "name": "buyTokens",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -93,6 +93,19 @@
       }
     ],
     "name": "distributeRevenue",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawAssets",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

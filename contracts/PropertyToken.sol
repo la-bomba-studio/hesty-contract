@@ -14,6 +14,19 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
  */
 contract PropertyToken is ERC20{
 
+
+    uint256 private constant  BASIS_POINTS = 10000;
+
+    //Multiplier to garantee math safety
+    uint32 constant private MULTIPLIER = 1e9; // in gwei
+
+    //Dividends per share/token
+    uint256 dividendPerToken;
+
+    //Last user dividends essential to calculate future rewards
+    mapping(address => uint256) xDividendPerToken;
+
+
     /**
     * @dev Mints x amount of tokens and transfers them to each Multisig wallet/Vesting Contract according to the tokenomics
     *
@@ -29,5 +42,43 @@ contract PropertyToken is ERC20{
         //Pre-Seed Share
         _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
+    }
+
+
+    function distributionRewards() payable external{
+
+        require(msg.value > BASIS_POINTS, "Amount too low");
+
+        dividendPerToken += msg.value * MULTIPLIER / super.totalSupply();
+
+    }
+
+    function claimDividensExternal() external{
+        claimDividends(payable(msg.sender));
+    }
+
+    function claimDividends(address payable account) private{
+
+        uint256 amount = ( (dividendPerToken - xDividendPerToken[msg.sender]) * balanceOf(account) / MULTIPLIER);
+
+        xDividendPerToken[account] = dividendPerToken;
+
+        (bool success,) = account.call{value:amount}("");
+        require(success,"Fail transfer");
+
+    }
+
+    function transfer(address to, uint256 amount) override public returns(bool){
+
+        claimDividends(payable(msg.sender));
+        claimDividends(payable(to));
+        return super.transfer(to, amount);
+    }
+
+
+    function transferFrom(address from, address to, uint256 amount) override public returns(bool){
+        claimDividends(payable(from));
+        claimDividends(payable(to));
+        return super.transfer(to, amount);
     }
 }
