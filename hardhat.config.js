@@ -30,7 +30,7 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      bscTestnet: "https://api-testnet.bscscan.com/api",
+      bscTestnet: "VBJGC17JF227TPEH8FGS6BTZ1I6Q1UEX7W",
     },
   },
   abiExporter: {

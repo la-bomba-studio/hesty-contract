@@ -53,18 +53,21 @@ contract PropertyToken is ERC20{
 
     }
 
-    function claimDividensExternal() external{
-        claimDividends(payable(msg.sender));
+    function claimDividensExternal(address acc) external{
+        claimDividends(payable(acc));
     }
 
     function claimDividends(address payable account) private{
 
-        uint256 amount = ( (dividendPerToken - xDividendPerToken[msg.sender]) * balanceOf(account) / MULTIPLIER);
+        uint256 amount = ( (dividendPerToken - xDividendPerToken[account]) * balanceOf(account) / MULTIPLIER);
 
         xDividendPerToken[account] = dividendPerToken;
 
-        (bool success,) = account.call{value:amount}("");
-        require(success,"Fail transfer");
+        if(amount > 0){
+            (bool success,) = account.call{value:amount}("");
+            require(success,"Fail transfer");
+        }
+
 
     }
 

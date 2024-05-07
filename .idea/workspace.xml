@@ -3,11 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Property.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Property.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/Property.sol/Property.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/Property.sol/Property.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenManager.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenManager.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hardhat.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/hardhat.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +63,10 @@
       <workItem from="1713982838329" duration="1902000" />
       <workItem from="1714055763903" duration="1801000" />
       <workItem from="1714262159394" duration="3068000" />
+      <workItem from="1714314079363" duration="7202000" />
+      <workItem from="1714616503389" duration="8320000" />
+      <workItem from="1714645709023" duration="1936000" />
+      <workItem from="1714763570577" duration="1781000" />
     </task>
     <servers />
   </component>
