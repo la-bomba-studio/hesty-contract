@@ -7,6 +7,16 @@ import "contracts/libs/@openzeppelin/contracts-upgradeable/token/ERC1155/extensi
 import "contracts/libs/@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155ReceiverUpgradeable.sol";
 import "contracts/libs/hardhat/console.sol";
 
+/**
+* Property Contract Factory
+*
+* @notice Allows property owners to distribute and store rewards
+*         owned to investors/stakeholders and distributes them
+*         to the same investors/stakeholders
+*
+* Developed by Pedro Ferreira
+*/
+
 contract PropertyFactory is
     ERC1155Upgradeable,
     ERC1155ReceiverUpgradeable,

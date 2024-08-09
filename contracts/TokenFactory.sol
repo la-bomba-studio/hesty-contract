@@ -8,13 +8,11 @@ contract TokenManager{
     uint256 public propertyCounter;
 
     mapping(uint256 => PropertyInfo) public property;
-    mapping(string => PropertyInfo) public propertyinf;
 
     //Event
     event CreateProperty(uint256 id);
 
     struct PropertyInfo{
-        string backendId;
         uint256 price;
         address owner;
         address paymentToken;
@@ -29,10 +27,7 @@ contract TokenManager{
 
     }
 
-
-
     function createProperty(
-        string memory bId,
         uint256 amount,
         uint tokenPrice,
         address paymentToken,
@@ -40,27 +35,24 @@ contract TokenManager{
         string memory name,
         string memory symbol
     ) external returns(uint256){
+        require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
         address newAsset = address(new PropertyToken(address(this), amount, name, symbol));
         address newVault = address(new Property(IERC20(newAsset), revenueToken));
-        property[propertyCounter++] = PropertyInfo(bId, tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
-        propertyinf[bId] = PropertyInfo(bId, tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
+        property[propertyCounter++] = PropertyInfo( tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
 
 
-    emit CreateProperty(propertyCounter - 1);
+        emit CreateProperty(propertyCounter - 1);
         return propertyCounter - 1;
     }
 
-    function buyTokens(string memory id, uint256 amount) external payable{
+    function buyTokens(uint256 id, uint256 amount) external payable{
 
-        PropertyInfo storage p = propertyinf[id];
+        PropertyInfo storage p = property[id];
 
         uint256 boughtTokensPrice = amount * p.price;
 
-        if(p.paymentToken != address(0)){
-            IERC20(p.paymentToken).transferFrom(msg.sender, address(this), boughtTokensPrice);
-        }else{
-            require(msg.value >= boughtTokensPrice, "Invalid Amount");
-        }
+
+        IERC20(p.paymentToken).transferFrom(msg.sender, address(this), boughtTokensPrice);
 
         IERC20(p.asset).transfer(msg.sender, amount * 1 ether);
 
@@ -69,25 +61,19 @@ contract TokenManager{
 
     }
 
-    function distributeRevenue(string memory id, uint256 amount) public payable{
+    function distributeRevenue(uint256 id, uint256 amount) public payable{
 
-        PropertyInfo storage p = propertyinf[id];
+        PropertyInfo storage p = property[id];
 
-        if(p.revenueToken != address(0)){
-            IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
-            PropertyToken(p.asset).distributionRewards();
-        }else{
-            require(msg.value >= amount, "Revenue");
-            PropertyToken(p.asset).distributionRewards{value: msg.value}();
-        }
-
+        IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
+        PropertyToken(p.asset).distributionRewards();
 
 
     }
 
-    function withdrawAssets(string memory id) external{
+    function withdrawAssets(uint256 id) external{
 
-        PropertyInfo storage p = propertyinf[id];
+        PropertyInfo storage p = property[id];
 
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
     }

@@ -4,28 +4,27 @@ pragma solidity ^0.8.0;
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
- * @dev {ERC20} token, including:
+ * @title   Property Token
  *
- *  - Pre minted initial supply
- *  - Ability for holders to burn (destroy) their tokens
- *  - No access control mechanism (for minting/pausing) and hence no governance
+ * @notice  Token associated to a property that tracks
+            investors and stakeholders that are entitled
+            to a share of the property generated revenue.
  *
- * This contract uses {ERC20Burnable} to include burn capabilities
+ * @dev     {ERC20} token, including:
+ *
+ *          - Pre minted initial supply
+ *          - Ability for holders to burn (destroy) their tokens
+ *          - No access control mechanism (for minting/pausing) and hence no governance
+ *
+ *
+ * Developed by Pedro Ferreira
  */
 contract PropertyToken is ERC20{
 
-
-    uint256 private constant  BASIS_POINTS = 10000;
-
-    //Multiplier to garantee math safety
-    uint32 constant private MULTIPLIER = 1e9; // in gwei
-
-    //Dividends per share/token
-    uint256 dividendPerToken;
-
-    //Last user dividends essential to calculate future rewards
-    mapping(address => uint256) xDividendPerToken;
-
+    uint256 private constant    BASIS_POINTS = 10000; //BASIS POINTS used for % math calculations
+    uint32  private constant    MULTIPLIER   = 1e9; // Multiplier to garantee math safety in gwei, everything else is neglectable
+    uint256 public              dividendPerToken; //Dividends per share/token
+    mapping(address => uint256) xDividendPerToken; //Last user dividends essential to calculate future rewards
 
     /**
     * @dev Mints x amount of tokens and transfers them to each Multisig wallet/Vesting Contract according to the tokenomics
