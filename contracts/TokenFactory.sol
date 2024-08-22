@@ -9,10 +9,9 @@ contract TokenFactory{
 
     uint256 public propertyCounter;  // @notice Number of properties created until now
 
-
     mapping(uint256 => PropertyInfo) public property; // @notice
     mapping(uint256 => uint256) public platformFee;   // @notice
-    mapping(address => uint256) public refFee;        // @notice Referral Fee accumulated by users
+    mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
     event CreateProperty(uint256 id);
@@ -28,11 +27,14 @@ contract TokenFactory{
         uint256 raised;         // Amount raised until now
         uint256 raiseDeadline;  // When the fundraising ends
         uint8   payType;        // Type of investment return
+        bool    isCompleted;
         address owner;          // Property Manager/owner
+        address ownerExchAddr;   // Property Owner/Manager exchange address to receive euroc
         address paymentToken;   // Token used to buy property tokens/assets
         address asset;          // Property token contract
        // address vault;
         address revenueToken;   // Revenue token for investors
+
     }
 
 
@@ -71,6 +73,8 @@ contract TokenFactory{
                                                     0,
                                                     raiseEnd,
                                                     payType,
+                                                    false,
+                                                    msg.sender,
                                                     msg.sender,
                                                     paymentToken,
                                                     newAsset,
@@ -84,6 +88,11 @@ contract TokenFactory{
     function buyTokens(uint256 id, uint256 amount, address ref) external payable{
 
         PropertyInfo storage p    = property[id];
+
+        // Require that raise is still active and not expired
+        require(p.raiseDeadline >= block.timestamp, "Raise expired");
+
+        // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
 
         uint256 fee = boughtTokensPrice * FEE_BASIS_POINTS / BASIS_POINTS;
@@ -131,11 +140,18 @@ contract TokenFactory{
     function recoverFundsInvested(uint256 propertyId) external{
 
         PropertyInfo storage p = property[id];
-        require(p.raiseDeadline < block.timestamp, "Time not valid");
+        require(p.raiseDeadline < block.timestamp, "Time not valid"); // @dev it must be < not <=
 
 
+    }
 
+    function completeRaise() external{
+        require(!property[id], "Already Completed");
 
+        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised);
+
+        IERC20(property[id].paymentToken).transfer(treasury, property[id].raised * FEE_BASIS_POINTS / BASIS_POINTS);
+        property[id].isCompleted = true;
     }
 
     function isRefClaimable(uint256 propertyId) public view returns(bool){
@@ -143,6 +159,7 @@ contract TokenFactory{
     }
 
     function claimRefFee() external{
+        require(isRefClaimable(), "Not Claimable Yet");
 
     }
 
@@ -158,6 +175,11 @@ contract TokenFactory{
 
     function getPropertyToken(uint256 id) external view returns(address){
         return property[id].asset;
+    }
+
+    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external{
+        require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
+        property[id].raiseDeadline = newDeadline;
     }
 
     // Function to allow deposits
