@@ -87,7 +87,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         return propertyCounter - 1;
     }
 
-    function buyTokens(uint256 id, uint256 amount, address ref) external payable{
+    function buyTokens(uint256 id, uint256 amount, address ref) external payable nonReentrant{
 
         PropertyInfo storage p    = property[id];
 
@@ -107,7 +107,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
         IERC20(p.asset).transfer(msg.sender, amount);
 
-        userInvested[msg.sender][id] += total;
+        userInvested[msg.sender][id] += boughtTokensPrice;
 
         if(ref != address(0)){
             uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
@@ -147,11 +147,13 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
     }
 
-    function recoverFundsInvested(uint256 id) external{
+    function recoverFundsInvested(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
         require(p.raiseDeadline < block.timestamp, "Time not valid"); // @dev it must be < not <=
 
+        userInvested[msg.sender][id] = 0;
+        IERC20(p.paymentToken).transfer(msg.sender, userInvested[msg.sender][id]);
 
     }
 
