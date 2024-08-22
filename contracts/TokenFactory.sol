@@ -196,6 +196,11 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         property[id].raiseDeadline = newDeadline;
     }
 
+    /**
+    *
+    * @notice Function to set minimum investment amount
+    *
+    */
     function setMinInvAmount(uint256 newMinInv) external onlyOwner{
         minInvAmount = newMinInv;
     }
