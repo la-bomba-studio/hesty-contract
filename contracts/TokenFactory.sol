@@ -17,15 +17,17 @@ contract TokenFactory{
 
     uint256 public constant BASIS_POINTS = 10000;
 
-
     struct PropertyInfo{
-        uint256 price;
-        address owner;
-        address paymentToken;
-        address asset;
-        address vault;
-        address revenueToken;
+        uint256 price;          // Price for each property token
+        uint8   payType;        // Type of investment return
+        address owner;          // Property Manager/owner
+        address paymentToken;   // Token used to buy property tokens/assets
+        address asset;          // Property token contract
+       // address vault;
+        address revenueToken;   // Revenue token for investors
     }
+
+
 
     mapping(address => uint256) lastTimeUserClaimed;
 
@@ -40,17 +42,19 @@ contract TokenFactory{
     function createProperty(
         uint256 amount,
         uint tokenPrice,
+        uint8 payType,
         address paymentToken,
         address revenueToken,
         string memory name,
-        string memory symbol
+        string memory symbol,
+        address admin
     ) external returns(uint256){
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
 
 
-        address newAsset            = address(new PropertyToken(address(this), amount, name, symbol, revenueToken));
-        address newVault            = address(new Vault(IERC20(newAsset), revenueToken));
-        property[propertyCounter++] = PropertyInfo( tokenPrice, msg.sender, paymentToken, newAsset, newVault, revenueToken);
+        address newAsset            = address(new PropertyToken(address(this), amount, name, symbol, revenueToken, admin));
+        //address newVault            = address(new Vault(IERC20(newAsset), revenueToken));
+        property[propertyCounter++] = PropertyInfo( tokenPrice, payType, msg.sender, paymentToken, newAsset, revenueToken);
 
 
         emit CreateProperty(propertyCounter - 1);
@@ -99,13 +103,13 @@ contract TokenFactory{
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
     }
 
-    function setPlatformFee(uint256 newFee){
-        require(FEE_BASIS_POINTS < BASIS_POINTS, "Fee must be valid");
-        FEE_BASIS_POINTS = fee;
+    function setPlatformFee(uint256 newFee) external{
+        require(newFee < BASIS_POINTS, "Fee must be valid");
+        FEE_BASIS_POINTS = newFee;
     }
 
-    function setRefFee(uint256 newFee){
-        require(REF_FEE_BASIS_POINTS < FEE_BASIS_POINTS, "Fee must be valid");
+    function setRefFee(uint256 newFee) external{
+        require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
 

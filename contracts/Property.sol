@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 *         owned to investors/stakeholders and distributes them
 *         to the same investors/stakeholders
 *
-*         Developed by Pedro G. S. Ferreira @Pedro_Ferreir_a
+*         @author  Pedro G. S. Ferreira Pedro_Ferreir_a
 */
 contract Vault is ERC4626, ReentrancyGuard{
 

@@ -4,14 +4,8 @@
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/Property.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Property.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/PropertyFactory.sol" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/Property.sol/Property.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/PropertyFactory.sol/PropertyFactory.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenManager.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/deploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +74,7 @@
       <workItem from="1723757531219" duration="2595000" />
       <workItem from="1723874389918" duration="594000" />
       <workItem from="1724044789340" duration="589000" />
-      <workItem from="1724229969537" duration="1767000" />
+      <workItem from="1724229969537" duration="2579000" />
     </task>
     <servers />
   </component>

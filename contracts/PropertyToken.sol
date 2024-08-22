@@ -26,7 +26,7 @@ contract PropertyToken is ERC20{
     uint256 public              dividendPerToken; //Dividends per share/token
     mapping(address => uint256) public xDividendPerToken; //Last user dividends essential to calculate future rewards
 
-    public address admin;
+   address public admin;
 
     IERC20  public rewardAsset;
 
@@ -45,7 +45,7 @@ contract PropertyToken is ERC20{
         uint256 initialSupply_,
         string memory  name_,
         string memory symbol_,
-        address rewardAsset_
+        address rewardAsset_,
         address admin_
     ) ERC20(name_, symbol_) {
 
