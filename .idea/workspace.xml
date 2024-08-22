@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +71,7 @@
       <workItem from="1723757531219" duration="2595000" />
       <workItem from="1723874389918" duration="594000" />
       <workItem from="1724044789340" duration="589000" />
-      <workItem from="1724229969537" duration="8608000" />
+      <workItem from="1724229969537" duration="9032000" />
     </task>
     <servers />
   </component>

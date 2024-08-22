@@ -54,6 +54,10 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     }
 
+    /**===================================================
+        NON OWNER STATE MODIFIABLE FUNTIONS
+    ======================================================**/
+
     function createProperty(
         uint256 amount,
         uint tokenPrice,
@@ -129,7 +133,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         property[id] = p;
     }
 
-    function distributeRevenue(uint256 id, uint256 amount) public{
+    function distributeRevenue(uint256 id, uint256 amount) public nonReentrant{
 
         PropertyInfo storage p = property[id];
 
@@ -157,6 +161,35 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     }
 
+
+
+    function isRefClaimable(uint256 id) public view returns(bool){
+        return property[id].threshold <= property[id].raised;
+    }
+
+
+    /**
+    * @notice Function to claim referral fee
+    *
+    * @param id the property id
+    */
+    function claimRefFee(uint256 id) external nonReentrant{
+        uint256 val = refFee[msg.sender][id];
+        require(isRefClaimable(id) && val > 0, "Not Claimable Yet");
+        refFee[msg.sender][id] = 0;
+        IERC20(property[id].paymentToken).transfer(msg.sender, val);
+    }
+
+    /**===================================================
+       OWNER STATE MODIFIABLE FUNTIONS
+   ======================================================**/
+
+    /**
+    * @notice Function to complete the property Raise
+    *
+    * @dev Send funds to property owner exchange address and fees to
+            platform multisig
+    */
     function completeRaise(uint256 id) external onlyOwner{
         require(!property[id].isCompleted, "Already Completed");
 
@@ -166,22 +199,23 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         property[id].isCompleted = true;
     }
 
-    function isRefClaimable(uint256 id) public view returns(bool){
-        return property[id].threshold <= property[id].raised;
-    }
-
-    function claimRefFee(uint256 id) external nonReentrant{
-        uint256 val = refFee[msg.sender][id];
-        require(isRefClaimable(id) && val > 0, "Not Claimable Yet");
-        refFee[msg.sender][id] = 0;
-        IERC20(property[id].paymentToken).transfer(msg.sender, val);
-    }
-
+    /**
+    * @notice Function to change platform fee
+    *
+    * @dev Fee must be lower than total amount raised
+    * @param newFee New platform fee
+    */
     function setPlatformFee(uint256 newFee) external onlyOwner{
         require(newFee < BASIS_POINTS, "Fee must be valid");
         FEE_BASIS_POINTS = newFee;
     }
 
+    /**
+    * @notice Function to change referral fee
+    *
+    * @dev Fee must be lower than fee charged by platform
+    * @param newFee New platform fee
+    */
     function setRefFee(uint256 newFee) external onlyOwner{
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
@@ -191,13 +225,16 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         return property[id].asset;
     }
 
+    /**
+    * @notice Function to extend property raise deadline
+    *
+    */
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyOwner{
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
     }
 
     /**
-    *
     * @notice Function to set minimum investment amount
     *
     */
