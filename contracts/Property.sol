@@ -10,9 +10,9 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 *         owned to investors/stakeholders and distributes them
 *         to the same investors/stakeholders
 *
-* Developed by Pedro Ferreira
+*         Developed by Pedro G. S. Ferreira @Pedro_Ferreir_a
 */
-contract Property is ERC4626, ReentrancyGuard{
+contract Vault is ERC4626, ReentrancyGuard{
 
     uint32  private constant MULTIPLIER = 1e9; // Multiplier to guarantee math safety in gwei
 
@@ -27,7 +27,7 @@ contract Property is ERC4626, ReentrancyGuard{
         rewardAsset = IERC20(rewardAsset_);
     }
 
-    function distributeRewards(uint256 amount) external payable nonReentrant{
+    function distributeRewards(uint256 amount) external nonReentrant{
 
         require(amount > 0, "Amount Invalid");
 

@@ -20,6 +20,11 @@
         "internalType": "string",
         "name": "symbol_",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "rewardAsset_",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -193,10 +198,16 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
     "name": "distributionRewards",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -244,6 +255,19 @@
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rewardAsset",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

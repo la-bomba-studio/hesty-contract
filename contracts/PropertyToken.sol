@@ -22,9 +22,18 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 contract PropertyToken is ERC20{
 
     uint256 private constant    BASIS_POINTS = 10000; //BASIS POINTS used for % math calculations
-    uint32  private constant    MULTIPLIER   = 1e9; // Multiplier to garantee math safety in gwei, everything else is neglectable
+    uint32  private constant    MULTIPLIER   = 1e9; // Multiplier to guarantee math safety in gwei, everything else is neglectable
     uint256 public              dividendPerToken; //Dividends per share/token
-    mapping(address => uint256) xDividendPerToken; //Last user dividends essential to calculate future rewards
+    mapping(address => uint256) public xDividendPerToken; //Last user dividends essential to calculate future rewards
+
+    public address admin;
+
+    IERC20  public rewardAsset;
+
+    modifier onlyAdmin(){
+        require(msg.sender == admin, "Not Admin");
+        _;
+    }
 
     /**
     * @dev Mints x amount of tokens and transfers them to each Multisig wallet/Vesting Contract according to the tokenomics
@@ -35,20 +44,30 @@ contract PropertyToken is ERC20{
         address tokenManagerContract_,
         uint256 initialSupply_,
         string memory  name_,
-        string memory symbol_
+        string memory symbol_,
+        address rewardAsset_
+        address admin_
     ) ERC20(name_, symbol_) {
 
         //Pre-Seed Share
         _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
+        rewardAsset = IERC20(rewardAsset_);
+
+        admin = admin_;
+
     }
 
 
-    function distributionRewards() payable external{
+    function distributionRewards(uint256 amount) external{
 
-        require(msg.value > BASIS_POINTS, "Amount too low");
+        require(amount > BASIS_POINTS, "Amount too low");
 
-        dividendPerToken += msg.value * MULTIPLIER / super.totalSupply();
+        (bool success) = rewardAsset.transferFrom(msg.sender, address(this), amount);
+
+        require(success, "Failed Transfer");
+
+        dividendPerToken += amount * MULTIPLIER / super.totalSupply();
 
     }
 
@@ -58,15 +77,13 @@ contract PropertyToken is ERC20{
 
     function claimDividends(address payable account) private{
 
-        uint256 amount = ( (dividendPerToken - xDividendPerToken[account]) * balanceOf(account) / MULTIPLIER);
-
+        uint256 amount             = ( (dividendPerToken - xDividendPerToken[account]) * balanceOf(account) / MULTIPLIER);
         xDividendPerToken[account] = dividendPerToken;
 
         if(amount > 0){
-            (bool success,) = account.call{value:amount}("");
-            require(success,"Fail transfer");
+            (bool success) = rewardAsset.transfer(account, amount);
+            require(success, "Failed Transfer");
         }
-
 
     }
 

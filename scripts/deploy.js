@@ -21,7 +21,7 @@ async function main() {
   [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
   console.log(owner.address)
 
-  nest_nft = await ethers.deployContract("TokenManager", []);
+  nest_nft = await ethers.deployContract("TokenFactory", []);
   let vAddress = await nest_nft.getAddress();
 
   console.log("Stake NFT Address: " + vAddress)
