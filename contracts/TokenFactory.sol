@@ -3,12 +3,16 @@ pragma solidity ^0.8.0;
 import {PropertyToken} from "./PropertyToken.sol";
 import {Vault, IERC20} from "./Property.sol";
 
-contract TokenFactory{
+import "@openzeppelin/contracts/access/Ownable2Step.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     uint256 public constant BASIS_POINTS = 10000;
 
     uint256 public propertyCounter;  // @notice Number of properties created until now
 
+    uint256 public allTimeRaised;
     mapping(uint256 => PropertyInfo) public property; // @notice
     mapping(uint256 => uint256) public platformFee;   // @notice
     mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
@@ -36,8 +40,6 @@ contract TokenFactory{
         address revenueToken;   // Revenue token for investors
 
     }
-
-
 
     mapping(address => uint256) lastTimeUserClaimed;
 
@@ -95,6 +97,8 @@ contract TokenFactory{
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
 
+        allTimeRaised += boughtTokensPrice;
+
         uint256 fee = boughtTokensPrice * FEE_BASIS_POINTS / BASIS_POINTS;
 
         uint256 total = boughtTokensPrice + fee;
@@ -104,6 +108,12 @@ contract TokenFactory{
         IERC20(p.asset).transfer(msg.sender, amount);
 
         userInvested[msg.sender][id] += total;
+
+        if(ref != address(0)){
+            uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
+            refFee[ref][id] += refFee_;
+        }
+
 
        // if(ref != address(0)){
 
@@ -137,7 +147,7 @@ contract TokenFactory{
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
     }
 
-    function recoverFundsInvested(uint256 propertyId) external{
+    function recoverFundsInvested(uint256 id) external{
 
         PropertyInfo storage p = property[id];
         require(p.raiseDeadline < block.timestamp, "Time not valid"); // @dev it must be < not <=
@@ -145,8 +155,8 @@ contract TokenFactory{
 
     }
 
-    function completeRaise() external{
-        require(!property[id], "Already Completed");
+    function completeRaise(uint256 id) external onlyOwner{
+        require(!property[id].isCompleted, "Already Completed");
 
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised);
 
@@ -154,21 +164,23 @@ contract TokenFactory{
         property[id].isCompleted = true;
     }
 
-    function isRefClaimable(uint256 propertyId) public view returns(bool){
+    function isRefClaimable(uint256 id) public view returns(bool){
         return property[id].threshold <= property[id].raised;
     }
 
-    function claimRefFee() external{
-        require(isRefClaimable(), "Not Claimable Yet");
-
+    function claimRefFee(uint256 id) external{
+        uint256 val = refFee[msg.sender][id];
+        require(isRefClaimable(id) && val > 0, "Not Claimable Yet");
+        refFee[msg.sender][id] = 0;
+        IERC20(property[id].paymentToken).transfer(msg.sender, val);
     }
 
-    function setPlatformFee(uint256 newFee) external{
+    function setPlatformFee(uint256 newFee) external onlyOwner{
         require(newFee < BASIS_POINTS, "Fee must be valid");
         FEE_BASIS_POINTS = newFee;
     }
 
-    function setRefFee(uint256 newFee) external{
+    function setRefFee(uint256 newFee) external onlyOwner{
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
@@ -177,7 +189,7 @@ contract TokenFactory{
         return property[id].asset;
     }
 
-    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external{
+    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyOwner{
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
     }
