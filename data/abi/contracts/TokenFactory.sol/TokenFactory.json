@@ -15,6 +15,11 @@
         "internalType": "address",
         "name": "treasury_",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "minInvAmount_",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -115,19 +120,6 @@
     "name": "acceptOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "allTimeRaised",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -319,6 +311,19 @@
   },
   {
     "inputs": [],
+    "name": "minInvAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [
       {
@@ -484,6 +489,19 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newMinInv",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinInvAmount",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

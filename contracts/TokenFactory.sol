@@ -11,8 +11,8 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     uint256 public constant BASIS_POINTS = 10000;
 
     uint256 public propertyCounter;  // @notice Number of properties created until now
+    uint256 public minInvAmount;
 
-    uint256 public allTimeRaised;
     mapping(uint256 => PropertyInfo) public property; // @notice
     mapping(uint256 => uint256) public platformFee;   // @notice
     mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
@@ -43,11 +43,12 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     mapping(address => uint256) lastTimeUserClaimed;
 
-    constructor(uint256 fee, uint256 refFee, address treasury_){
+    constructor(uint256 fee, uint256 refFee, address treasury_, uint256 minInvAmount_){
 
         require(refFee < fee, "Ref fee invalid");
         FEE_BASIS_POINTS        = fee;
         REF_FEE_BASIS_POINTS    = refFee;
+        minInvAmount            = minInvAmount_;
         treasury                = treasury_;
 
 
@@ -93,11 +94,10 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
+        require(amount > minInvAmount, "Lower than min");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
-
-        allTimeRaised += boughtTokensPrice;
 
         uint256 fee = boughtTokensPrice * FEE_BASIS_POINTS / BASIS_POINTS;
 
@@ -170,7 +170,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         return property[id].threshold <= property[id].raised;
     }
 
-    function claimRefFee(uint256 id) external{
+    function claimRefFee(uint256 id) external nonReentrant{
         uint256 val = refFee[msg.sender][id];
         require(isRefClaimable(id) && val > 0, "Not Claimable Yet");
         refFee[msg.sender][id] = 0;
@@ -194,6 +194,10 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyOwner{
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
+    }
+
+    function setMinInvAmount(uint256 newMinInv) external onlyOwner{
+        minInvAmount = newMinInv;
     }
 
     // Function to allow deposits
