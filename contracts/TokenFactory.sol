@@ -5,20 +5,28 @@ import {Vault, IERC20} from "./Property.sol";
 
 contract TokenFactory{
 
-    uint256 public propertyCounter;
+    uint256 public constant BASIS_POINTS = 10000;
 
-    mapping(uint256 => PropertyInfo) public property;
+    uint256 public propertyCounter;  // @notice Number of properties created until now
 
+
+    mapping(uint256 => PropertyInfo) public property; // @notice
+    mapping(uint256 => uint256) public platformFee;   // @notice
+    mapping(address => uint256) public refFee;        // @notice Referral Fee accumulated by users
+    mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
     event CreateProperty(uint256 id);
 
     uint256 public FEE_BASIS_POINTS;
     uint256 public REF_FEE_BASIS_POINTS;
 
-    uint256 public constant BASIS_POINTS = 10000;
+    address public treasury;
 
     struct PropertyInfo{
         uint256 price;          // Price for each property token
+        uint256 threshold;      // Amount necessary to proceed with investment
+        uint256 raised;         // Amount raised until now
+        uint256 raiseDeadline;  // When the fundraising ends
         uint8   payType;        // Type of investment return
         address owner;          // Property Manager/owner
         address paymentToken;   // Token used to buy property tokens/assets
@@ -31,17 +39,21 @@ contract TokenFactory{
 
     mapping(address => uint256) lastTimeUserClaimed;
 
-    constructor(uint256 fee, uint256 refFee){
+    constructor(uint256 fee, uint256 refFee, address treasury_){
 
         require(refFee < fee, "Ref fee invalid");
-        FEE_BASIS_POINTS = fee;
-        REF_FEE_BASIS_POINTS = refFee;
+        FEE_BASIS_POINTS        = fee;
+        REF_FEE_BASIS_POINTS    = refFee;
+        treasury                = treasury_;
+
 
     }
 
     function createProperty(
         uint256 amount,
         uint tokenPrice,
+        uint256 threshold,
+        uint256 raiseEnd,
         uint8 payType,
         address paymentToken,
         address revenueToken,
@@ -54,7 +66,15 @@ contract TokenFactory{
 
         address newAsset            = address(new PropertyToken(address(this), amount, name, symbol, revenueToken, admin));
         //address newVault            = address(new Vault(IERC20(newAsset), revenueToken));
-        property[propertyCounter++] = PropertyInfo( tokenPrice, payType, msg.sender, paymentToken, newAsset, revenueToken);
+        property[propertyCounter++] = PropertyInfo( tokenPrice,
+                                                    threshold,
+                                                    0,
+                                                    raiseEnd,
+                                                    payType,
+                                                    msg.sender,
+                                                    paymentToken,
+                                                    newAsset,
+                                                    revenueToken);
 
 
         emit CreateProperty(propertyCounter - 1);
@@ -74,15 +94,20 @@ contract TokenFactory{
 
         IERC20(p.asset).transfer(msg.sender, amount);
 
-        if(ref != address(0)){
+        userInvested[msg.sender][id] += total;
 
-            uint256 refFee = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
-            IERC20(p.paymentToken).transfer(ref, REF_FEE_BASIS_POINTS);
-        }
+       // if(ref != address(0)){
+
+         //   uint256 refFee = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
+         //   IERC20(p.paymentToken).transfer(ref, REF_FEE_BASIS_POINTS);
+       // }
+
 
         //Deposit Tokens in Vault
         //Property(p.vault).deposit(amount, msg.sender);
 
+        p.raised += boughtTokensPrice;
+        property[id] = p;
     }
 
     function distributeRevenue(uint256 id, uint256 amount) public{
@@ -101,6 +126,24 @@ contract TokenFactory{
         PropertyInfo storage p = property[id];
 
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
+    }
+
+    function recoverFundsInvested(uint256 propertyId) external{
+
+        PropertyInfo storage p = property[id];
+        require(p.raiseDeadline < block.timestamp, "Time not valid");
+
+
+
+
+    }
+
+    function isRefClaimable(uint256 propertyId) public view returns(bool){
+        return property[id].threshold <= property[id].raised;
+    }
+
+    function claimRefFee() external{
+
     }
 
     function setPlatformFee(uint256 newFee) external{
