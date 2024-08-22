@@ -92,6 +92,11 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         return propertyCounter - 1;
     }
 
+    /**
+    * @notice Function to buy property tokens
+    *
+    * @dev If there is a referral store the fee to pay and transfer funds to this contract
+    */
     function buyTokens(uint256 id, uint256 amount, address ref) external payable nonReentrant{
 
         PropertyInfo storage p    = property[id];
@@ -118,17 +123,6 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
             refFee[ref][id] += refFee_;
         }
 
-
-       // if(ref != address(0)){
-
-         //   uint256 refFee = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
-         //   IERC20(p.paymentToken).transfer(ref, REF_FEE_BASIS_POINTS);
-       // }
-
-
-        //Deposit Tokens in Vault
-        //Property(p.vault).deposit(amount, msg.sender);
-
         p.raised += boughtTokensPrice;
         property[id] = p;
     }
@@ -144,7 +138,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     }
 
-    function withdrawAssets(uint256 id) external{
+    function withdrawAssets(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
 
@@ -162,11 +156,18 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     }
 
 
+    /**=====================================
+        Viewable Functions
+    =========================================*/
+
 
     function isRefClaimable(uint256 id) public view returns(bool){
         return property[id].threshold <= property[id].raised;
     }
 
+    function getPropertyToken(uint256 id) external view returns(address){
+        return property[id].asset;
+    }
 
     /**
     * @notice Function to claim referral fee
@@ -214,15 +215,11 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @notice Function to change referral fee
     *
     * @dev Fee must be lower than fee charged by platform
-    * @param newFee New platform fee
+    * @param newFee New referral fee
     */
     function setRefFee(uint256 newFee) external onlyOwner{
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
-    }
-
-    function getPropertyToken(uint256 id) external view returns(address){
-        return property[id].asset;
     }
 
     /**
