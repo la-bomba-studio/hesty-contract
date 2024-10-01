@@ -32,6 +32,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         uint256 raiseDeadline;  // When the fundraising ends
         uint8   payType;        // Type of investment return
         bool    isCompleted;
+        bool    approved;
         address owner;          // Property Manager/owner
         address ownerExchAddr;   // Property Owner/Manager exchange address to receive euroc
         address paymentToken;   // Token used to buy property tokens/assets
@@ -80,6 +81,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
                                                     0,
                                                     raiseEnd,
                                                     payType,
+                                                    false,
                                                     false,
                                                     msg.sender,
                                                     msg.sender,
@@ -198,6 +200,11 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
         IERC20(property[id].paymentToken).transfer(treasury, property[id].raised * FEE_BASIS_POINTS / BASIS_POINTS);
         property[id].isCompleted = true;
+    }
+
+    function approveProperty(uint256 id) external onlyOwner{
+        require(id < propertyCounter, "Fee must be valid");
+        property[id].approved = true;
     }
 
     /**

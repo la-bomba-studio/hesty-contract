@@ -24,6 +24,11 @@ module.exports = {
       accounts: [process.env.ROPSTEN_PRIVATE_KEY],
       gasPrice: 3000000000,
     },
+    baseSepolia: {
+      url: "https://sepolia.base.org",
+      accounts: [process.env.ROPSTEN_PRIVATE_KEY],
+      gasPrice: 100000000,
+    },
     localhost: {
       url: "http://127.0.0.1:8545",
     },
@@ -31,7 +36,18 @@ module.exports = {
   etherscan: {
     apiKey: {
       bscTestnet: "VBJGC17JF227TPEH8FGS6BTZ1I6Q1UEX7W",
+      baseSepolia: "empty"
     },
+    customChains: [
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://base-sepolia.blockscout.com/api",
+          browserURL: "https://base-sepolia.blockscout.com"
+        }
+      }
+    ]
   },
   abiExporter: {
     path: './data/abi',
