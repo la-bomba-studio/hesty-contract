@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
-import "./interfaces/IHestyKYC.sol";
+import "./interfaces/IHestyAccessControl.sol";
 
 /**
  * @title   Property Token
@@ -19,7 +19,7 @@ import "./interfaces/IHestyKYC.sol";
  *          - No access control mechanism (for minting/pausing) and hence no governance
  *
  *
- * @author Developed by Pedro Ferreira
+ * @author Pedro G. S. Ferreira
  */
 contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
 
