@@ -2,8 +2,10 @@ pragma solidity ^0.8.0;
 
 import {PropertyToken} from "./PropertyToken.sol";
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 
 contract TokenFactory is Ownable2Step, ReentrancyGuard{
 

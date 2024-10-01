@@ -1,6 +1,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
+import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./interfaces/IHestyAccessControl.sol";
 
@@ -12,7 +13,7 @@ import "./interfaces/IHestyAccessControl.sol";
 
     @author Pedro G. S. Ferreira
 */
-contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRules, Pausable{
+contract HestyAccessControl is IHestyAccessControl, IAccessControl, IAccessControlDefaultAdminRules, Pausable{
 
     bytes32 public constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");   // @notice Role than can blacklist addresses
     bytes32 public constant KYC_MANAGER         = keccak256("PAUSER_MANAGER");        // @notice Role that can pause transfers
@@ -28,23 +29,23 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
     =========================================**/
 
 
-    modifier onlyBlackListManager(){
-        require(hasRole(BLACKLISTER_MANAGER), "Not Blacklister");
+    modifier onlyBlackListManager(address manager){
+        require( IAccessControl.hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
         _;
     }
 
-    modifier onlyKYCManager(){
-        require(hasRole(BLACKLISTER_MANAGER), "Not Blacklister");
+    modifier onlyKYCManager(address manager){
+        require( IAccessControl.hasRole(KYC_MANAGER, manager), "Not KYC Manager");
         _;
     }
 
-    modifier onlyPauserManager(){
-        require(hasRole(PAUSER_MANAGER), "Not Pauser");
+    modifier onlyPauserManager(address user){
+        require( IAccessControl.hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
         _;
     }
 
 
-    constructor() IAccessControlDefaultAdminRules(
+    constructor()  IAccessControl() IAccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
@@ -63,7 +64,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
-    function approveUserKYC(address user) external onlyKYCManager{
+    function approveUserKYC(address user) external onlyKYCManager(msg.sender){
         kycCompleted[user] = true;
     }
 
@@ -73,7 +74,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
     *
     *
     */
-    function revertUserKYC(address user) external onlyKYCManager{
+    function revertUserKYC(address user) external onlyKYCManager(msg.sender){
         kycCompleted[user] = false;
     }
 
@@ -83,7 +84,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
-    function blacklistUser(address user) external onlyBlackListManager{
+    function blacklistUser(address user) external onlyBlackListManager(msg.sender){
         blackList[user] = false;
     }
 
@@ -93,7 +94,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
-    function unBlacklistUser(address user) external onlyBlackListManager{
+    function unBlacklistUser(address user) external onlyBlackListManager(msg.sender){
         blackList[user] = false;
     }
 
@@ -102,7 +103,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
-    function pause() external onlyPauserManager{
+    function pause() external onlyPauserManager(msg.sender){
         super._pause();
     }
 
@@ -111,7 +112,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
-    function unpause() external onlyPauserManager{
+    function unpause() external onlyPauserManager(msg.sender){
         super._unpause();
     }
 
