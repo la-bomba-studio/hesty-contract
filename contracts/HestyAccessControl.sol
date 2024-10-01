@@ -39,7 +39,7 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControl, IAccessContr
         _;
     }
 
-    modifier onlyPauserManager(address user){
+    modifier onlyPauserManager(address manager){
         require( IAccessControl.hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
         _;
     }

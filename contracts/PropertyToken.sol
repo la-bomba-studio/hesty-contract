@@ -41,13 +41,13 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
 
     =========================================**/
 
-    modifier onlyPauser(address user){
-        require(IAccessControl.hasRole(PAUSER_ROLE), "Not Pauser");
+    modifier onlyPauser(address manager){
+        require(IAccessControl.hasRole(PAUSER_ROLE, manager), "Not Pauser");
         _;
     }
 
-    modifier onlyBlackLister(address user){
-        require(IAccessControl.hasRole(BLACKLISTER_ROLE), "Not Blacklister");
+    modifier onlyBlackLister(address manager){
+        require(IAccessControl.hasRole(BLACKLISTER_ROLE, manager), "Not Blacklister");
         _;
     }
 

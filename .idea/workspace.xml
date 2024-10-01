@@ -5,8 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Referral/ReferralSystem.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Referral/ReferralSystem.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,7 +96,7 @@
       <workItem from="1726482644857" duration="1181000" />
       <workItem from="1726579225989" duration="1196000" />
       <workItem from="1727430014619" duration="4001000" />
-      <workItem from="1727689491559" duration="8875000" />
+      <workItem from="1727689491559" duration="8932000" />
     </task>
     <servers />
   </component>
