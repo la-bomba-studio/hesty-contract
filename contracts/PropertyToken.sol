@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "openzeppelin-solidity/contracts/token/ERC20/extensions/ERC20Pausable.sol";
-import "openzeppelin-solidity/contracts/access/extensions/IAccessControlDefaultAdminRules.sol";
-import "./interfaces/IHestyKYC";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
+import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
+import "./interfaces/IHestyKYC.sol";
 
 /**
  * @title   Property Token

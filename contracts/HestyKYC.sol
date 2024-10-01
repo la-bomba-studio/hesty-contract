@@ -1,7 +1,8 @@
 pragma solidity ^0.8.0;
 
-import "openzeppelin-solidity/contracts/access/extensions/IAccessControlDefaultAdminRules.sol";
-import "openzeppelin-solidity/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "./interfaces/IHestyKYC.sol";
 
 /**
     @title Hesty KYC Control
@@ -31,7 +32,7 @@ contract HestyKYC is IHestyKYC, IAccessControlDefaultAdminRules, Pausable{
         _;
     }
 
-    constructor() AccessControlDefaultAdminRules(
+    constructor() IAccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
@@ -73,6 +74,10 @@ contract HestyKYC is IHestyKYC, IAccessControlDefaultAdminRules, Pausable{
         return kycCompleted[user];
     }
 
+    function isPaused(address user) external returns(bool){
+
+    }
+
     /**
 
         @notice Returns user blacklist status
@@ -82,4 +87,6 @@ contract HestyKYC is IHestyKYC, IAccessControlDefaultAdminRules, Pausable{
     function isUserBlackListed(address user) external returns(bool){
         return blackList[user];
     }
+
+
 }
