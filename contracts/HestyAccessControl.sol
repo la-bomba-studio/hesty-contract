@@ -18,7 +18,6 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
     bytes32 public constant KYC_MANAGER         = keccak256("PAUSER_MANAGER");        // @notice Role that can pause transfers
     bytes32 public constant PAUSER_MANAGER      = keccak256("PAUSER_MANAGER");        // @notice Role that can pause transfers
 
-    // 1 -> true 0/2 -> false
     mapping(address => bool)  public kycCompleted;  // @notice Store user KYC status
     mapping(address => bool)  public blackList;     // @notice Store user Blacklist status
 
@@ -100,7 +99,6 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
 
     /**
         @notice Pause all Hesty Contracts
-        @param user The Address of the user
         @dev Require this approval to allow users move Hesty derivatives
              onlyOnwer
     */
@@ -108,6 +106,11 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControlDefaultAdminRu
         super._pause();
     }
 
+    /**
+        @notice Unpause all Hesty Contracts
+        @dev Require this approval to allow users move Hesty derivatives
+             onlyOnwer
+    */
     function unpause() external onlyPauserManager{
         super._unpause();
     }

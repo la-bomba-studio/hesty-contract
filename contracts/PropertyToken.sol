@@ -36,6 +36,12 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
     bytes32 public constant PAUSER_ROLE      = keccak256("PAUSER_ROLE");        // @notice Role that can pause transfers
     bytes32 public constant BLACKLISTER_ROLE = keccak256("BLACKLISTER_ROLE");   // @notice Role than can blacklist addresses
 
+    /**======================================
+
+    MODIFIER FUNCTIONS
+
+    =========================================**/
+
     modifier onlyAdmin(){
         require(msg.sender == admin, "Not Admin");
         _;
@@ -51,10 +57,24 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
         _;
     }
 
+    modifier whenNotBlackListed(){
+        require(IHestyAccessControl(ctrHestyControl).isUserBlackListed(to), "Blacklisted");
+        _;
+    }
+
+    modifier whenKYCApproved(){
+        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(to), "No KYC Made");
+        _;
+    }
+
+    modifier whenNotAllPaused(){
+        require(IHestyAccessControl(ctrHestyControl).isAllPaused(to), "All Hesty Paused");
+        _;
+    }
+
     /**
-    * @dev Mints x amount of tokens and transfers them
-           to each Multisig wallet/Vesting Contract
-           according to the tokenomics
+    * @dev Mints initialSupply_ * 1 ether of tokens and transfers them
+           to Token Factory
     *
     * See {ERC20-constructor}.
     */
@@ -82,6 +102,16 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
 
     }
 
+    /**======================================
+
+    MUTABLE FUNCTIONS
+
+    =========================================**/
+
+    /**
+    * @notice Claims users dividends
+
+    */
 
     function distributionRewards(uint256 amount) external{
 
@@ -95,12 +125,16 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
 
     }
 
+    /**
+    * @notice Claims users dividends
+
+    */
     function claimDividensExternal(address acc) external{
         claimDividends(payable(acc));
     }
 
     /**
-    * @notice Claims users dividends and
+    * @notice Claims users dividends
 
       @dev Checks if there is any dividends to distribute
             and send them directly to the wallet
@@ -131,7 +165,7 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
     }
 
     /**
-  * @dev Transfers users tokens from address "from"
+  * @dev Transfers users tokens from address msg.sender
            to address "to" using openzepplin standard
            but implements two internal Hesty mechanism:
 
@@ -142,8 +176,9 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
     *
     * See {ERC20-constructor}.
     */
-    function transfer(address to, uint256 amount) override public returns(bool){
-        require(IHestyControl(ctrHestyControl).isUserKYCValid(to), "No KYC Made");
+    function transfer(address to, uint256 amount) override
+                      whenNotBlackListed  whenKYCApproved whenNotAllPaused public returns(bool){
+
         claimDividends(payable(msg.sender));
         claimDividends(payable(to));
         return super.transfer(to, amount);
@@ -152,17 +187,21 @@ contract PropertyToken is ERC20Pausable, IAccessControlDefaultAdminRules{
     /**
   * @dev Transfers users tokens from address "from"
            to address "to" using openzepplin standard
-           but implements two internal Hesty mechanism:
+           but implements multiple internal Hesty mechanism:
 
            - A KYC requirement
+           - A blacklist requirement
            - Claims dividends to both addresses involved in
              in the transfer before transfer is completed
              to avoid math overhead
+     @note This function implements two types of pause
+            an unique pause
     *
     * See {ERC20-constructor}.
     */
-    function transferFrom(address from, address to, uint256 amount) override public returns(bool){
-        require(IHestyControl(ctrHestyControl).isUserKYCValid(to), "No KYC Made");
+    function transferFrom(address from, address to, uint256 amount) override
+                           whenNotBlackListed whenKYCApproved whenNotAllPaused public returns(bool){
+
         claimDividends(payable(from));
         claimDividends(payable(to));
         return super.transfer(to, amount);

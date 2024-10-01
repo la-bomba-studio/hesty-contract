@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
 
 import {PropertyToken} from "./PropertyToken.sol";
-import {Vault, IERC20} from "./Property.sol";
 
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -75,7 +74,6 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
 
         address newAsset            = address(new PropertyToken(address(this), amount, name, symbol, revenueToken, admin));
-        //address newVault            = address(new Vault(IERC20(newAsset), revenueToken));
         property[propertyCounter++] = PropertyInfo( tokenPrice,
                                                     threshold,
                                                     0,
