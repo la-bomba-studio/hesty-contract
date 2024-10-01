@@ -2,8 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
-import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./interfaces/IHestyAccessControl.sol";
 
 /**
@@ -22,7 +21,7 @@ import "./interfaces/IHestyAccessControl.sol";
  *
  * @author Pedro G. S. Ferreira
  */
-contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAdminRules{
+contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules{
 
     uint256 private constant    BASIS_POINTS = 10000;       /// @notice BASIS POINTS used for % math calculations
     uint32  private constant    MULTIPLIER   = 1e9;         /// @notice Multiplier to guarantee math safety in gwei, everything else is neglectable
@@ -42,12 +41,12 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
     =========================================**/
 
     modifier onlyPauser(address manager){
-        require(IAccessControl.hasRole(PAUSER_ROLE, manager), "Not Pauser");
+        require(hasRole(PAUSER_ROLE, manager), "Not Pauser");
         _;
     }
 
     modifier onlyBlackLister(address manager){
-        require(IAccessControl.hasRole(BLACKLISTER_ROLE, manager), "Not Blacklister");
+        require(hasRole(BLACKLISTER_ROLE, manager), "Not Blacklister");
         _;
     }
 
@@ -61,8 +60,8 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
         _;
     }
 
-    modifier whenNotAllPaused(address to){
-        require(IHestyAccessControl(ctrHestyControl).isAllPaused(to), "All Hesty Paused");
+    modifier whenNotAllPaused(){
+        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
         _;
     }
 
@@ -79,7 +78,7 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
         string memory symbol_,
         address rewardAsset_,
         address ctrHestyControl_
-    ) ERC20(name_, symbol_) IAccessControl() IAccessControlDefaultAdminRules(
+    ) ERC20(name_, symbol_) AccessControlDefaultAdminRules(
     3 days,
      msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
@@ -139,7 +138,7 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
              to be able to keep track of the math for each wallet
            - Multiplier is just an helper to keep math precision
 
-      @note Using multiplier helper keeps it simple
+            Using multiplier helper keeps it simple
             but is not 100% precsie, but what is lost
             is neglectable
     */
@@ -168,7 +167,7 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
     * See {ERC20-constructor}.
     */
     function transfer(address to, uint256 amount) override
-                        whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused(to) public returns(bool){
+                        whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
 
         claimDividends(payable(msg.sender));
         claimDividends(payable(to));
@@ -185,24 +184,24 @@ contract PropertyToken is ERC20Pausable, IAccessControl, IAccessControlDefaultAd
            - Claims dividends to both addresses involved in
              in the transfer before transfer is completed
              to avoid math overhead
-     @note This function implements two types of pause
-            an unique pause
+            This function implements two types of pause
+            an unique pause and a pause dependent on HestyAccessControl
     *
     * See {ERC20-constructor}.
     */
     function transferFrom(address from, address to, uint256 amount) override
-                           whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused(to) public returns(bool){
+                           whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
 
         claimDividends(payable(from));
         claimDividends(payable(to));
         return super.transfer(to, amount);
     }
 
-    function pause() override external onlyPauser(msg.sender){
+    function pause() external onlyPauser(msg.sender){
         super._pause();
     }
 
-    function unpause() override external onlyPauser(msg.sender){
+    function unpause() external onlyPauser(msg.sender){
         super._unpause();
     }
 }

@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/IAccessControlDefaultAdminRules.sol";
-import "@openzeppelin/contracts/access/IAccessControl.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./interfaces/IHestyAccessControl.sol";
 
@@ -13,7 +13,7 @@ import "./interfaces/IHestyAccessControl.sol";
 
     @author Pedro G. S. Ferreira
 */
-contract HestyAccessControl is IHestyAccessControl, IAccessControl, IAccessControlDefaultAdminRules, Pausable{
+contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRules, Pausable{
 
     bytes32 public constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");   // @notice Role than can blacklist addresses
     bytes32 public constant KYC_MANAGER         = keccak256("PAUSER_MANAGER");        // @notice Role that can pause transfers
@@ -30,22 +30,22 @@ contract HestyAccessControl is IHestyAccessControl, IAccessControl, IAccessContr
 
 
     modifier onlyBlackListManager(address manager){
-        require( IAccessControl.hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
+        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
         _;
     }
 
     modifier onlyKYCManager(address manager){
-        require( IAccessControl.hasRole(KYC_MANAGER, manager), "Not KYC Manager");
+        require(hasRole(KYC_MANAGER, manager), "Not KYC Manager");
         _;
     }
 
     modifier onlyPauserManager(address manager){
-        require( IAccessControl.hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
+        require(hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
         _;
     }
 
 
-    constructor()  IAccessControl() IAccessControlDefaultAdminRules(
+    constructor() AccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
