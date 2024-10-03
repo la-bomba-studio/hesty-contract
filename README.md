@@ -1,6 +1,14 @@
-# Hesty PropertyFactory
+[![GitHub license](https://img.shields.io/github/license/portuDAO/manual-de-marca)](https://github.com/hymodernity-org/hymodernity-blockchaindev/blob/main/LICENSE)
 
-PropertyFactory is a smart contract built on Polygon that allows users to create and manage digital properties. Each property is represented by an ERC1155 token, which can be purchased and owned by other users.
+# Hesty
+
+Hesty is a transparent and secure marketplace for real estate projects that aims to democratize real estate investment. Now everyone can invest in real estate and earn from it!
+
+## Hesty Smart Contracts v0.1
+
+## Hesty Token Factory
+
+PropertyFactory is a smart contract built on Base Blockchain that allows users to create and manage digital properties. Each property is represented by an ERC1155 token, which can be purchased and owned by other users.
 
 ## Getting Started
 
