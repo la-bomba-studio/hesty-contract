@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
  */
 abstract contract Constants {
 
-    uint256 public constant BASIS_POINTS = 100_00;
+    uint256 public constant BASIS_POINTS = 100_00;                                    // @notice Math Helper to get percentages amounts
 
     bytes32 public constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");     // @notice Role than can blacklist addresses
 

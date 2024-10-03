@@ -12,12 +12,12 @@ import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 */
 contract ReferralSystem is IReferral, IHestyAccessControl {
 
-     IHestyAccessControl public hestyAccessControl;
+     IHestyAccessControl public hestyAccessControl;                 // @notice
 
-     mapping(address => uint256) public rewards; // @notice Total rewrds earned by user
-     address public rewardToken;                 // @notice Token contract address of rewards
-     mapping(address => mapping(address => bool)) public userRefs; // @notice Number of referrals a user has
-     mapping(address => uint256) public numberOfRef; // @notice Number of referrals a user has
+     mapping(address => uint256) public rewards;                    // @notice Total rewrds earned by user
+     address public rewardToken;                                    // @notice Token contract address of rewards
+     mapping(address => uint256) public numberOfRef;                // @notice Number of referrals a user has
+     mapping(address => address) public refferedBy;                 // @notice Number of referrals a user has
 
     modifier whenNotAllPaused(){
         require(IHestyAccessControl(hestyAccessControl).isAllPaused(), "All Hesty Paused");
@@ -30,14 +30,15 @@ contract ReferralSystem is IReferral, IHestyAccessControl {
 
     }
 
-    function deliverRewards(address onBehalfOf, address referrer,uint256 amount) external{
+    function deliverRewards(address onBehalfOf, address user, uint256 amount) external{
 
         bool tx = IERC20(rewardToken).transferFrom(msg.sender, address(this), amount);
         require(tx, "Something odd happened");
 
 
-        if(!userRefs[referrer][onBehalfOf]){
-            userRefs[referrer][onBehalfOf] = true;
+        if(refferedBy[user] != address(0)){
+            refferedBy[user] = referrer;
+            numberOfRef[onBehalfOf] += 1;
         }
 
         rewards[onBehalfOf] += amount;
@@ -54,16 +55,6 @@ contract ReferralSystem is IReferral, IHestyAccessControl {
 
     }
 
-    function getUserRevenueAmount(address user) public view returns(uint256){
-        return rewards[user];
-    }
-
-    function getUserReferrals(address user) public view returns(uint256){
-        return numberOfRef[user];
-    }
-
     function getReferrerDetails(address user) external view returns(uint256, uint256){
         return(rewards[user], numberOfRef[user]);
-    }
-
-}
+   
