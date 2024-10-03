@@ -5,11 +5,30 @@ import {PropertyToken} from "./PropertyToken.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./interfaces/ITokenFactory.sol";
+import "./interfaces/IReferral.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import "./Constants.sol";
 
+/*
+*
+*   @title Token Factory
+*
+*   @notice
+*
+*   @author Pedro G. S. Ferreira
+*
+    .##.....##.########.########.#########.##....##.
+    .##.....##.##.......##..........##......##..##.
+    .##.....##.##.........##........##........##.
+    .#########.########.....##......##........##.
+    .##.....##.##..........##.......##........##.
+    .##.....##.##.........##........##........##.
+    .##.....##.########.########....##........##:
 
-contract TokenFactory is Ownable2Step, ReentrancyGuard{
+*/
 
-    uint256 public constant BASIS_POINTS = 10000;
+contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IReferral, ITokenFactory, Constants {
 
     uint256 public propertyCounter;  // @notice Number of properties created until now
     uint256 public minInvAmount;
@@ -25,6 +44,12 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     uint256 public REF_FEE_BASIS_POINTS;
 
     address public treasury;
+
+    uint256 public maxNumberOfReferrals;
+
+    uint256 public maxAmountOfRefRev;
+
+    IReferral public refCtr;
 
     struct PropertyInfo{
         uint256 price;          // Price for each property token
@@ -45,14 +70,39 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
     mapping(address => uint256) lastTimeUserClaimed;
 
-    constructor(uint256 fee, uint256 refFee, address treasury_, uint256 minInvAmount_){
+    modifier onlyAdmin(address manager){
+        require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Blacklist Manager");
+        _;
+    }
+
+    modifier onlyBlackListManager(address manager){
+        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
+        _;
+    }
+
+    modifier onlyKYCManager(address manager){
+        require(hasRole(KYC_MANAGER, manager), "Not KYC Manager");
+        _;
+    }
+
+    modifier onlyPauserManager(address manager){
+        require(hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
+        _;
+    }
+
+    constructor(uint256 fee, uint256 refFee, address treasury_, uint256 minInvAmount_, address refCtr_) AccessControlDefaultAdminRules(
+        3 days,
+        msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
+    ){
 
         require(refFee < fee, "Ref fee invalid");
         FEE_BASIS_POINTS        = fee;
         REF_FEE_BASIS_POINTS    = refFee;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
-
+        refCtr                  = IReferral(refCtr_);
+        maxNumberOfReferrals    = 20;
+        maxAmountOfRefRev       = 10000 * 1 ether;
 
     }
 
@@ -60,6 +110,15 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         NON OWNER STATE MODIFIABLE FUNTIONS
     ======================================================**/
 
+    /**
+    *  @notice Issue a new property token
+    *
+    *  @param amount The amount of tokens to issue
+    *  @param tokenPrice Token Price
+    *  @param threshold Amount to reach in order to proceed to production
+    *  @param raiseEnd when the raise ends
+    *  @param payType Type of dividends payment
+    */
     function createProperty(
         uint256 amount,
         uint tokenPrice,
@@ -114,6 +173,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
         uint256 total = boughtTokensPrice + fee;
 
+        // Transfer payment from user
         IERC20(p.paymentToken).transferFrom(msg.sender, address(this), total);
 
         IERC20(p.asset).transfer(msg.sender, amount);
@@ -121,15 +181,22 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         userInvested[msg.sender][id] += boughtTokensPrice;
 
         if(ref != address(0)){
-            uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
-            refFee[ref][id] += refFee_;
+
+            (uint256 userNumberRefs,uint256 userRevenue) = refCtr.getReferrerDetails(ref);
+
+            if(userNumberRefs < 20 && userRevenue < 10000){
+
+                uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
+                refFee[ref][id] += refFee_;
+
+            }
         }
 
         p.raised += boughtTokensPrice;
         property[id] = p;
     }
 
-    function distributeRevenue(uint256 id, uint256 amount) public nonReentrant{
+    function distributeRevenue(uint256 id, uint256 amount) external nonReentrant{
 
         PropertyInfo storage p = property[id];
 
@@ -154,6 +221,20 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
 
         userInvested[msg.sender][id] = 0;
         IERC20(p.paymentToken).transfer(msg.sender, userInvested[msg.sender][id]);
+
+    }
+
+    /**
+    *   @notice Distribute
+    *
+    *   @param id Property Id
+    *   @param amount Amount of EURC to distribute through property token holders
+    */
+    function AdminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+
+        PropertyInfo storage p = property[id];
+        IERC20(p.revenueToken).approve(p.asset, amount);
+        PropertyToken(p.asset).distributionRewards(amount);
 
     }
 
@@ -193,7 +274,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @dev Send funds to property owner exchange address and fees to
             platform multisig
     */
-    function completeRaise(uint256 id) external onlyOwner{
+    function completeRaise(uint256 id) external onlyAdmin(msg.sender){
         require(!property[id].isCompleted, "Already Completed");
 
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised);
@@ -202,7 +283,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
         property[id].isCompleted = true;
     }
 
-    function approveProperty(uint256 id) external onlyOwner{
+    function approveProperty(uint256 id) external onlyAdmin(msg.sender){
         require(id < propertyCounter, "Fee must be valid");
         property[id].approved = true;
     }
@@ -213,7 +294,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @dev Fee must be lower than total amount raised
     * @param newFee New platform fee
     */
-    function setPlatformFee(uint256 newFee) external onlyOwner{
+    function setPlatformFee(uint256 newFee) external onlyAdmin(msg.sender){
         require(newFee < BASIS_POINTS, "Fee must be valid");
         FEE_BASIS_POINTS = newFee;
     }
@@ -224,7 +305,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @dev Fee must be lower than fee charged by platform
     * @param newFee New referral fee
     */
-    function setRefFee(uint256 newFee) external onlyOwner{
+    function setRefFee(uint256 newFee) external onlyAdmin(msg.sender){
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
@@ -233,7 +314,7 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @notice Function to extend property raise deadline
     *
     */
-    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyOwner{
+    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin(msg.sender){
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
     }
@@ -242,8 +323,12 @@ contract TokenFactory is Ownable2Step, ReentrancyGuard{
     * @notice Function to set minimum investment amount
     *
     */
-    function setMinInvAmount(uint256 newMinInv) external onlyOwner{
+    function setMinInvAmount(uint256 newMinInv) external onlyAdmin(msg.sender){
         minInvAmount = newMinInv;
+    }
+
+    function setMaxNumberOfReferrals(uint256 newMax) external{
+        maxAmountOfRefRev = newMax;
     }
 
     // Function to allow deposits

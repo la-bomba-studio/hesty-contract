@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./interfaces/IHestyAccessControl.sol";
+import "./Constants.sol";
 
 /**
  * @title   Property Token
@@ -21,19 +22,14 @@ import "./interfaces/IHestyAccessControl.sol";
  *
  * @author Pedro G. S. Ferreira
  */
-contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules{
+contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constants{
 
-    uint256 private constant    BASIS_POINTS = 10000;       /// @notice BASIS POINTS used for % math calculations
     uint32  private constant    MULTIPLIER   = 1e9;         /// @notice Multiplier to guarantee math safety in gwei, everything else is neglectable
     uint256 public              dividendPerToken;           /// @notice Dividends per share/token
     mapping(address => uint256) public xDividendPerToken;   /// @notice Last user dividends essential to calculate future rewards
 
     address public ctrHestyControl;
     IERC20  public rewardAsset;
-
-    bytes32 public constant PAUSER_ROLE      = keccak256("PAUSER_ROLE");        /// @notice Role that can pause transfers
-    bytes32 public constant BLACKLISTER_ROLE = keccak256("BLACKLISTER_ROLE");   /// @notice Role than can blacklist addresses
-
     /**======================================
 
     MODIFIER FUNCTIONS
@@ -41,12 +37,12 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules{
     =========================================**/
 
     modifier onlyPauser(address manager){
-        require(hasRole(PAUSER_ROLE, manager), "Not Pauser");
+        require(hasRole(PAUSER_MANAGER, manager), "Not Pauser");
         _;
     }
 
     modifier onlyBlackLister(address manager){
-        require(hasRole(BLACKLISTER_ROLE, manager), "Not Blacklister");
+        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklister");
         _;
     }
 
