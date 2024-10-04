@@ -29,15 +29,16 @@ import "./Constants.sol";
 
 contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IReferral, ITokenFactory, Constants {
 
-    uint256 public propertyCounter;  // @notice Number of properties created until now
-    uint256 public minInvAmount;
+    uint256 public propertyCounter;  /// @notice Number of properties created until now
+    uint256 public minInvAmount;     /// @notice Min amount allowed to invest
 
     mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
-    mapping(uint256 => uint256) public platformFee;   /// @notice The fee charged by the platform on every investment
+    mapping(uint256 => uint256) public platformFee;   /// @notice (Property id => fee amount) The fee charged by the platform on every investment
     mapping(uint256 => uint256) public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
     event CreateProperty(uint256 id);
+    event NewMaxNumberOfRefferals(uint256 number);
 
     uint256 public FEE_BASIS_POINTS;
     uint256 public OWNERS_FEE_BASIS_POINTS;
@@ -161,6 +162,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         return propertyCounter - 1;
     }
 
+
     /**
     * @notice Function to buy property tokens
     *
@@ -186,9 +188,13 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         IERC20(p.asset).transfer(msg.sender, amount);
 
+        platformFee[id] += fee;
+
         userInvested[msg.sender][id] += boughtTokensPrice;
 
         uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
+
+        ownersPlatformFee[id] =
 
         referralRewards(ref, boughtTokensPrice, id);
 
@@ -353,8 +359,9 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         minInvAmount = newMinInv;
     }
 
-    function setMaxNumberOfReferrals(uint256 newMax) external{
+    function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin(msg.sender){
         maxAmountOfRefRev = newMax;
+        emit NewMaxNumberOfRefferals(newMax);
     }
 
     function setTreasury(address newTreasury) external onlyAdmin(msg.sender){
