@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-etherscan");
 require("dotenv").config();
 require('hardhat-abi-exporter');
 require('hardhat-contract-sizer');
+require('solidity-coverage')
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
