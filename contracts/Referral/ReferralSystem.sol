@@ -60,10 +60,6 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
 
         require(approvedCtrs[msg.sender], "Not Approved");
 
-        bool tx = IERC20(rewardToken).transferFrom(msg.sender, address(this), amount);
-        require(tx, "Something odd happened");
-
-
         if(refferedBy[user] == address(0)){
             refferedBy[user] = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;

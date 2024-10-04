@@ -35,6 +35,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
     mapping(uint256 => uint256) public platformFee;   /// @notice (Property id => fee amount) The fee charged by the platform on every investment
     mapping(uint256 => uint256) public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
+    mapping(uint256 => uint256) public refFee;   /// @notice The referral fee acummulated by each property before completing
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
     event CreateProperty(uint256 id);
@@ -215,7 +216,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
                 try referralSystemCtr.addewards(ref, msg.sender, projectId, id, refFee_){
-
+                    refFee[id] += refFee_;
                 }catch{
 
                 }
@@ -298,9 +299,14 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     function completeRaise(uint256 id) external onlyAdmin(msg.sender){
         require(!property[id].isCompleted, "Already Completed");
 
+        IERC20(property[id].paymentToken).transfer(referralSystemCtr, refFee[id]);
+        refFee[id] = 0;
+
+
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised);
 
         IERC20(property[id].paymentToken).transfer(treasury, platformFee[id]);
+        platformFee[id] = 0;
         property[id].isCompleted = true;
     }
 

@@ -16,7 +16,20 @@ Fees Charged By Hesty:
     - Investment Fee: a % that users pay when they invest.
                         For example, if a user invests 2000€ in a property a 3% fee is charged
                                     meaning that the user nees to pay 2000 + (2000 * 0.03) = 2060€
+    - Owners Fee: a % of the overall funds raised
+                    For example, if a property owner raises 1.000.000€ a 10% fee is charged 
+                                meaning that the property owner will receive 900.000€ and Hesty 
+                                   will receive 100.000€ 
 
+In addition, a referral fee may be charged but this only happens
+when a user was referenced by another user. In this case the fee is calculated
+and send to the ReferralSystem Contract.
+
+Fees are not immediately charged because in the case the threshhold is not reached for the raise
+all funds must be able to be claimed back by investors including all the fees charged.
+
+
+NOTE: All this fees can change in the future.
 
 
 ## Hesty Smart Contracts v0.1
