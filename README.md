@@ -10,8 +10,18 @@ Hesty will use BASE Blockchain to receive investments and issue property tokens 
 of shares of a fund that owns the property.
 All the operations in the smart contracts will be done with EURC (EURO CIRCLE) that is MiCA regulated.
 
+In order to keep the platform operating Hesty charges two types of fees that are described below.
+
+Fees Charged By Hesty:
+    - Investment Fee: a % that users pay when they invest.
+                        For example, if a user invests 2000€ in a property a 3% fee is charged
+                                    meaning that the user nees to pay 2000 + (2000 * 0.03) = 2060€
+
+
 
 ## Hesty Smart Contracts v0.1
+
+
 
 ## Hesty Token Factory
 
