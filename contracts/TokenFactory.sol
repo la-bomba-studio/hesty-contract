@@ -35,6 +35,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
     mapping(uint256 => uint256) public platformFee;   /// @notice (Property id => fee amount) The fee charged by the platform on every investment
     mapping(uint256 => uint256) public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
+    mapping(uint256 => uint256) public propertyOwnerShare;   /// @notice The amount reserved to propertyOwner
     mapping(uint256 => uint256) public refFee;   /// @notice The referral fee acummulated by each property before completing
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
@@ -67,7 +68,6 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         address ownerExchAddr;   // Property Owner/Manager exchange address to receive euroc
         address paymentToken;   // Token used to buy property tokens/assets
         address asset;          // Property token contract
-       // address vault;
         address revenueToken;   // Revenue token for investors
 
     }
@@ -176,6 +176,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
         require(amount >= minInvAmount, "Lower than min");
+        require(property[id].approved, "Property Not For Sale");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
@@ -192,6 +193,13 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         platformFee[id] += fee;
 
         userInvested[msg.sender][id] += boughtTokensPrice;
+
+        /// @dev Calculate owners fee
+        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
+
+        ownersPlatformFee[id] += ownersFee;
+
+        propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
 
         referralRewards(ref, boughtTokensPrice, id);
 
@@ -249,7 +257,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     }
 
     /**
-    *   @notice Distribute
+    *   @notice Admin Distribution of Property Revenue
     *
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
@@ -262,8 +270,17 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
     }
 
-    function adminBuyTokens(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyAdmin(msg.sender){
 
+        PropertyInfo storage p    = property[id];
+
+        // Require that raise is still active and not expired
+        require(p.raiseDeadline >= block.timestamp, "Raise expired");
+
+        // Calculate how much costs to buy tokens
+        uint256 boughtTokensPrice = amount * p.price;
+
+        IERC20(p.asset).transfer(buyer, amount);
 
     }
 
@@ -301,20 +318,21 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         property[id].isCompleted = true;
 
         /// @dev Send accumulated fees charged to investors
-        IERC20(property[id].paymentToken).transfer(treasury, platformFee[id]);
         platformFee[id] = 0;
+        IERC20(property[id].paymentToken).transfer(treasury, platformFee[id]);
 
-        /// @dev Calculate owners fee
-        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
-
-        IERC20(property[id].paymentToken).transfer(treasury, ownersFee);
+        ownersPlatformFee[id] = 0;
+        IERC20(property[id].paymentToken).transfer(treasury,  ownersPlatformFee[id]);
 
         /// @dev Send property owners their share
-        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised - ownersFee);
+        propertyOwnerShare[id] = 0;
+        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, propertyOwnerShare[id]);
 
-        /// @dev fund the
-        IERC20(property[id].paymentToken).transfer(referralSystemCtr, refFee[id]);
+
+        /// @dev fund the referralSystem Contract with property referrals share
         refFee[id] = 0;
+        IERC20(property[id].paymentToken).transfer(referralSystemCtr, refFee[id]);
+
     }
 
     function approveProperty(uint256 id) external onlyAdmin(msg.sender){
