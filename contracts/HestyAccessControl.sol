@@ -28,6 +28,10 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     =========================================**/
 
+    modifier onlyAdminManager(address manager){
+        require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Blacklist Manager");
+        _;
+    }
 
     modifier onlyBlackListManager(address manager){
         require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
@@ -57,6 +61,8 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     MUTABLE FUNCTIONS
 
     =========================================**/
+
+    function onlyAdmin(address manager) onlyAdminManager(manager) external{}
 
     /**
         @notice Blacklist user

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {PropertyToken} from "./PropertyToken.sol";
@@ -6,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/ITokenFactory.sol";
 import "./interfaces/IReferral.sol";
+import "./interfaces/IHestyAccessControl.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./Constants.sol";
 
@@ -17,17 +19,11 @@ import "./Constants.sol";
 *
 *   @author Pedro G. S. Ferreira
 *
-    .##.....##.########.########.#########.##....##.
-    .##.....##.##.......##..........##......##..##.
-    .##.....##.##.........##........##........##.
-    .#########.########.....##......##........##.
-    .##.....##.##..........##.......##........##.
-    .##.....##.##.........##........##........##.
-    .##.....##.########.########....##........##:
-
 */
 
-contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IReferral, ITokenFactory, Constants {
+contract TokenFactory is
+ReentrancyGuard,
+Constants {
 
     uint256 public propertyCounter;  /// @notice Number of properties created until now
     uint256 public minInvAmount;     /// @notice Min amount allowed to invest
@@ -38,6 +34,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     mapping(uint256 => uint256) public propertyOwnerShare;   /// @notice The amount reserved to propertyOwner
     mapping(uint256 => uint256) public refFee;   /// @notice The referral fee acummulated by each property before completing
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
+
     //Event
     event CreateProperty(uint256 id);
     event NewMaxNumberOfRefferals(uint256 number);
@@ -49,10 +46,13 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     address public treasury;
 
     IReferral public referralSystemCtr;
+    IHestyAccessControl public ctrHestyControl;
 
     uint256 public maxNumberOfReferrals;
 
     uint256 public maxAmountOfRefRev;
+
+    bool public initialized;
 
     IReferral public refCtr;
 
@@ -72,47 +72,45 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
     }
 
-    mapping(address => uint256) lastTimeUserClaimed;
-
-    modifier onlyAdmin(address manager){
-        require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Blacklist Manager");
+    modifier whenKYCApproved(address user){
+        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
         _;
     }
 
-    modifier onlyBlackListManager(address manager){
-        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
+    modifier whenNotAllPaused(){
+        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
         _;
     }
 
-    modifier onlyKYCManager(address manager){
-        require(hasRole(KYC_MANAGER, manager), "Not KYC Manager");
-        _;
-    }
-
-    modifier onlyPauserManager(address manager){
-        require(hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
-        _;
-    }
-
-    constructor(uint256 fee, uint256 ownersFee, uint256 refFee, address treasury_, uint256 minInvAmount_, address refCtr_) AccessControlDefaultAdminRules(
-        3 days,
-        msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
+    constructor(
+        uint256 fee,
+        uint256 ownersFee,
+        uint256 refFee_,
+        address treasury_,
+        uint256 minInvAmount_,
+        address ctrHestyControl_,
+        address refCtr_
     ){
 
-        require(refFee < fee, "Ref fee invalid");
+        require(refFee_ < fee, "Ref fee invalid");
         require(ownersFee < BASIS_POINTS, "Invalid Fee");
         FEE_BASIS_POINTS        = fee;
-        REF_FEE_BASIS_POINTS    = refFee;
+        REF_FEE_BASIS_POINTS    = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
         refCtr                  = IReferral(refCtr_);
         maxNumberOfReferrals    = 20;
         maxAmountOfRefRev       = 10000 * 10 ** 6;
         OWNERS_FEE_BASIS_POINTS = ownersFee;
+        initialized = false;
+        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
 
     }
 
-    function initialize(address referralSystemCtr_){
+    function initialize(address referralSystemCtr_) external{
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        require(!initialized, "Already init");
+        initialized = true;
         referralSystemCtr = IReferral(referralSystemCtr_);
     }
 
@@ -140,7 +138,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         string memory name,
         string memory symbol,
         address admin
-    ) external returns(uint256){
+    ) external whenKYCApproved(msg.sender) whenNotAllPaused returns(uint256) {
+
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
 
 
@@ -177,6 +176,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
         require(amount >= minInvAmount, "Lower than min");
         require(property[id].approved, "Property Not For Sale");
+        require(!property[id].isCompleted, "Property Sale Completed");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
@@ -219,7 +219,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
             /// @dev maxNumberOfReferral = 20 && maxAmountOfRefRev = €10000
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
-                try referralSystemCtr.addewards(ref, msg.sender, projectId, id, refFee_){
+                try referralSystemCtr.addRewards(ref, msg.sender, id, refFee_){
                     refFee[id] += refFee_;
                 }catch{
 
@@ -262,16 +262,17 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
     */
-    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
-
+    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant{
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         PropertyInfo storage p = property[id];
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
 
     }
 
-    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant{
 
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         PropertyInfo storage p    = property[id];
 
         // Require that raise is still active and not expired
@@ -281,6 +282,9 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         uint256 boughtTokensPrice = amount * p.price;
 
         IERC20(p.asset).transfer(buyer, amount);
+
+        p.raised += boughtTokensPrice;
+        property[id] = p;
 
     }
 
@@ -292,7 +296,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     /**
     * @notice Checks if people can claim their referral share of a property
     */
-    function isRefClaimable(uint256 id) public view returns(bool){
+    function isRefClaimable(uint256 id) external view returns(bool){
         return property[id].threshold <= property[id].raised && property[id].isCompleted;
     }
 
@@ -312,7 +316,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @dev Send funds to property owner exchange address and fees to
             platform multisig
     */
-    function completeRaise(uint256 id) external onlyAdmin(msg.sender){
+    function completeRaise(uint256 id) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(!property[id].isCompleted, "Already Completed");
 
         property[id].isCompleted = true;
@@ -331,11 +336,12 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         /// @dev fund the referralSystem Contract with property referrals share
         refFee[id] = 0;
-        IERC20(property[id].paymentToken).transfer(referralSystemCtr, refFee[id]);
+        IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), refFee[id]);
 
     }
 
-    function approveProperty(uint256 id) external onlyAdmin(msg.sender){
+    function approveProperty(uint256 id) external{
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(id < propertyCounter, "Fee must be valid");
         property[id].approved = true;
     }
@@ -346,7 +352,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @dev Fee must be lower than total amount raised
     * @param newFee New platform fee
     */
-    function setPlatformFee(uint256 newFee) external onlyAdmin(msg.sender){
+    function setPlatformFee(uint256 newFee) external{
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(newFee < BASIS_POINTS, "Fee must be valid");
         FEE_BASIS_POINTS = newFee;
     }
@@ -357,7 +364,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @dev Fee must be lower than fee charged by platform
     * @param newFee New referral fee
     */
-    function setRefFee(uint256 newFee) external onlyAdmin(msg.sender){
+    function setRefFee(uint256 newFee) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
@@ -368,7 +376,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @dev Fee must be lower than fee charged by platform
     * @param newAddress New Property Owner Address
     */
-    function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external onlyAdmin(msg.sender){
+    function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require( newAddress != address(0), "Address must be valid");
         property[id].ownerExchAddr = newAddress;
     }
@@ -377,7 +386,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @notice Function to extend property raise deadline
     *
     */
-    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin(msg.sender){
+    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
     }
@@ -386,21 +396,21 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     * @notice Function to set minimum investment amount
     *
     */
-    function setMinInvAmount(uint256 newMinInv) external onlyAdmin(msg.sender){
+    function setMinInvAmount(uint256 newMinInv) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         minInvAmount = newMinInv;
     }
 
-    function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin(msg.sender){
+    function setMaxNumberOfReferrals(uint256 newMax) external {
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         maxAmountOfRefRev = newMax;
         emit NewMaxNumberOfRefferals(newMax);
     }
 
-    function setTreasury(address newTreasury) external onlyAdmin(msg.sender){
+    function setTreasury(address newTreasury) external{
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(newTreasury != address(0), "Not allowed");
         treasury = newTreasury;
     }
-
-    // Function to allow deposits
-    receive() external payable {}
 
 }

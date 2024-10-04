@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
@@ -58,11 +59,11 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
 
     }
 
-    function offChainBuyTokens(){
+    function offChainBuyTokens() external{
 
     }
 
-    function revertUserBuyTokens(){
+    function revertUserBuyTokens() external{
 
     }
 

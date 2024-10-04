@@ -2,6 +2,8 @@ require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-etherscan");
 require("dotenv").config();
 require('hardhat-abi-exporter');
+require('hardhat-contract-sizer');
+require('solidity-coverage')
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -54,4 +56,10 @@ module.exports = {
     runOnCompile: true,
     clear: true
   },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: false
+  }
 };
