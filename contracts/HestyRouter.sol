@@ -58,4 +58,12 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
 
     }
 
+    function offChainBuyTokens(){
+
+    }
+
+    function revertUserBuyTokens(){
+
+    }
+
 }

@@ -1,7 +1,6 @@
 pragma solidity ^0.8.0;
 
 import {PropertyToken} from "./PropertyToken.sol";
-
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
@@ -30,20 +29,24 @@ import "./Constants.sol";
 
 contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IReferral, ITokenFactory, Constants {
 
-    uint256 public propertyCounter;  // @notice Number of properties created until now
-    uint256 public minInvAmount;
+    uint256 public propertyCounter;  /// @notice Number of properties created until now
+    uint256 public minInvAmount;     /// @notice Min amount allowed to invest
 
-    mapping(uint256 => PropertyInfo) public property; // @notice
-    mapping(uint256 => uint256) public platformFee;   // @notice
-    mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
+    mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
+    mapping(uint256 => uint256) public platformFee;   /// @notice (Property id => fee amount) The fee charged by the platform on every investment
+    mapping(uint256 => uint256) public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
     event CreateProperty(uint256 id);
+    event NewMaxNumberOfRefferals(uint256 number);
 
     uint256 public FEE_BASIS_POINTS;
+    uint256 public OWNERS_FEE_BASIS_POINTS;
     uint256 public REF_FEE_BASIS_POINTS;
 
     address public treasury;
+
+    IReferral public referralSystemCtr;
 
     uint256 public maxNumberOfReferrals;
 
@@ -90,20 +93,26 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         _;
     }
 
-    constructor(uint256 fee, uint256 refFee, address treasury_, uint256 minInvAmount_, address refCtr_) AccessControlDefaultAdminRules(
+    constructor(uint256 fee, uint256 ownersFee, uint256 refFee, address treasury_, uint256 minInvAmount_, address refCtr_) AccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
 
         require(refFee < fee, "Ref fee invalid");
+        require(ownersFee < BASIS_POINTS, "Invalid Fee");
         FEE_BASIS_POINTS        = fee;
         REF_FEE_BASIS_POINTS    = refFee;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
         refCtr                  = IReferral(refCtr_);
         maxNumberOfReferrals    = 20;
-        maxAmountOfRefRev       = 10000 * 1 ether;
+        maxAmountOfRefRev       = 10000 * 10 ** 6;
+        OWNERS_FEE_BASIS_POINTS = ownersFee;
 
+    }
+
+    function initialize(address referralSystemCtr_){
+        referralSystemCtr = IReferral(referralSystemCtr_);
     }
 
     /**===================================================
@@ -153,6 +162,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         return propertyCounter - 1;
     }
 
+
     /**
     * @notice Function to buy property tokens
     *
@@ -164,7 +174,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
-        require(amount > minInvAmount, "Lower than min");
+        require(amount >= minInvAmount, "Lower than min");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
@@ -178,22 +188,39 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         IERC20(p.asset).transfer(msg.sender, amount);
 
+        platformFee[id] += fee;
+
         userInvested[msg.sender][id] += boughtTokensPrice;
 
-        if(ref != address(0)){
+        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
 
-            (uint256 userNumberRefs,uint256 userRevenue) = refCtr.getReferrerDetails(ref);
+        ownersPlatformFee[id] =
 
-            if(userNumberRefs < 20 && userRevenue < 10000){
-
-                uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
-                refFee[ref][id] += refFee_;
-
-            }
-        }
+        referralRewards(ref, boughtTokensPrice, id);
 
         p.raised += boughtTokensPrice;
         property[id] = p;
+    }
+
+    function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) internal{
+        if(ref != address(0)){
+
+            (uint256 userNumberRefs,uint256 userRevenue,) = refCtr.getReferrerDetails(ref);
+
+            uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
+
+            refFee_ = (userRevenue + refFee_ > maxAmountOfRefRev) ? maxAmountOfRefRev - userRevenue : refFee_;
+
+            /// @dev maxNumberOfReferral = 20 && maxAmountOfRefRev = €10000
+            if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
+
+                try referralSystemCtr.addewards(ref, msg.sender, projectId, id, refFee_){
+
+                }catch{
+
+                }
+            }
+        }
     }
 
     function distributeRevenue(uint256 id, uint256 amount) external nonReentrant{
@@ -230,11 +257,16 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
     */
-    function AdminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
 
         PropertyInfo storage p = property[id];
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
+
+    }
+
+    function adminBuyTokens(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+
 
     }
 
@@ -327,12 +359,17 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         minInvAmount = newMinInv;
     }
 
-    function setMaxNumberOfReferrals(uint256 newMax) external{
+    function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin(msg.sender){
         maxAmountOfRefRev = newMax;
+        emit NewMaxNumberOfRefferals(newMax);
+    }
+
+    function setTreasury(address newTreasury) external onlyAdmin(msg.sender){
+        require(newTreasury != address(0), "Not allowed");
+        treasury = newTreasury;
     }
 
     // Function to allow deposits
     receive() external payable {}
-
 
 }
