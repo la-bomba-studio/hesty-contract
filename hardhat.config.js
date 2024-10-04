@@ -4,6 +4,7 @@ require("dotenv").config();
 require('hardhat-abi-exporter');
 require('hardhat-contract-sizer');
 require('solidity-coverage')
+require("solidity-docgen")
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -61,5 +62,13 @@ module.exports = {
     disambiguatePaths: false,
     runOnCompile: true,
     strict: false
-  }
+  },
+  docgen: {
+    sourcesDir: 'contracts',
+    outputDir: 'docs',
+    pages: 'files',
+    theme: 'markdown',
+    collapseNewlines: true,
+    pageExtension: '.md',
+  },
 };
