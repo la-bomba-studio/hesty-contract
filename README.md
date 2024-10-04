@@ -36,12 +36,15 @@ NOTE: All these fees can change in the future.
 
 ## Hesty Constants (contracts/Constants.sol)
 
-A very simple smart contract that stores all the 
+A very simple smart contract that stores all the Hesty Smart Contracts constants.
 
 ## Hesty Token Factory (contracts/TokenFactory.sol)
 
 TokenFactory is a smart contract that manages the issuance of tokens that are representatives of
 properties on sale in the Hesty platform.
+By calling createProperty function property owners will issue a new token with a fixed supply 
+that are representative of shares of a fund that owns the property.
+At the beginning all the tokens are stores in this Token Factory contract until someone buys them.
 
 
 
