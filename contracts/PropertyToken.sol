@@ -24,12 +24,14 @@ import "./Constants.sol";
  */
 contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constants{
 
-    uint32  private constant    MULTIPLIER   = 1e9;         /// @notice Multiplier to guarantee math safety in gwei, everything else is neglectable
-    uint256 public              dividendPerToken;           /// @notice Dividends per share/token
-    mapping(address => uint256) public xDividendPerToken;   /// @notice Last user dividends essential to calculate future rewards
+    uint32  private constant    MULTIPLIER   = 1e9;         /// Multiplier to guarantee math safety in gwei, everything else is neglectable
+    uint256 public              dividendPerToken;           /// Dividends per share/token
 
-    address public ctrHestyControl;
-    IERC20  public rewardAsset;
+    mapping(address => uint256) public xDividendPerToken;   /// Last user dividends essential to calculate future rewards
+
+    address public ctrHestyControl; // Hesty Access Control Contract
+    IERC20  public rewardAsset;     // Reward Token (EURC)
+
     /**======================================
 
     MODIFIER FUNCTIONS

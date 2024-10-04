@@ -23,7 +23,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
      mapping(address => uint256) public globalRewards;              /// @notice Total rewards earned by user not indexed to properties
      mapping(uint256 =>uint256)  public rewardsByProperty;          /// @notice Total rewards earned by users filtered by property
      mapping(address => uint256) public numberOfRef;                /// @notice Number of referrals a user has
-     mapping(address => address) public refferedBy;                 /// @notice Who reffered the user
+     mapping(address => address) public referredBy;                 /// @notice Who reffered the user
      mapping(address => bool)    public approvedCtrs;               /// @notice Approved addresses that can add property rewards
 
     modifier whenNotAllPaused(){
@@ -62,8 +62,8 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
         require(approvedCtrs[msg.sender], "Not Approved");
 
-        if(refferedBy[user] == address(0)){
-            refferedBy[user] = onBehalfOf;
+        if(referredBy[user] == address(0)){
+            referredBy[user] = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
         }
 
@@ -79,8 +79,8 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         require(txVal, "Something odd happened");
 
 
-        if(refferedBy[user] == address(0)){
-            refferedBy[user] = onBehalfOf;
+        if(referredBy[user] == address(0)){
+            referredBy[user] = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
         }
 
