@@ -10,6 +10,14 @@ uint256 BASIS_POINTS
 
 Math Helper to get percentages amounts
 
+### WAD
+
+```solidity
+uint256 WAD
+```
+
+Math Helper for getting EURC power of decimals
+
 ### BLACKLIST_MANAGER
 
 ```solidity

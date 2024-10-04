@@ -2,6 +2,18 @@
 
 ## TokenFactory
 
+### ctrHestyControl
+
+```solidity
+contract IHestyAccessControl ctrHestyControl
+```
+
+### referralSystemCtr
+
+```solidity
+contract IReferral referralSystemCtr
+```
+
 ### propertyCounter
 
 ```solidity
@@ -14,66 +26,16 @@ uint256 propertyCounter
 uint256 minInvAmount
 ```
 
-Number of properties created until now
-
-### property
+### maxNumberOfReferrals
 
 ```solidity
-mapping(uint256 => struct TokenFactory.PropertyInfo) property
+uint256 maxNumberOfReferrals
 ```
 
-Min amount allowed to invest
-
-### platformFee
+### maxAmountOfRefRev
 
 ```solidity
-mapping(uint256 => uint256) platformFee
-```
-
-Stores properties info
-
-### ownersPlatformFee
-
-```solidity
-mapping(uint256 => uint256) ownersPlatformFee
-```
-
-(Property id => fee amount) The fee charged by the platform on every investment
-
-### propertyOwnerShare
-
-```solidity
-mapping(uint256 => uint256) propertyOwnerShare
-```
-
-The fee charged by the platform on every investment
-
-### refFee
-
-```solidity
-mapping(uint256 => uint256) refFee
-```
-
-The amount reserved to propertyOwner
-
-### userInvested
-
-```solidity
-mapping(address => mapping(uint256 => uint256)) userInvested
-```
-
-The referral fee acummulated by each property before completing
-
-### CreateProperty
-
-```solidity
-event CreateProperty(uint256 id)
-```
-
-### NewMaxNumberOfRefferals
-
-```solidity
-event NewMaxNumberOfRefferals(uint256 number)
+uint256 maxAmountOfRefRev
 ```
 
 ### FEE_BASIS_POINTS
@@ -100,40 +62,88 @@ uint256 REF_FEE_BASIS_POINTS
 address treasury
 ```
 
-### referralSystemCtr
-
-```solidity
-contract IReferral referralSystemCtr
-```
-
-### ctrHestyControl
-
-```solidity
-contract IHestyAccessControl ctrHestyControl
-```
-
-### maxNumberOfReferrals
-
-```solidity
-uint256 maxNumberOfReferrals
-```
-
-### maxAmountOfRefRev
-
-```solidity
-uint256 maxAmountOfRefRev
-```
-
 ### initialized
 
 ```solidity
 bool initialized
 ```
 
-### refCtr
+### property
 
 ```solidity
-contract IReferral refCtr
+mapping(uint256 => struct TokenFactory.PropertyInfo) property
+```
+
+### platformFee
+
+```solidity
+mapping(uint256 => uint256) platformFee
+```
+
+### ownersPlatformFee
+
+```solidity
+mapping(uint256 => uint256) ownersPlatformFee
+```
+
+### propertyOwnerShare
+
+```solidity
+mapping(uint256 => uint256) propertyOwnerShare
+```
+
+### refFee
+
+```solidity
+mapping(uint256 => uint256) refFee
+```
+
+### userInvested
+
+```solidity
+mapping(address => mapping(uint256 => uint256)) userInvested
+```
+
+### CreateProperty
+
+```solidity
+event CreateProperty(uint256 id)
+```
+
+### NewMaxNumberOfReferrals
+
+```solidity
+event NewMaxNumberOfReferrals(uint256 number)
+```
+
+### NewReferralSystemCtr
+
+```solidity
+event NewReferralSystemCtr(address newSystemCtr)
+```
+
+### NewTreasury
+
+```solidity
+event NewTreasury(address newTreasury)
+```
+
+### NewMinInvestmentLimit
+
+```solidity
+event NewMinInvestmentLimit(uint256 newLimit)
+```
+
+### NewPropertyOwnerAddrReceiver
+
+```solidity
+event NewPropertyOwnerAddrReceiver(address newAddress)
+```
+
+### NewInvestment
+
+```solidity
+event NewInvestment(uint256 propertyId, address investor, uint256 amount, uint256 date)
 ```
 
 ### PropertyInfo
@@ -155,11 +165,52 @@ struct PropertyInfo {
 }
 ```
 
+### constructor
+
+```solidity
+constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_, address refCtr_) public
+```
+
+_Constructor for Token Factory
+        @param  fee Investment fee charged by Hesty as Basis Points
+        @param  ownersFee Owner Fee charged by Hesty as Basis Points
+        @param  refFee_ Referaal Fee charged by referrals as Basis Points
+        @param  treasury_ The address that will receive Hesty fees revenue
+        @param  minInvAmount_ Minimum amount a user can invest
+        @param  ctrHestyControl_ Contract that manages access to certain functions
+        @param  refCtr_ Contract that manages referrals revenue and claims_
+
+### onlyAdmin
+
+```solidity
+modifier onlyAdmin()
+```
+
+_Checks that `msg.sender` is an Admin_
+
+### onlyWhenInitialized
+
+```solidity
+modifier onlyWhenInitialized()
+```
+
+_Checks that contract is initialized_
+
+### whenNotBlackListed
+
+```solidity
+modifier whenNotBlackListed()
+```
+
+_Checks that `msg.sender` is not blacklisted_
+
 ### whenKYCApproved
 
 ```solidity
 modifier whenKYCApproved(address user)
 ```
+
+_Checks that `msg.sender` has is KYC approved_
 
 ### whenNotAllPaused
 
@@ -167,17 +218,16 @@ modifier whenKYCApproved(address user)
 modifier whenNotAllPaused()
 ```
 
-### constructor
-
-```solidity
-constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_, address refCtr_) public
-```
+_Checks that contracts are not paused_
 
 ### initialize
 
 ```solidity
 function initialize(address referralSystemCtr_) external
 ```
+
+_Initialized Token Factory Contract
+        @param referralSystemCtr_ Referral System Contract that manages referrals rewards_
 
 ### createProperty
 
@@ -192,6 +242,7 @@ function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, u
  @param threshold Amount to reach in order to proceed to production
  @param raiseEnd when the raise ends
  @param payType Type of dividends payment
+ @param paymentToken Token that will be charged on every investment made
 
 ### buyTokens
 
@@ -199,9 +250,11 @@ function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, u
 function buyTokens(uint256 id, uint256 amount, address ref) external payable
 ```
 
-Function to buy property tokens
-
-_If there is a referral store the fee to pay and transfer funds to this contract_
+_Function to buy property tokens
+        @dev    If there is a referral store the fee to pay and transfer funds to this contract
+        @param  id Property id
+        @param  amount Amount of tokens that user wants to buy
+        @param  ref The referral of the user, address(0) if doesn't exist_
 
 ### referralRewards
 
@@ -215,10 +268,10 @@ function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) int
 function distributeRevenue(uint256 id, uint256 amount) external
 ```
 
-### withdrawAssets
+### claimInvestmentreturns
 
 ```solidity
-function withdrawAssets(uint256 id) external
+function claimInvestmentreturns(uint256 id) external
 ```
 
 ### recoverFundsInvested
@@ -250,7 +303,8 @@ function adminBuyTokens(uint256 id, address buyer, uint256 amount) external
 function isRefClaimable(uint256 id) external view returns (bool)
 ```
 
-Checks if people can claim their referral share of a property
+_Checks if people can claim their referral share of a property
+        @return If it is already possible to claim referral rewards_
 
 ### getPropertyToken
 
@@ -264,10 +318,9 @@ function getPropertyToken(uint256 id) external view returns (address)
 function completeRaise(uint256 id) external
 ```
 
-Function to complete the property Raise
-
-_Send funds to property owner exchange address and fees to
-            platform multisig_
+_Function to complete the property Raise
+        @dev  Send funds to property owner exchange address and fees to
+              platform multisig_
 
 ### approveProperty
 
@@ -281,9 +334,8 @@ function approveProperty(uint256 id) external
 function setPlatformFee(uint256 newFee) external
 ```
 
-Function to change platform fee
-
-_Fee must be lower than total amount raised_
+_Function to change platform fee
+    Fee must be lower than total amount raised_
 
 #### Parameters
 
@@ -297,15 +349,9 @@ _Fee must be lower than total amount raised_
 function setRefFee(uint256 newFee) external
 ```
 
-Function to change referral fee
-
-_Fee must be lower than fee charged by platform_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| newFee | uint256 | New referral fee |
+_Function to change referral fee
+        @dev   Fee must be lower than fee charged by platform
+        @param newFee New referral fee_
 
 ### setNewPropertyOwnerReceiverAddress
 
@@ -313,16 +359,9 @@ _Fee must be lower than fee charged by platform_
 function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external
 ```
 
-Function to change referral fee
-
-_Fee must be lower than fee charged by platform_
-
-#### Parameters
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| id | uint256 |  |
-| newAddress | address | New Property Owner Address |
+_Function to change referral fee
+        @dev    Fee must be lower than fee charged by platform
+        @param  newAddress New Property Owner Address_
 
 ### extendRaiseForProperty
 
@@ -338,7 +377,9 @@ Function to extend property raise deadline
 function setMinInvAmount(uint256 newMinInv) external
 ```
 
-Function to set minimum investment amount
+_Function to set minimum investment amount
+        @dev    It emits a `NewMinInvestmentLimit` event.
+        @param  newMinInv Minimum Investment Amount_
 
 ### setMaxNumberOfReferrals
 
@@ -346,9 +387,27 @@ Function to set minimum investment amount
 function setMaxNumberOfReferrals(uint256 newMax) external
 ```
 
+_Function to set the maximum number of referrals a user can have
+        @dev    It emits a `NewMaxNumberOfReferrals` event.
+        @param  newMax Maximum number of referrals_
+
 ### setTreasury
 
 ```solidity
 function setTreasury(address newTreasury) external
 ```
+
+_Function to set a new treasury address
+        @dev    It emits a `NewTreasury` event.
+        @param  newTreasury The new treasury address_
+
+### setReferralContract
+
+```solidity
+function setReferralContract(address newReferralContract) external
+```
+
+_Function to set a new Referral Management Contract
+        @dev    It emits a `NewReferralSystemCtr` event.
+        @param  newReferralContract The new Referral Management Contract_
 

@@ -62,10 +62,10 @@ mapping(address => uint256) numberOfRef
 
 Total rewards earned by users filtered by property
 
-### refferedBy
+### referredBy
 
 ```solidity
-mapping(address => address) refferedBy
+mapping(address => address) referredBy
 ```
 
 Number of referrals a user has
@@ -121,6 +121,8 @@ function addRewards(address onBehalfOf, address user, uint256 projectId, uint256
 ```solidity
 function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external
 ```
+
+Adds referral rewards to the user claim not indexed to a property
 
 ### claimPropertyRewards
 

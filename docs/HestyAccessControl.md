@@ -56,11 +56,9 @@ constructor() public
 function onlyAdmin(address manager) external
 ```
 
-======================================
-
-    MUTABLE FUNCTIONS
-
-    =========================================*
+Only Admin
+        @param  manager The user that wants to call the function
+                onlyOnwer
 
 ### blacklistUser
 
@@ -69,9 +67,9 @@ function blacklistUser(address user) external
 ```
 
 Blacklist user
-        @param user The Address of the user
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+        @param  user The Address of the user
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer
 
 ### unBlacklistUser
 
@@ -140,12 +138,10 @@ Returns KYC status
 function isAllPaused() external view returns (bool)
 ```
 
-Returns Paused Status
-
+_Returns Paused Status
         @dev This pause affects all tokens and in the future all
              the logic of the marketplace
-
-        @return boolean that confirms if kyc is valid or not
+        @return boolean Checks if contracts are paused_
 
 ### isUserBlackListed
 
@@ -153,7 +149,7 @@ Returns Paused Status
 function isUserBlackListed(address user) external view returns (bool)
 ```
 
-Returns user blacklist status
-
-        @return boolean that confirms if kyc is valid or not
+_Returns user blacklist status
+        @param  user The user address
+        @return boolean Checks if user is blacklisted or not_
 

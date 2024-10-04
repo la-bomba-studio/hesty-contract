@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import "./interfaces/IHestyAccessControl.sol";
 import "./Constants.sol";
 
 /*
@@ -54,16 +55,16 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
     }
 
 
-    function distribute() external{
+    function distribute() external whenNotAllPaused{
 
 
     }
 
-    function offChainBuyTokens() external{
+    function offChainBuyTokens() external whenNotAllPaused{
 
     }
 
-    function revertUserBuyTokens() external{
+    function revertUserBuyTokens() external whenNotAllPaused{
 
     }
 
