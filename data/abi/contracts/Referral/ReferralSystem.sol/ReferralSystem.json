@@ -209,7 +209,7 @@
         "type": "address"
       }
     ],
-    "name": "refferedBy",
+    "name": "referredBy",
     "outputs": [
       {
         "internalType": "address",

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
-
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./interfaces/IHestyAccessControl.sol";
 import "./Constants.sol";
@@ -19,8 +18,8 @@ import "./Constants.sol";
 contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRules, Pausable, Constants{
 
 
-    mapping(address => bool)  public kycCompleted;  // @notice Store user KYC status
-    mapping(address => bool)  public blackList;     // @notice Store user Blacklist status
+    mapping(address => bool)  public kycCompleted;  // Store user KYC status
+    mapping(address => bool)  public blackList;     // Store user Blacklist status
 
     /**======================================
 
@@ -62,13 +61,18 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     =========================================**/
 
+    /**
+        @notice Only Admin
+        @param  manager The user that wants to call the function
+                onlyOnwer
+    */
     function onlyAdmin(address manager) onlyAdminManager(manager) external{}
 
     /**
         @notice Blacklist user
-        @param user The Address of the user
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+        @param  user The Address of the user
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer
     */
     function blacklistUser(address user) external onlyBlackListManager(msg.sender){
         blackList[user] = false;
@@ -140,23 +144,19 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     }
 
     /**
-
-        @notice Returns Paused Status
-
+        @dev Returns Paused Status
         @dev This pause affects all tokens and in the future all
              the logic of the marketplace
-
-        @return boolean that confirms if kyc is valid or not
+        @return boolean Checks if contracts are paused
     */
     function isAllPaused() external view returns(bool){
         return super.paused();
     }
 
     /**
-
-        @notice Returns user blacklist status
-
-        @return boolean that confirms if kyc is valid or not
+        @dev    Returns user blacklist status
+        @param  user The user address
+        @return boolean Checks if user is blacklisted or not
     */
     function isUserBlackListed(address user) external view returns(bool){
         return blackList[user];

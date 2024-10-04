@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/**
+ * @title   Hesty Referral Interface
+ * @author  Pedro G. S. Ferreira
+ */
 interface ITokenFactory {
 
     function distributeRevenue(uint256 id, uint256 amount) external;

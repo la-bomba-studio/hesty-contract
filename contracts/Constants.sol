@@ -9,6 +9,9 @@ abstract contract Constants {
     /// @notice Math Helper to get percentages amounts
     uint256 public constant BASIS_POINTS = 100_00;
 
+    /// @notice Math Helper for getting EURC power of decimals
+    uint256 public constant WAD = 10**6;
+
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3
     bytes32 public constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");
