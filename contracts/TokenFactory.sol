@@ -63,6 +63,7 @@ Constants {
     event          NewMinInvestmentLimit(uint256 newLimit);
     event   NewPropertyOwnerAddrReceiver(address newAddress);
     event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 date);
+    event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
 
 
     struct PropertyInfo{
@@ -306,6 +307,7 @@ Constants {
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
 
+        emit RevenuePayment(id, amount);
 
     }
 
@@ -323,10 +325,13 @@ Constants {
     function recoverFundsInvested(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
-        require(p.raiseDeadline < block.timestamp, "Time not valid"); // @dev it must be < not <=
 
+        require(p.raiseDeadline < block.timestamp && !p.isCompleted, "Time not valid"); // @dev it must be < not <=
+
+        uint256 amount               = userInvested[msg.sender][id];
         userInvested[msg.sender][id] = 0;
-        IERC20(p.paymentToken).transfer(msg.sender, userInvested[msg.sender][id]);
+
+        IERC20(p.paymentToken).transfer(msg.sender, amount);
 
     }
 

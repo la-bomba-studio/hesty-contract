@@ -26,6 +26,14 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
      mapping(address => address) public referredBy;                 /// @notice Who reffered the user
      mapping(address => bool)    public approvedCtrs;               /// @notice Approved addresses that can add property rewards
 
+    constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) {
+        rewardToken = rewardToken_;
+        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
+        approvedCtrs[tokenFactory_] = true;
+        tokenFactory = ITokenFactory(tokenFactory_);
+
+    }
+
     modifier whenNotAllPaused(){
         require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
         _;
@@ -39,15 +47,6 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     modifier whenNotBlackListed(address user){
         require(IHestyAccessControl(ctrHestyControl).isUserBlackListed(user), "Blacklisted");
         _;
-    }
-
-
-    constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) {
-        rewardToken = rewardToken_;
-        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
-        approvedCtrs[tokenFactory_] = true;
-        tokenFactory = ITokenFactory(tokenFactory_);
-
     }
 
     /**

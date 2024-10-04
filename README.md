@@ -29,21 +29,23 @@ Fees are not immediately charged because in the case the threshhold is not reach
 all funds must be able to be claimed back by investors including all the fees charged.
 
 
-NOTE: All this fees can change in the future.
+NOTE: All these fees can change in the future.
 
 
 ## Hesty Smart Contracts v0.1
 
+## Hesty Constants (contracts/Constants.sol)
 
+A very simple smart contract that stores all the 
 
-## Hesty Token Factory
+## Hesty Token Factory (contracts/TokenFactory.sol)
 
 TokenFactory is a smart contract that manages the issuance of tokens that are representatives of
 properties on sale in the Hesty platform.
 
 
 
-## Hesty Router
+## Hesty Router (contracts/HestyRouter.sol)
 
 Dedicated Smart Contract that is responsible to manage funds and operations done off chain.
 Due to regulatory reasons we can never have the control of move funds directly, so we need
@@ -61,6 +63,15 @@ This synchronization between onchain and offchain for security reasons is not au
 it may happen that an offchain investment is performed at the same time as an onchain investment and
 a property may be oversubscribed. In this case, a FIFO rule applies and if the onchain transaction was 
 the last one to occur then it is reverted by admins with ´revertUserBuyTokens´ function.
+
+## Hesty Access Control (contracts/HestyAccessControl.sol)
+
+Hesty is a smart contract that manages the access control of users
+doing certain operations.
+
+There are 
+
+
 
 ## Getting Started
 
