@@ -33,8 +33,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     uint256 public propertyCounter;  // @notice Number of properties created until now
     uint256 public minInvAmount;
 
-    mapping(uint256 => PropertyInfo) public property; // @notice Stores properties info
-    mapping(uint256 => uint256) public platformFee;   // @notice The fee charged by the platform on every investment
+    mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
+    mapping(uint256 => uint256) public platformFee;   /// @notice The fee charged by the platform on every investment
     mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
@@ -164,7 +164,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
-        require(amount > minInvAmount, "Lower than min");
+        require(amount >= minInvAmount, "Lower than min");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
