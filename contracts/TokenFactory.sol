@@ -194,7 +194,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
 
-        ownersPlatformFee[id] =
+        ownersPlatformFee[id] = ownersFee;
 
         referralRewards(ref, boughtTokensPrice, id);
 
@@ -284,17 +284,6 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         return property[id].asset;
     }
 
-    /**
-    * @notice Function to claim referral fee
-    *
-    * @param id the property id
-    */
-    function claimRefFee(uint256 id) external nonReentrant{
-        uint256 val = refFee[msg.sender][id];
-        require(isRefClaimable(id) && val > 0, "Not Claimable Yet");
-        refFee[msg.sender][id] = 0;
-        IERC20(property[id].paymentToken).transfer(msg.sender, val);
-    }
 
     /**===================================================
        OWNER STATE MODIFIABLE FUNTIONS
@@ -311,7 +300,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, property[id].raised);
 
-        IERC20(property[id].paymentToken).transfer(treasury, property[id].raised * FEE_BASIS_POINTS / BASIS_POINTS);
+        IERC20(property[id].paymentToken).transfer(treasury, platformFee[id]);
         property[id].isCompleted = true;
     }
 
@@ -340,6 +329,17 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     function setRefFee(uint256 newFee) external onlyAdmin(msg.sender){
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
+    }
+
+    /**
+ * @notice Function to change referral fee
+    *
+    * @dev Fee must be lower than fee charged by platform
+    * @param newAddress New Property Owner Address
+    */
+    function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external onlyAdmin(msg.sender){
+        require( newAddress != address(0), "Address must be valid");
+        property[id].ownerExchAddr = newAddress;
     }
 
     /**
