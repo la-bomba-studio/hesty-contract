@@ -27,7 +27,12 @@ import "./Constants.sol";
 
 */
 
-contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IReferral, ITokenFactory, Constants {
+contract TokenFactory is
+ReentrancyGuard,
+AccessControlDefaultAdminRules,
+IReferral,
+ITokenFactory,
+Constants {
 
     uint256 public propertyCounter;  /// @notice Number of properties created until now
     uint256 public minInvAmount;     /// @notice Min amount allowed to invest
@@ -38,6 +43,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     mapping(uint256 => uint256) public propertyOwnerShare;   /// @notice The amount reserved to propertyOwner
     mapping(uint256 => uint256) public refFee;   /// @notice The referral fee acummulated by each property before completing
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
+
     //Event
     event CreateProperty(uint256 id);
     event NewMaxNumberOfRefferals(uint256 number);
@@ -49,6 +55,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     address public treasury;
 
     IReferral public referralSystemCtr;
+    IHestyAccessControl public ctrHestyControl;
 
     uint256 public maxNumberOfReferrals;
 
@@ -94,7 +101,25 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         _;
     }
 
-    constructor(uint256 fee, uint256 ownersFee, uint256 refFee, address treasury_, uint256 minInvAmount_, address refCtr_) AccessControlDefaultAdminRules(
+    modifier whenKYCApproved(address user){
+        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
+        _;
+    }
+
+    modifier whenNotAllPaused(){
+        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
+        _;
+    }
+
+    constructor(
+        uint256 fee,
+        uint256 ownersFee,
+        uint256 refFee,
+        address treasury_,
+        uint256 minInvAmount_,
+        address ctrHestyControl_,
+        address refCtr_
+    ) AccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
@@ -109,6 +134,7 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         maxNumberOfReferrals    = 20;
         maxAmountOfRefRev       = 10000 * 10 ** 6;
         OWNERS_FEE_BASIS_POINTS = ownersFee;
+        ctrHestyControl = ctrHestyControl_;
 
     }
 
@@ -140,7 +166,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
         string memory name,
         string memory symbol,
         address admin
-    ) external returns(uint256){
+    ) external whenKYCApproved(msg.sender) whenNotAllPaused returns(uint256) {
+
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
 
 

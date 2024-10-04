@@ -38,7 +38,10 @@ NOTE: All this fees can change in the future.
 
 ## Hesty Token Factory
 
-PropertyFactory is a smart contract built on Base Blockchain that allows users to create and manage digital properties. Each property is represented by an ERC1155 token, which can be purchased and owned by other users.
+TokenFactory is a smart contract that manages the issuance of tokens that are representatives of
+properties on sale in the Hesty platform.
+
+
 
 ## Hesty Router
 
