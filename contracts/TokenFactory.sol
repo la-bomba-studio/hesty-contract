@@ -33,8 +33,8 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     uint256 public propertyCounter;  // @notice Number of properties created until now
     uint256 public minInvAmount;
 
-    mapping(uint256 => PropertyInfo) public property; // @notice
-    mapping(uint256 => uint256) public platformFee;   // @notice
+    mapping(uint256 => PropertyInfo) public property; // @notice Stores properties info
+    mapping(uint256 => uint256) public platformFee;   // @notice The fee charged by the platform on every investment
     mapping(address => mapping(uint256 => uint256)) public refFee;        // @notice Referral Fee accumulated by users
     mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
     //Event
@@ -230,11 +230,16 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
     */
-    function AdminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
 
         PropertyInfo storage p = property[id];
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
+
+    }
+
+    function adminBuyTokens(uint256 id, uint256 amount) external nonReentrant onlyAdmin(msg.sender){
+
 
     }
 
@@ -329,6 +334,11 @@ contract TokenFactory is ReentrancyGuard, AccessControlDefaultAdminRules, IRefer
 
     function setMaxNumberOfReferrals(uint256 newMax) external{
         maxAmountOfRefRev = newMax;
+    }
+
+    function setTreasury(address newTreasury) external onlyAdmin(msg.sender){
+        require(newTreasury != address(0), "Not allowed");
+        treasury = newTreasury;
     }
 
     // Function to allow deposits
