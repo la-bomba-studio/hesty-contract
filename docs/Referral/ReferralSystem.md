@@ -104,17 +104,25 @@ modifier whenNotBlackListed(address user)
 constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) public
 ```
 
+### onlyAdmin
+
+```solidity
+modifier onlyAdmin()
+```
+
+_Checks that `msg.sender` is an Admin_
+
 ### addRewards
 
 ```solidity
 function addRewards(address onBehalfOf, address user, uint256 projectId, uint256 amount) external
 ```
 
-@notice Add Rewards Associated to a Property Project
-  @param onBehalfOf User who referred and the one that will receive the income
-  @param user The user who were referenced by onBehalfOf user
-  @param projectId The Property project
-  @param amount The amount of rewards
+_Add Rewards Associated to a Property Project
+        @param  onBehalfOf User who referred and the one that will receive the income
+        @param  user The user who were referenced by onBehalfOf user
+        @param  projectId The Property project
+        @param  amount The amount of rewards_
 
 ### addGlobalRewards
 
@@ -130,11 +138,15 @@ Adds referral rewards to the user claim not indexed to a property
 function claimPropertyRewards(address user, uint256 projectId) external
 ```
 
+Claim User Property Referral rewards
+
 ### claimGlobalRewards
 
 ```solidity
 function claimGlobalRewards(address user) external
 ```
+
+Claim User General Referral rewards (to be implemented in the future)
 
 ### getReferrerDetails
 
@@ -142,7 +154,7 @@ function claimGlobalRewards(address user) external
 function getReferrerDetails(address user) external view returns (uint256, uint256, uint256)
 ```
 
-J
+_Return Number of user referrals and user referral revenues_
 
 ### setRewardToken
 

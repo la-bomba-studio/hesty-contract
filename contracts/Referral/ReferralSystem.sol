@@ -48,15 +48,22 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         approvedCtrs[tokenFactory_] = true;
         tokenFactory = ITokenFactory(tokenFactory_);
 
-
     }
 
     /**
-    *   @notice Add Rewards Associated to a Property Project
-    *   @param onBehalfOf User who referred and the one that will receive the income
-    *   @param user The user who were referenced by onBehalfOf user
-    *   @param projectId The Property project
-    *   @param amount The amount of rewards
+        @dev Checks that `msg.sender` is an Admin
+    */
+    modifier onlyAdmin(){
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        _;
+    }
+
+    /**
+        @dev    Add Rewards Associated to a Property Project
+        @param  onBehalfOf User who referred and the one that will receive the income
+        @param  user The user who were referenced by onBehalfOf user
+        @param  projectId The Property project
+        @param  amount The amount of rewards
     */
     function addRewards(address onBehalfOf, address user, uint256 projectId, uint256 amount) external whenNotAllPaused{
 
@@ -112,13 +119,13 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
 
     /**
-    * @notice J
+        @dev Return Number of user referrals and user referral revenues
     */
     function getReferrerDetails(address user) external view returns(uint256, uint256, uint256){
         return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
-    function setRewardToken(address newToken) external{
+    function setRewardToken(address newToken) external onlyAdmin{
         rewardToken = newToken;
     }
 }

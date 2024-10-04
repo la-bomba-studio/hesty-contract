@@ -32,9 +32,13 @@ Adds referral rewards to the user claim not indexed to a property
 function claimPropertyRewards(address user, uint256 projectId) external
 ```
 
+Claim User Property Referral rewards
+
 ### claimGlobalRewards
 
 ```solidity
 function claimGlobalRewards(address user) external
 ```
+
+Claim User General Referral rewards (to be implemented in the future)
 
