@@ -11,8 +11,8 @@ pragma solidity ^0.8.0;
  */
 interface IReferral {
 
-    function getReferrerDetails(address user) external view returns(uint256, uint256);
+    function getReferrerDetails(address user) external view returns(uint256, uint256, uint256);
 
-    function addewards(address onBehalfOf, address referrer, uint256 amount) external;
+    function addRewards(address onBehalfOf, address referrer, uint256 projectId, uint256 amount) external;
 
 }

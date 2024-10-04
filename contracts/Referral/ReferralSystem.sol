@@ -12,13 +12,14 @@ import "../interfaces/ITokenFactory.sol";
 * @notice This referral system is build a part
             from the
 */
-contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITokenFactory {
+contract ReferralSystem is ReentrancyGuard, IReferral {
 
      IHestyAccessControl public ctrHestyControl;                    /// @notice Hesty Global Access Control
      address             public rewardToken;                        /// @notice Token contract address of rewards
      ITokenFactory       public tokenFactory;
 
-     mapping(address => mapping(uint256 =>uint256)) public rewards; /// @notice Total rewards earned by user indexed to properties
+     mapping(address => mapping(uint256 =>uint256)) public rewards; /// @notice Rewards earned by user indexed to each property
+     mapping(address => uint256) public totalRewards;               /// @notice Total rewards earned by user indexed to properties
      mapping(address => uint256) public globalRewards;              /// @notice Total rewards earned by user not indexed to properties
      mapping(uint256 =>uint256)  public rewardsByProperty;          /// @notice Total rewards earned by users filtered by property
      mapping(address => uint256) public numberOfRef;                /// @notice Number of referrals a user has
@@ -44,8 +45,9 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
     constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) {
         rewardToken = rewardToken_;
         ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
-        tokenFactory = tokenFactory_;
-        approvedCtrs[tokenFactory] = true;
+        approvedCtrs[tokenFactory_] = true;
+        tokenFactory = ITokenFactory(tokenFactory_);
+
 
     }
 
@@ -66,15 +68,15 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
         }
 
         rewards[onBehalfOf][projectId] += amount;
-        rewardsByProperty[projectId] += amount;
-
+        rewardsByProperty[projectId]   += amount;
+        totalRewards[onBehalfOf]        += amount;
 
     }
 
     function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external whenNotAllPaused{
 
-        bool tx = IERC20(rewardToken).transferFrom(msg.sender, address(this), amount);
-        require(tx, "Something odd happened");
+        bool txVal = IERC20(rewardToken).transferFrom(msg.sender, address(this), amount);
+        require(txVal, "Something odd happened");
 
 
         if(refferedBy[user] == address(0)){
@@ -87,7 +89,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
 
     }
 
-    function claimPropertyRewards(address user, uint256 projectId) external nonReentrant whenNotAllPaused whenKYCApproved whenNotBlackListed{
+    function claimPropertyRewards(address user, uint256 projectId) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
 
         require(tokenFactory.isRefClaimable(projectId), "Not yet");
 
@@ -98,7 +100,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
 
     }
 
-    function claimGlobalRewards(address user) external nonReentrant whenNotAllPaused whenKYCApproved whenNotBlackListed{
+    function claimGlobalRewards(address user) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
 
 
         uint256 rew   = globalRewards[user];
@@ -113,7 +115,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral, IHestyAccessControl, ITok
     * @notice J
     */
     function getReferrerDetails(address user) external view returns(uint256, uint256, uint256){
-        return(numberOfRef[user], rewards[user], globalRewards[user]);
+        return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
     function setRewardToken(address newToken) external{

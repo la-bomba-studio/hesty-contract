@@ -10,6 +10,8 @@ pragma solidity ^0.8.0;
  */
 interface IHestyAccessControl {
 
+    function onlyAdmin(address manager) external;
+
     /// @notice Checks if an user has kyc approved in hesty
     function isUserKYCValid(address user) external returns(bool);
 
