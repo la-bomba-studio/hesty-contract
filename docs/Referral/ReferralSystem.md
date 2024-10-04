@@ -62,10 +62,10 @@ mapping(address => uint256) numberOfRef
 
 Total rewards earned by users filtered by property
 
-### refferedBy
+### referredBy
 
 ```solidity
-mapping(address => address) refferedBy
+mapping(address => address) referredBy
 ```
 
 Number of referrals a user has
@@ -104,17 +104,25 @@ modifier whenNotBlackListed(address user)
 constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) public
 ```
 
+### onlyAdmin
+
+```solidity
+modifier onlyAdmin()
+```
+
+_Checks that `msg.sender` is an Admin_
+
 ### addRewards
 
 ```solidity
 function addRewards(address onBehalfOf, address user, uint256 projectId, uint256 amount) external
 ```
 
-@notice Add Rewards Associated to a Property Project
-  @param onBehalfOf User who referred and the one that will receive the income
-  @param user The user who were referenced by onBehalfOf user
-  @param projectId The Property project
-  @param amount The amount of rewards
+_Add Rewards Associated to a Property Project
+        @param  onBehalfOf User who referred and the one that will receive the income
+        @param  user The user who were referenced by onBehalfOf user
+        @param  projectId The Property project
+        @param  amount The amount of rewards_
 
 ### addGlobalRewards
 
@@ -122,11 +130,15 @@ function addRewards(address onBehalfOf, address user, uint256 projectId, uint256
 function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external
 ```
 
+Adds referral rewards to the user claim not indexed to a property
+
 ### claimPropertyRewards
 
 ```solidity
 function claimPropertyRewards(address user, uint256 projectId) external
 ```
+
+Claim User Property Referral rewards
 
 ### claimGlobalRewards
 
@@ -134,13 +146,15 @@ function claimPropertyRewards(address user, uint256 projectId) external
 function claimGlobalRewards(address user) external
 ```
 
+Claim User General Referral rewards (to be implemented in the future)
+
 ### getReferrerDetails
 
 ```solidity
 function getReferrerDetails(address user) external view returns (uint256, uint256, uint256)
 ```
 
-J
+_Return Number of user referrals and user referral revenues_
 
 ### setRewardToken
 

@@ -10,7 +10,7 @@ abstract contract Constants {
     uint256 public constant BASIS_POINTS = 100_00;
 
     /// @notice Math Helper for getting EURC power of decimals
-    uint256 public constant WAD = 10**6;
+    uint256 public constant WAD = 10 ** 6;
 
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3

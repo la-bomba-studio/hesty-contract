@@ -26,6 +26,14 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
      mapping(address => address) public referredBy;                 /// @notice Who reffered the user
      mapping(address => bool)    public approvedCtrs;               /// @notice Approved addresses that can add property rewards
 
+    constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) {
+        rewardToken = rewardToken_;
+        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
+        approvedCtrs[tokenFactory_] = true;
+        tokenFactory = ITokenFactory(tokenFactory_);
+
+    }
+
     modifier whenNotAllPaused(){
         require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
         _;
@@ -41,22 +49,20 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         _;
     }
 
-
-    constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) {
-        rewardToken = rewardToken_;
-        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
-        approvedCtrs[tokenFactory_] = true;
-        tokenFactory = ITokenFactory(tokenFactory_);
-
-
+    /**
+        @dev Checks that `msg.sender` is an Admin
+    */
+    modifier onlyAdmin(){
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        _;
     }
 
     /**
-    *   @notice Add Rewards Associated to a Property Project
-    *   @param onBehalfOf User who referred and the one that will receive the income
-    *   @param user The user who were referenced by onBehalfOf user
-    *   @param projectId The Property project
-    *   @param amount The amount of rewards
+        @dev    Add Rewards Associated to a Property Project
+        @param  onBehalfOf User who referred and the one that will receive the income
+        @param  user The user who were referenced by onBehalfOf user
+        @param  projectId The Property project
+        @param  amount The amount of rewards
     */
     function addRewards(address onBehalfOf, address user, uint256 projectId, uint256 amount) external whenNotAllPaused{
 
@@ -112,13 +118,13 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
 
     /**
-    * @notice J
+        @dev Return Number of user referrals and user referral revenues
     */
     function getReferrerDetails(address user) external view returns(uint256, uint256, uint256){
         return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
-    function setRewardToken(address newToken) external{
+    function setRewardToken(address newToken) external onlyAdmin{
         rewardToken = newToken;
     }
 }

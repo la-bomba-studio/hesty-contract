@@ -2,14 +2,13 @@
 
 ## IHestyAccessControl
 
-Allows Hesty Contracts to access info about global
-         pauses, locks and user kyc status.
-
 ### onlyAdmin
 
 ```solidity
 function onlyAdmin(address manager) external
 ```
+
+Require that only admins call this function
 
 ### isUserKYCValid
 
@@ -34,5 +33,5 @@ function isUserBlackListed(address user) external returns (bool)
 ```
 
 Checks if user is blacklisted from operating on Hesty or with
-           Hesty issued property tokens
+        Hesty issued property tokens
 
