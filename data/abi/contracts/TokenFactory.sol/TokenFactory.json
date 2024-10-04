@@ -67,6 +67,32 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newSystemCtr",
+        "type": "address"
+      }
+    ],
+    "name": "NewReferralSystemCtr",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newTreasury",
+        "type": "address"
+      }
+    ],
+    "name": "NewTreasury",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "BASIS_POINTS",
     "outputs": [
@@ -634,19 +660,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "refCtr",
-    "outputs": [
-      {
-        "internalType": "contract IReferral",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -744,6 +757,19 @@
       }
     ],
     "name": "setRefFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newReferralContract",
+        "type": "address"
+      }
+    ],
+    "name": "setReferralContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

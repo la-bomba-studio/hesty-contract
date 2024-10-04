@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {PropertyToken} from "./PropertyToken.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable2Step.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {PropertyToken} from "./PropertyToken.sol";
 import "./interfaces/ITokenFactory.sol";
 import "./interfaces/IReferral.sol";
 import "./interfaces/IHestyAccessControl.sol";
-import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./Constants.sol";
 
 /*
@@ -28,16 +27,19 @@ Constants {
     uint256 public propertyCounter;  /// @notice Number of properties created until now
     uint256 public minInvAmount;     /// @notice Min amount allowed to invest
 
-    mapping(uint256 => PropertyInfo) public property; /// @notice Stores properties info
-    mapping(uint256 => uint256) public platformFee;   /// @notice (Property id => fee amount) The fee charged by the platform on every investment
-    mapping(uint256 => uint256) public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
-    mapping(uint256 => uint256) public propertyOwnerShare;   /// @notice The amount reserved to propertyOwner
-    mapping(uint256 => uint256) public refFee;   /// @notice The referral fee acummulated by each property before completing
-    mapping(address => mapping(uint256 => uint256)) public userInvested; // @notice Amount invested by each user in each property
+    mapping(uint256 => PropertyInfo)    public property;            /// @notice Stores properties info
+    mapping(uint256 => uint256)         public platformFee;         /// @notice (Property id => fee amount) The fee charged by the platform on every investment
+    mapping(uint256 => uint256)         public ownersPlatformFee;   /// @notice The fee charged by the platform on every investment
+    mapping(uint256 => uint256)         public propertyOwnerShare;  /// @notice The amount reserved to propertyOwner
+    mapping(uint256 => uint256)         public refFee;              /// @notice The referral fee acummulated by each property before completing
+
+    mapping(address => mapping(uint256 => uint256)) public userInvested; /// @notice Amount invested by each user in each property
 
     //Event
     event CreateProperty(uint256 id);
     event NewMaxNumberOfRefferals(uint256 number);
+    event NewReferralSystemCtr(address newSystemCtr);
+    event NewTreasury(address newTreasury);
 
     uint256 public FEE_BASIS_POINTS;
     uint256 public OWNERS_FEE_BASIS_POINTS;
@@ -53,8 +55,6 @@ Constants {
     uint256 public maxAmountOfRefRev;
 
     bool public initialized;
-
-    IReferral public refCtr;
 
     struct PropertyInfo{
         uint256 price;          // Price for each property token
@@ -98,12 +98,12 @@ Constants {
         REF_FEE_BASIS_POINTS    = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
-        refCtr                  = IReferral(refCtr_);
         maxNumberOfReferrals    = 20;
         maxAmountOfRefRev       = 10000 * 10 ** 6;
         OWNERS_FEE_BASIS_POINTS = ownersFee;
-        initialized = false;
-        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
+        initialized             = false;
+        referralSystemCtr       = IReferral(refCtr_);
+        ctrHestyControl         = IHestyAccessControl(ctrHestyControl_);
 
     }
 
@@ -210,7 +210,7 @@ Constants {
     function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) internal{
         if(ref != address(0)){
 
-            (uint256 userNumberRefs,uint256 userRevenue,) = refCtr.getReferrerDetails(ref);
+            (uint256 userNumberRefs,uint256 userRevenue,) = referralSystemCtr.getReferrerDetails(ref);
 
             uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
 
@@ -295,6 +295,7 @@ Constants {
 
     /**
     * @notice Checks if people can claim their referral share of a property
+    * @return If it is already possible to claim referral rewards
     */
     function isRefClaimable(uint256 id) external view returns(bool){
         return property[id].threshold <= property[id].raised && property[id].isCompleted;
@@ -404,13 +405,28 @@ Constants {
     function setMaxNumberOfReferrals(uint256 newMax) external {
         IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         maxAmountOfRefRev = newMax;
+
         emit NewMaxNumberOfRefferals(newMax);
     }
 
     function setTreasury(address newTreasury) external{
+
         IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         require(newTreasury != address(0), "Not allowed");
+
         treasury = newTreasury;
+
+        emit NewTreasury(newTreasury);
+    }
+
+    function setReferralContract(address newReferralContract) external{
+
+        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        require(newReferralContract != address(0), "Not allowed");
+
+        referralSystemCtr = IReferral(newReferralContract);
+
+        emit NewReferralSystemCtr(newReferralContract);
     }
 
 }

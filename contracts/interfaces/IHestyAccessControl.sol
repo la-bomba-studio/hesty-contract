@@ -10,6 +10,7 @@ pragma solidity ^0.8.0;
  */
 interface IHestyAccessControl {
 
+    /// @notice Require that only admins call this function
     function onlyAdmin(address manager) external;
 
     /// @notice Checks if an user has kyc approved in hesty
