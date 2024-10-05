@@ -4,7 +4,8 @@
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/ReferralSystem.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/ReferralSystem.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Unit/HestyAccessControl.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/HestyAccessControl.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +56,7 @@
       <recent name="C:\Users\pedro\Documents\GitHub\hesty-contract\contracts\Referral" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.HestyAccessControl.Approve KYC and revert KYC Approval.Revert Kyc">
+  <component name="RunManager" selected="Mocha.Token Factory">
     <configuration name="HestyAccessControl" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -88,7 +89,7 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="HestyAccessControl.Pause and Unpause.Pause All Hesty Contracts, unpause and pause again" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -96,16 +97,14 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options />
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/test/HestyAccessControl.test.js</test-file>
+      <test-kind>SUITE</test-kind>
+      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
-        <name value="HestyAccessControl" />
-        <name value="Pause and Unpause" />
-        <name value="Pause All Hesty Contracts, unpause and pause again" />
+        <name value="Token Factory" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="HestyAccessControl.Pause and Unpause.Wrong Pauser Manager for unpause" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory.Get constants from Constants files " type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -114,15 +113,14 @@
       <ui>bdd</ui>
       <extra-mocha-options />
       <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/test/HestyAccessControl.test.js</test-file>
+      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
-        <name value="HestyAccessControl" />
-        <name value="Pause and Unpause" />
-        <name value="Wrong Pauser Manager for unpause" />
+        <name value="Token Factory" />
+        <name value="Get constants from Constants files " />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="HestyAccessControl.Pause and Unpause.Wrong Pauser Manager" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory.Initialize" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -131,21 +129,20 @@
       <ui>bdd</ui>
       <extra-mocha-options />
       <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/test/HestyAccessControl.test.js</test-file>
+      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
-        <name value="HestyAccessControl" />
-        <name value="Pause and Unpause" />
-        <name value="Wrong Pauser Manager" />
+        <name value="Token Factory" />
+        <name value="Initialize" />
       </test-names>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.Token Factory" />
+        <item itemvalue="Mocha.Token Factory.Initialize" />
+        <item itemvalue="Mocha.Token Factory.Get constants from Constants files " />
         <item itemvalue="Mocha.HestyAccessControl.Approve KYC and revert KYC Approval.Revert Kyc" />
         <item itemvalue="Mocha.HestyAccessControl" />
-        <item itemvalue="Mocha.HestyAccessControl.Pause and Unpause.Pause All Hesty Contracts, unpause and pause again" />
-        <item itemvalue="Mocha.HestyAccessControl.Pause and Unpause.Wrong Pauser Manager for unpause" />
-        <item itemvalue="Mocha.HestyAccessControl.Pause and Unpause.Wrong Pauser Manager" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +196,7 @@
       <workItem from="1727430014619" duration="4001000" />
       <workItem from="1727689491559" duration="11232000" />
       <workItem from="1727793230072" duration="16994000" />
-      <workItem from="1727961525004" duration="42862000" />
+      <workItem from="1727961525004" duration="45355000" />
     </task>
     <servers />
   </component>

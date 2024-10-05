@@ -118,7 +118,7 @@ Constants {
         @dev Checks that `msg.sender` is an Admin
     */
     modifier onlyAdmin(){
-        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        ctrHestyControl.onlyAdmin(msg.sender);
         _;
     }
 

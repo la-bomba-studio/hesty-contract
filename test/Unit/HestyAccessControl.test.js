@@ -40,9 +40,6 @@ describe("HestyAccessControl", function () {
 
     expect(await hestyAccessControlCtr.PAUSER_MANAGER()).to.equal("0x9ad250910475b46679c53074aa5d6cd2421e8c7126f9eb9c2d0aeeebbe1df64d");
 
-    expect(await hestyAccessControlCtr.BASIS_POINTS()).to.equal(10_000);
-
-    expect(await hestyAccessControlCtr.WAD()).to.equal(10 ** 6);
 
   });
 
