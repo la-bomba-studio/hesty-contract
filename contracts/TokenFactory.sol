@@ -123,6 +123,14 @@ Constants {
     }
 
     /**
+        @dev Checks that `msg.sender` is an Admin
+    */
+    modifier onlyFundsManager(){
+        ctrHestyControl.onlyFundsManager(msg.sender);
+        _;
+    }
+
+    /**
         @dev Checks that contract is initialized
     */
     modifier onlyWhenInitialized(){
@@ -344,9 +352,8 @@ Constants {
 
     }
 
-    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant{
+    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
 
-        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         PropertyInfo storage p    = property[id];
 
         // Require that raise is still active and not expired

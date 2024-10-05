@@ -86,7 +86,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
      msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
 
-        //Pre-Seed Share
+        // Property Token Supply Issuance
         _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
         rewardAsset     = IERC20(rewardAsset_);

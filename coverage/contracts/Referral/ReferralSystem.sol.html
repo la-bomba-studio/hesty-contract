@@ -22,22 +22,22 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>0/15</span>
+        <span class='fraction'>0/16</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/38</span>
+        <span class='fraction'>0/44</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">9.09% </span>
+        <span class="strong">7.69% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>1/11</span>
+        <span class='fraction'>1/13</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">11.76% </span>
+        <span class="strong">10.81% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>4/34</span>
+        <span class='fraction'>4/37</span>
       </div>
     </div>
   </div>
@@ -172,7 +172,16 @@
 127
 128
 129
-130</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,11 +210,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">60×</span>
-<span class="cline-any cline-yes">60×</span>
-<span class="cline-any cline-yes">60×</span>
-<span class="cline-any cline-yes">60×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
+<span class="cline-any cline-yes">51×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -219,11 +233,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -295,6 +304,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -427,6 +445,15 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 <span class="cstat-no" title="statement not covered" >        return(numberOfRef[user], totalRewards[user], globalRewards[user]);</span>
    }
 &nbsp;
+<span class="fstat-no" title="function not covered" >    function addApprovedCtrs(address newReferralRouter) external onlyAdmin{</span>
+        approvedCtrs[newReferralRouter] = true;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function removeApprovedCtrs(address oldReferralRouter) external onlyAdmin{</span>
+<span class="cstat-no" title="statement not covered" >        require(approvedCtrs[oldReferralRouter], "Not Approved Router")</span>;
+        approvedCtrs[oldReferralRouter] = true;
+    }
+&nbsp;
 <span class="fstat-no" title="function not covered" >    function setRewardToken(address newToken) external onlyAdmin{</span>
         rewardToken = newToken;
     }
@@ -436,7 +463,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Oct 05 2024 11:04:32 GMT+0100 (Hora de verão da Europa Ocidental)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Oct 05 2024 12:30:17 GMT+0100 (Hora de verão da Europa Ocidental)
 </div>
 </div>
 <script src="../../prettify.js"></script>
