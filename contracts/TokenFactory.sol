@@ -226,7 +226,7 @@ Constants {
         @param  amount Amount of tokens that user wants to buy
         @param  ref The referral of the user, address(0) if doesn't exist
     */
-    function buyTokens(uint256 id, uint256 amount, address ref) external payable nonReentrant onlyWhenInitialized whenNotAllPaused {
+    function buyTokens(uint256 id, uint256 amount, address ref) external nonReentrant onlyWhenInitialized whenNotAllPaused {
 
         PropertyInfo storage p = property[id];
 

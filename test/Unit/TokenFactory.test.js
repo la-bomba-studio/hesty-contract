@@ -160,6 +160,7 @@ describe("Token Factory", function () {
 
       await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
+      expect(await tokenFactory.propertyCounter()).to.equal(1);
 
     });
 
