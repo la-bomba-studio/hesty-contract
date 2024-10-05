@@ -84,10 +84,10 @@ Constants {
 
     /**
         @dev    Constructor for Token Factory
-        @param  fee Investment fee charged by Hesty as Basis Points
-        @param  ownersFee Owner Fee charged by Hesty as Basis Points
-        @param  refFee_ Referaal Fee charged by referrals as Basis Points
-        @param  treasury_ The address that will receive Hesty fees revenue
+        @param  fee Investment fee charged by Hesty (in Basis Points)
+        @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
+        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions
         @param  refCtr_ Contract that manages referrals revenue and claims
@@ -137,7 +137,7 @@ Constants {
         @dev Checks that `msg.sender` is not blacklisted
     */
     modifier whenNotBlackListed(){
-        require(IHestyAccessControl(ctrHestyControl).isUserBlackListed(msg.sender), "Blacklisted");
+        require(ctrHestyControl.blackList(msg.sender), "Blacklisted");
         _;
     }
 
@@ -145,7 +145,7 @@ Constants {
         @dev Checks that `msg.sender` has is KYC approved
     */
     modifier whenKYCApproved(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
+        require(ctrHestyControl.kycCompleted(user), "No KYC Made");
         _;
     }
 
@@ -153,13 +153,13 @@ Constants {
         @dev Checks that contracts are not paused
     */
     modifier whenNotAllPaused(){
-        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
+        require(ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
     /**
-        @dev Initialized Token Factory Contract
-        @param referralSystemCtr_ Referral System Contract that manages referrals rewards
+        @dev    Initialized Token Factory Contract
+        @param  referralSystemCtr_ Referral System Contract that manages referrals rewards
     */
     function initialize(address referralSystemCtr_) external onlyAdmin{
 
@@ -174,20 +174,18 @@ Constants {
     ======================================================**/
 
     /**
-    *  @notice Issue a new property token
-    *
-    *  @param amount The amount of tokens to issue
-    *  @param tokenPrice Token Price
-    *  @param threshold Amount to reach in order to proceed to production
-    *  @param raiseEnd when the raise ends
-    *  @param payType Type of dividends payment
-    *  @param paymentToken Token that will be charged on every investment made
+        @notice Issue a new property token
+
+        @param amount The amount of tokens to issue
+        @param tokenPrice Token Price
+        @param threshold Amount to reach in order to proceed to production
+        @param payType Type of dividends payment
+        @param paymentToken Token that will be charged on every investment made
     */
     function createProperty(
         uint256 amount,
         uint tokenPrice,
         uint256 threshold,
-        uint256 raiseEnd,
         uint8 payType,
         address paymentToken,
         address revenueToken,
@@ -208,7 +206,7 @@ Constants {
         property[propertyCounter++] = PropertyInfo( tokenPrice,
                                                     threshold,
                                                     0,
-                                                    raiseEnd,
+                                                    0,
                                                     payType,
                                                     false,
                                                     false,
@@ -420,11 +418,29 @@ Constants {
 
     }
 
-    function approveProperty(uint256 id) external onlyAdmin{
+    /**
+        @dev     Approves property to start raise
+        @param   id Property Id
+    */
+    function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin{
 
         require(id < propertyCounter, "Fee must be valid");
 
         property[id].approved = true;
+        property[id].raiseDeadline = raiseDeadline;
+    }
+
+    /**
+        @dev     In case Hesty gives up from raising funds for property
+                 allow users to claim back their funds
+        @param   id Property Id
+    */
+    function giveUpOnProperty(uint256 id) external onlyAdmin{
+
+        require(id < propertyCounter, "Fee must be valid");
+
+        property[id].raiseDeadline = 0;
+        property[id].approved = false;
     }
 
     /**

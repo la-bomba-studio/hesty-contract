@@ -175,6 +175,8 @@ describe("HestyAccessControl", function () {
 
       await hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
 
+      expect(await hestyAccessControlCtr.kycCompleted(propertyManager.address)).to.equal(false);
+
     });
 
     it("Revert Kyc Twice", async function () {
@@ -233,58 +235,61 @@ describe("HestyAccessControl", function () {
 
     });
 
+    it("UnPause All Hesty Contracts when their are unpaused", async function () {
+
+      await expect(
+        hestyAccessControlCtr.connect(addr3).unpause()
+      ).to.be.revertedWith("Pausable: not paused");
+
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+    });
+
+    it("Wrong Pauser Manager", async function () {
+
+        await expect(
+          hestyAccessControlCtr.connect(addr2).pause()
+        ).to.be.revertedWith("Not Pauser Manager");
+
+        expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+    });
+
+    it("Wrong Pauser Manager for unpause", async function () {
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+      await hestyAccessControlCtr.connect(addr3).pause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(true);
+
+      await expect(
+        hestyAccessControlCtr.connect(addr2).unpause()
+      ).to.be.revertedWith("Not Pauser Manager");
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(true);
+
+    });
+
+    it("Pause All Hesty Contracts, unpause and pause again", async function () {
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+      await hestyAccessControlCtr.connect(addr3).pause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(true);
+
+      await hestyAccessControlCtr.connect(addr3).unpause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+      await hestyAccessControlCtr.connect(addr3).pause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(true);
+
+    });
+
   });
 
-
-
-
-/*
-
-  it("should not allow transferring tokens directly to buyer", async function () {
-    const totalSupply = 100;
-    const tokenUri = "https://example.com/token/1";
-    const pricePerToken = ethers.utils.parseEther("0.1");
-
-    const tx = await propertyFactory.createProperty(
-      totalSupply,
-      tokenUri,
-      pricePerToken
-    );
-    const receipt = await tx.wait();
-    const tokenId = receipt.events[0].args[0];
-
-    await expect(
-      propertyFactory.connect(addr1).safeTransferFrom(
-        owner.address,
-        addr1.address,
-        tokenId,
-        1,
-        "0x"
-      )
-    ).to.be.revertedWith("Cannot transfer tokens directly to buyer");
-  });
-
-  it("should allow transferring tokens to property manager", async function () {
-    const totalSupply = 100;
-    const tokenUri = "https://example.com/token/1";
-    const pricePerToken = ethers.utils.parseEther("0.1");
-
-    const tx = await propertyFactory.createProperty(
-      totalSupply,
-      tokenUri,
-      pricePerToken
-    );
-    const receipt = await tx.wait();
-    const tokenId = receipt.events[0].args[0];
-
-    await propertyFactory.safeTransferFrom(
-      owner.address,
-      propertyManager.address,
-      tokenId,
-      1,
-      "0x"
-    );
-
-    expect(await propertyFactory.balanceOf(propertyManager.address, tokenId)).to.equal(1);
-  });*/
 });

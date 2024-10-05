@@ -14,8 +14,8 @@ import "../interfaces/ITokenFactory.sol";
 */
 contract ReferralSystem is ReentrancyGuard, IReferral {
 
-     IHestyAccessControl public ctrHestyControl;                    /// @notice Hesty Global Access Control
-     address             public rewardToken;                        /// @notice Token contract address of rewards
+     IHestyAccessControl public ctrHestyControl;                    // Hesty Global Access Control
+     address             public rewardToken;                        // Token contract address of rewards
      ITokenFactory       public tokenFactory;
 
      mapping(address => mapping(uint256 =>uint256)) public rewards; /// @notice Rewards earned by user indexed to each property
@@ -35,17 +35,17 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     }
 
     modifier whenNotAllPaused(){
-        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
+        require(ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
     modifier whenKYCApproved(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
+        require(ctrHestyControl.kycCompleted(user), "No KYC Made");
         _;
     }
 
     modifier whenNotBlackListed(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserBlackListed(user), "Blacklisted");
+        require(ctrHestyControl.blackList(user), "Blacklisted");
         _;
     }
 
@@ -53,7 +53,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         @dev Checks that `msg.sender` is an Admin
     */
     modifier onlyAdmin(){
-        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+        ctrHestyControl.onlyAdmin(msg.sender);
         _;
     }
 
@@ -69,13 +69,13 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         require(approvedCtrs[msg.sender], "Not Approved");
 
         if(referredBy[user] == address(0)){
-            referredBy[user] = onBehalfOf;
+            referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
         }
 
         rewards[onBehalfOf][projectId] += amount;
         rewardsByProperty[projectId]   += amount;
-        totalRewards[onBehalfOf]        += amount;
+        totalRewards[onBehalfOf]       += amount;
 
     }
 
@@ -86,7 +86,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
 
         if(referredBy[user] == address(0)){
-            referredBy[user] = onBehalfOf;
+            referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
         }
 
