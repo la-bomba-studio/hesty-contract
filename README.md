@@ -42,7 +42,7 @@ A very simple smart contract that stores all the Hesty Smart Contracts constants
 
 TokenFactory is a smart contract that manages the issuance of tokens that are representatives of
 properties on sale in the Hesty platform.
-By calling createProperty function property owners will issue a new token with a fixed supply 
+By calling `createProperty` function property owners will issue a new token with a fixed supply 
 that are representative of shares of a fund that owns the property.
 At the beginning all the tokens are stores in this Token Factory contract until someone buys them.
 
@@ -98,6 +98,10 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 2. Create a new property: `const tokenId = await propertyFactory.createProperty(totalSupply, tokenUri, pricePerToken)`
 3. Transfer a property: `await propertyFactory.safeTransferFrom(fromAddress, toAddress, tokenId, amount, data)`
 4. Check property details: `const property = await propertyFactory.properties(tokenId)`
+
+##Coverage
+
+1. Get the coverage: `npx hardhat coverage`
 
 ## Testing
 
