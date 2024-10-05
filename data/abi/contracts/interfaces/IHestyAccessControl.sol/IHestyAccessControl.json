@@ -1,7 +1,13 @@
 [
   {
-    "inputs": [],
-    "name": "isAllPaused",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "blackList",
     "outputs": [
       {
         "internalType": "bool",
@@ -20,26 +26,7 @@
         "type": "address"
       }
     ],
-    "name": "isUserBlackListed",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "isUserKYCValid",
+    "name": "kycCompleted",
     "outputs": [
       {
         "internalType": "bool",
@@ -61,6 +48,19 @@
     "name": "onlyAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

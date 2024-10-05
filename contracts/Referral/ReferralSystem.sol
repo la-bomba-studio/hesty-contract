@@ -35,17 +35,17 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     }
 
     modifier whenNotAllPaused(){
-        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
+        require(IHestyAccessControl(ctrHestyControl).paused(), "All Hesty Paused");
         _;
     }
 
     modifier whenKYCApproved(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
+        require(IHestyAccessControl(ctrHestyControl).kycCompleted(user), "No KYC Made");
         _;
     }
 
     modifier whenNotBlackListed(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserBlackListed(user), "Blacklisted");
+        require(IHestyAccessControl(ctrHestyControl).blackList(user), "Blacklisted");
         _;
     }
 

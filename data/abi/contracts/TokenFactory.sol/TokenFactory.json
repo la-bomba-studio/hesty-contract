@@ -170,19 +170,6 @@
   },
   {
     "inputs": [],
-    "name": "BASIS_POINTS",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "BLACKLIST_MANAGER",
     "outputs": [
       {
@@ -273,19 +260,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "WAD",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -331,6 +305,11 @@
       {
         "internalType": "uint256",
         "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "raiseDeadline",
         "type": "uint256"
       }
     ],
@@ -403,11 +382,6 @@
       {
         "internalType": "uint256",
         "name": "threshold",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "raiseEnd",
         "type": "uint256"
       },
       {
@@ -518,6 +492,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "giveUpOnProperty",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

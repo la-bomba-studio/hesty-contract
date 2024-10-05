@@ -21,9 +21,17 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     mapping(address => bool)  public kycCompleted;  // Store user KYC status
     mapping(address => bool)  public blackList;     // Store user Blacklist status
 
+
+    constructor() AccessControlDefaultAdminRules(
+        3 days,
+        msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
+    ){
+
+    }
+
     /**======================================
 
-    MODIFIER FUNCTIONS
+        MODIFIER FUNCTIONS
 
     =========================================**/
 
@@ -47,17 +55,9 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         _;
     }
 
-
-    constructor() AccessControlDefaultAdminRules(
-        3 days,
-        msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
-    ){
-
-    }
-
     /**======================================
 
-    MUTABLE FUNCTIONS
+        MUTABLE FUNCTIONS
 
     =========================================**/
 
@@ -133,19 +133,9 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     /**======================================
 
-    NON MUTABLE FUNCTIONS
+        NON MUTABLE FUNCTIONS
 
     =========================================**/
-
-    /**
-
-        @notice Returns KYC status
-
-        @return boolean that confirms if kyc is valid or not
-    */
-    function isUserKYCValid(address user) external view returns(bool){
-        return kycCompleted[user];
-    }
 
     /**
         @dev Returns Paused Status
@@ -153,18 +143,8 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
              the logic of the marketplace
         @return boolean Checks if contracts are paused
     */
-    function isAllPaused() external view returns(bool){
+    function paused() public override(IHestyAccessControl, Pausable) view returns(bool){
         return super.paused();
     }
-
-    /**
-        @dev    Returns user blacklist status
-        @param  user The user address
-        @return boolean Checks if user is blacklisted or not
-    */
-    function isUserBlackListed(address user) external view returns(bool){
-        return blackList[user];
-    }
-
 
 }

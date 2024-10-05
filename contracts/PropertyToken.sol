@@ -24,13 +24,12 @@ import "./Constants.sol";
  */
 contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constants{
 
-    uint32  private constant    MULTIPLIER   = 1e9;         /// Multiplier to guarantee math safety in gwei, everything else is neglectable
-    uint256 public              dividendPerToken;           /// Dividends per share/token
-
-    mapping(address => uint256) public xDividendPerToken;   /// Last user dividends essential to calculate future rewards
-
-    address public ctrHestyControl; // Hesty Access Control Contract
     IERC20  public rewardAsset;     // Reward Token (EURC)
+    IHestyAccessControl public ctrHestyControl; // Hesty Access Control Contract
+
+    uint256 public dividendPerToken; // Dividends per share/token
+
+    mapping(address => uint256) public xDividendPerToken;   // Last user dividends essential to calculate future rewards
 
     /**======================================
 
@@ -49,23 +48,29 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     }
 
     modifier whenNotBlackListed(address user){
-        require(!IHestyAccessControl(ctrHestyControl).isUserBlackListed(user), "Blacklisted");
+        require(!ctrHestyControl.blackList(user), "Blacklisted");
         _;
     }
 
     modifier whenKYCApproved(address user){
-        require(IHestyAccessControl(ctrHestyControl).isUserKYCValid(user), "No KYC Made");
+        require(ctrHestyControl.kycCompleted(user), "No KYC Made");
         _;
     }
 
     modifier whenNotAllPaused(){
-        require(IHestyAccessControl(ctrHestyControl).isAllPaused(), "All Hesty Paused");
+        require(ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
     /**
-    * @dev Mints initialSupply_ * 1 ether of tokens and transfers them
-           to Token Factory
+        @dev    Mints initialSupply_ * 1 ether of tokens and transfers them
+                to Token Factory
+        @param  tokenManagerContract_ Contract that will manage initial issued supply
+        @param  initialSupply_ Initial Property Token Supply
+        @param  name_ Token Name
+        @param  symbol_ Token Symbol/Ticker
+        @param  rewardAsset_ Token that will distributed through holders has an investment return (EURC)
+        @param  ctrHestyControl_ Contract that has the power to manage access to the token
     *
     * See {ERC20-constructor}.
     */
@@ -85,7 +90,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
         rewardAsset     = IERC20(rewardAsset_);
-        ctrHestyControl = ctrHestyControl_;
+        ctrHestyControl = IHestyAccessControl(ctrHestyControl_);
 
     }
 
@@ -121,24 +126,24 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     }
 
     /**
-    * @notice Claims users dividends
+        @notice Claims users dividends
+        @param  account The account that will receive dividends
+          @dev Checks if there is any dividends to distribute
+               and send them directly to the wallet
 
-      @dev Checks if there is any dividends to distribute
-           and send them directly to the wallet
+               The math logic is simple:
 
-           The math logic is simple:
+               - dividendPerToken keeps track of all time rewards
+                 per token distributed to holders
+               - xDividendPerToken keeps track of users already
+                 claimed rewards
+               - xDividendPerToken is updated before each transfer
+                 to be able to keep track of the math for each wallet
+               - Multiplier is just an helper to keep math precision
 
-           - dividendPerToken keeps track of all time rewards
-             per token distributed to holders
-           - xDividendPerToken keeps track of users already
-             claimed rewards
-           - xDividendPerToken is updated before each transfer
-             to be able to keep track of the math for each wallet
-           - Multiplier is just an helper to keep math precision
-
-            Using multiplier helper keeps it simple
-            but is not 100% precsie, but what is lost
-            is neglectable
+                Using multiplier helper keeps it simple
+                but is not 100% precsie, but what is lost
+                is neglectable
     */
     function claimDividends(address account) private{
 

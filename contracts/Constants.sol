@@ -7,10 +7,14 @@ pragma solidity ^0.8.0;
 abstract contract Constants {
 
     /// @notice Math Helper to get percentages amounts
-    uint256 public constant BASIS_POINTS = 100_00;
+    uint256 internal constant BASIS_POINTS = 100_00;
 
     /// @notice Math Helper for getting EURC power of decimals
-    uint256 public constant WAD = 10 ** 6;
+    uint256 internal constant WAD = 10 ** 6;
+
+    /// @notice Multiplier to guarantee math precision safety, is does not ensure 100% but
+    ///             the rest is neglectable as EURC has only 6 decimals
+    uint32 internal constant    MULTIPLIER   = 1e9;
 
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3

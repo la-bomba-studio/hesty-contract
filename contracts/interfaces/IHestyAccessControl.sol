@@ -11,13 +11,13 @@ interface IHestyAccessControl {
     function onlyAdmin(address manager) external;
 
     /// @notice Checks if an user has kyc approved in hesty
-    function isUserKYCValid(address user) external returns(bool);
+    function kycCompleted(address user) external returns(bool);
 
     /// @notice Checks if there is a global pause
-    function isAllPaused() external returns(bool);
+    function paused() external view returns(bool);
 
     /// @notice Checks if user is blacklisted from operating on Hesty or with
     ///         Hesty issued property tokens
-    function isUserBlackListed(address user) external returns(bool);
+    function blackList(address user) external returns(bool);
 
 }
