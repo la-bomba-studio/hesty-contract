@@ -219,7 +219,24 @@ describe("HestyAccessControl", function () {
 
     });
 
-  })
+    it("Pause All Hesty Contracts and then Unpause them", async function () {
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+      await hestyAccessControlCtr.connect(addr3).pause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(true);
+
+      await hestyAccessControlCtr.connect(addr3).unpause();
+
+      expect(await hestyAccessControlCtr.paused()).to.equal(false);
+
+    });
+
+  });
+
+
+
 
 /*
 
