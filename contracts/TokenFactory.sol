@@ -90,7 +90,6 @@ Constants {
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions
-        @param  refCtr_ Contract that manages referrals revenue and claims
     */
     constructor(
         uint256 fee,
@@ -98,8 +97,7 @@ Constants {
         uint256 refFee_,
         address treasury_,
         uint256 minInvAmount_,
-        address ctrHestyControl_,
-        address refCtr_
+        address ctrHestyControl_
     ){
 
         require(refFee_ < fee, "Ref fee invalid");
@@ -112,7 +110,6 @@ Constants {
         maxAmountOfRefRev       = 10000 * WAD;      // Start with max 10000€ of revenue
         OWNERS_FEE_BASIS_POINTS = ownersFee;
         initialized             = false;
-        referralSystemCtr       = IReferral(refCtr_);
         ctrHestyControl         = IHestyAccessControl(ctrHestyControl_);
 
     }
