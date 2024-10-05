@@ -24,6 +24,19 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "newReferralRouter",
+        "type": "address"
+      }
+    ],
+    "name": "addApprovedCtrs",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "onBehalfOf",
         "type": "address"
       },
@@ -218,6 +231,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "oldReferralRouter",
+        "type": "address"
+      }
+    ],
+    "name": "removeApprovedCtrs",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

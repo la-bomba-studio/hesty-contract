@@ -124,6 +124,15 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
+    function addApprovedCtrs(address newReferralRouter) external onlyAdmin{
+        approvedCtrs[newReferralRouter] = true;
+    }
+
+    function removeApprovedCtrs(address oldReferralRouter) external onlyAdmin{
+        require(approvedCtrs[oldReferralRouter], "Not Approved Router");
+        approvedCtrs[oldReferralRouter] = true;
+    }
+
     function setRewardToken(address newToken) external onlyAdmin{
         rewardToken = newToken;
     }

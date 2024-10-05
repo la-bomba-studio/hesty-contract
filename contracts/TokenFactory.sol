@@ -134,7 +134,7 @@ Constants {
         @dev Checks that `msg.sender` is not blacklisted
     */
     modifier whenNotBlackListed(){
-        require(ctrHestyControl.blackList(msg.sender), "Blacklisted");
+        require(!ctrHestyControl.blackList(msg.sender), "Blacklisted");
         _;
     }
 
@@ -150,7 +150,7 @@ Constants {
         @dev Checks that contracts are not paused
     */
     modifier whenNotAllPaused(){
-        require(ctrHestyControl.paused(), "All Hesty Paused");
+        require(!ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
@@ -189,7 +189,7 @@ Constants {
         string memory name,
         string memory symbol,
         address admin
-    ) external whenKYCApproved(msg.sender) whenNotAllPaused returns(uint256) {
+    ) external whenKYCApproved(msg.sender) whenNotAllPaused whenNotBlackListed returns(uint256) {
 
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
 
