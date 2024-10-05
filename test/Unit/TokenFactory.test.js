@@ -73,80 +73,86 @@ describe("Token Factory", function () {
 
   });
 
-  describe("Blacklist and UnBlacklist", function () {
+  it("Initialize", async function () {
 
-    it("Blacklist", async function () {
+    expect(await tokenFactory.initialized()).to.equal(false);
 
-      await expect(
-        hestyAccessControlCtr.blacklistUser(addr2.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
+    await expect(
+      tokenFactory.connect(propertyManager).initialize(referral.address)
+    ).to.be.revertedWith("Not Admin Manager");
 
+    expect(await tokenFactory.initialized()).to.equal(false);
 
-      hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+    await tokenFactory.initialize(referral.address)
 
+    expect(await tokenFactory.initialized()).to.equal(true);
 
-    });
+  });
 
-    it("Blacklist Twice", async function () {
+  describe("Non initialized contract Variable/Getters values", function () {
 
-      await expect(
-        hestyAccessControlCtr.blacklistUser(addr2.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
+    it("ctrHestyControl, referralSystemCtr", async function () {
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      expect(await tokenFactory.ctrHestyControl()).to.equal(hestyAccessControlCtr.address);
+      expect(await tokenFactory.connect(addr2).ctrHestyControl()).to.equal(hestyAccessControlCtr.address);
+      expect(await tokenFactory.connect(propertyManager).ctrHestyControl()).to.equal(hestyAccessControlCtr.address);
 
-      await expect(
-        hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-      ).to.be.revertedWith("Already blacklisted");
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-    });
+      await tokenFactory.initialize(referral.address)
 
-    it("UnBlacklist ", async function () {
-
-      await expect(
-        hestyAccessControlCtr.unBlacklistUser(owner.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-
+      expect(await tokenFactory.connect(propertyManager).referralSystemCtr()).to.equal(referral.address);
 
     });
 
-    it("UnBlacklist Twice", async function () {
+    it("propertyCounter", async function () {
 
-      await expect(
-        hestyAccessControlCtr.unBlacklistUser(owner.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
+      expect(await tokenFactory.propertyCounter()).to.equal(0);
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
+      await tokenFactory.initialize(referral.address)
 
-      await expect(
-        hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-      ).to.be.revertedWith("Not blacklisted");
+      expect(await tokenFactory.connect(addr2).propertyCounter()).to.equal(0);
 
     });
 
-    it("Blacklist and UnBlacklist", async function () {
+    it("minInvAmount", async function () {
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      expect(await tokenFactory.minInvAmount()).to.equal(1);
 
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
+
+      await tokenFactory.initialize(referral.address)
+
+      expect(await tokenFactory.connect(addr2).minInvAmount()).to.equal(1);
+
+    });
+
+    it("Referral Related Variables", async function () {
+
+      expect(await tokenFactory.maxNumberOfReferrals()).to.equal(20);
+      expect(await tokenFactory.maxAmountOfRefRev()).to.equal(10000000000);
+      expect(await tokenFactory.REF_FEE_BASIS_POINTS()).to.equal(100); // 1%
 
     });
 
-    it("Blacklist, UnBlacklist and Blacklist Again", async function () {
+    it("Treasury", async function () {
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      expect(await tokenFactory.treasury()).to.equal(owner.address); //3%
 
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      await tokenFactory.initialize(referral.address)
+
+      expect(await tokenFactory.treasury()).to.equal(owner.address); //3%
 
     });
+
 
   })
 

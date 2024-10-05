@@ -2,8 +2,38 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage.json" beforeDir="false" afterPath="$PROJECT_DIR$/coverage.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/Constants.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/Constants.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/HestyAccessControl.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/HestyAccessControl.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/HestyRouter.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/HestyRouter.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/PropertyToken.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/PropertyToken.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/Referral/ReferralSystem.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/Referral/ReferralSystem.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/Referral/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/Referral/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/TokenFactory.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/TokenFactory.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/interfaces/IHestyAccessControl.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/interfaces/IHestyAccessControl.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/interfaces/IReferral.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/interfaces/IReferral.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/interfaces/ITokenFactory.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/interfaces/ITokenFactory.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/contracts/interfaces/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/contracts/interfaces/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/coverage-final.json" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/coverage-final.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/Constants.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/Constants.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/HestyAccessControl.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/HestyAccessControl.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/HestyRouter.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/HestyRouter.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/PropertyToken.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/PropertyToken.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/Referral/ReferralSystem.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/Referral/ReferralSystem.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/Referral/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/Referral/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/TokenFactory.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/TokenFactory.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/IHestyAccessControl.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/IHestyAccessControl.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/IReferral.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/IReferral.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/ITokenFactory.sol.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/ITokenFactory.sol.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/contracts/interfaces/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov-report/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov-report/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage/lcov.info" beforeDir="false" afterPath="$PROJECT_DIR$/coverage/lcov.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,40 +84,8 @@
       <recent name="C:\Users\pedro\Documents\GitHub\hesty-contract\contracts\Referral" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Token Factory">
-    <configuration name="HestyAccessControl" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options />
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/test/HestyAccessControl.test.js</test-file>
-      <test-names>
-        <name value="HestyAccessControl" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="HestyAccessControl.Approve KYC and revert KYC Approval.Revert Kyc" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options />
-      <test-kind>TEST</test-kind>
-      <test-file>$PROJECT_DIR$/test/HestyAccessControl.test.js</test-file>
-      <test-names>
-        <name value="HestyAccessControl" />
-        <name value="Approve KYC and revert KYC Approval" />
-        <name value="Revert Kyc" />
-      </test-names>
-      <method v="2" />
-    </configuration>
-    <configuration name="Token Factory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Mocha.Token Factory.Non initialized contract Variable/Getters values">
+    <configuration name="Token Factory.Non initialized contract Variable/Getters values" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -99,10 +97,11 @@
       <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
         <name value="Token Factory" />
+        <name value="Non initialized contract Variable/Getters values" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Token Factory.Get constants from Constants files " type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory.Non initialized contract Variable/Getters values.Referral Related Variables" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -114,11 +113,12 @@
       <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
         <name value="Token Factory" />
-        <name value="Get constants from Constants files " />
+        <name value="Non initialized contract Variable/Getters values" />
+        <name value="Referral Related Variables" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Token Factory.Initialize" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory.Non initialized contract Variable/Getters values.Treasury" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -130,17 +130,52 @@
       <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
         <name value="Token Factory" />
-        <name value="Initialize" />
+        <name value="Non initialized contract Variable/Getters values" />
+        <name value="Treasury" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Token Factory.Non initialized contract Variable/Getters values.minInvAmount" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
+      <test-names>
+        <name value="Token Factory" />
+        <name value="Non initialized contract Variable/Getters values" />
+        <name value="minInvAmount" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <configuration name="Token Factory.Non initialized contract Variable/Getters values.propertyCounter" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
+      <working-directory>$PROJECT_DIR$</working-directory>
+      <pass-parent-env>true</pass-parent-env>
+      <ui>bdd</ui>
+      <extra-mocha-options />
+      <test-kind>TEST</test-kind>
+      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
+      <test-names>
+        <name value="Token Factory" />
+        <name value="Non initialized contract Variable/Getters values" />
+        <name value="propertyCounter" />
       </test-names>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Mocha.Token Factory" />
-        <item itemvalue="Mocha.Token Factory.Initialize" />
-        <item itemvalue="Mocha.Token Factory.Get constants from Constants files " />
-        <item itemvalue="Mocha.HestyAccessControl.Approve KYC and revert KYC Approval.Revert Kyc" />
-        <item itemvalue="Mocha.HestyAccessControl" />
+        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values" />
+        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values.Treasury" />
+        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values.Referral Related Variables" />
+        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values.minInvAmount" />
+        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values.propertyCounter" />
       </list>
     </recent_temporary>
   </component>
@@ -194,7 +229,7 @@
       <workItem from="1727430014619" duration="4001000" />
       <workItem from="1727689491559" duration="11232000" />
       <workItem from="1727793230072" duration="16994000" />
-      <workItem from="1727961525004" duration="45838000" />
+      <workItem from="1727961525004" duration="48544000" />
     </task>
     <servers />
   </component>
