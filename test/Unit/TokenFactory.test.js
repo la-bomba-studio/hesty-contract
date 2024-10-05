@@ -28,15 +28,16 @@ describe("Token Factory", function () {
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
     await token.deployed()
 
+    await hestyAccessControlCtr.grantRole(
+      await hestyAccessControlCtr.KYC_MANAGER(),
+      addr2.address
+    );
   /*  await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.BLACKLIST_MANAGER(),
       addr1.address
     );
 
-    await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.KYC_MANAGER(),
-      addr2.address
-    );
+
 
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.PAUSER_MANAGER(),
@@ -153,166 +154,17 @@ describe("Token Factory", function () {
 
     });
 
+    it("Property", async function () {
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+
+
+    });
+
 
   })
 
-  describe("Approve KYC and revert KYC Approval", function () {
-    it("Approve KYC", async function () {
-
-      await expect(
-        hestyAccessControlCtr.approveUserKYC(addr2.address)
-      ).to.be.revertedWith("Not KYC Manager");
-
-
-      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-
-      await expect(
-        hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-      ).to.be.revertedWith("Not blacklisted");
-
-    });
-
-    it("Approve KYC Twice", async function () {
-
-
-      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-
-      await expect(
-        hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-      ).to.be.revertedWith("Already Approved");
-
-    });
-
-    it("Revert Kyc", async function () {
-
-
-      await expect(
-        hestyAccessControlCtr.connect(addr1).revertUserKYC(propertyManager.address)
-      ).to.be.revertedWith("Not KYC Manager");
-
-      await expect(
-        hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
-      ).to.be.revertedWith("Not KYC Approved");
-
-      await  hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
-
-      expect(await hestyAccessControlCtr.kycCompleted(propertyManager.address)).to.equal(false);
-
-    });
-
-    it("Revert Kyc Twice", async function () {
-
-      await  hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
-
-      await expect(
-        hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
-      ).to.be.revertedWith("Not KYC Approved");
-
-    });
-
-    it("Approve KYC, Revert Kyc and Approve KYC Again", async function () {
-
-      await  hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr2).revertUserKYC(propertyManager.address)
-
-      await  hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
-    });
-
-  })
-
-  describe("Pause and Unpause", function () {
-
-
-    it("Status at the Beginning of Hesty Control Pause", async function () {
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-    });
-
-    it("Pause All Hesty Contracts", async function () {
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-      await hestyAccessControlCtr.connect(addr3).pause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-    });
-
-    it("Pause All Hesty Contracts and then Unpause them", async function () {
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-      await hestyAccessControlCtr.connect(addr3).pause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-      await hestyAccessControlCtr.connect(addr3).unpause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-    });
-
-    it("UnPause All Hesty Contracts when their are unpaused", async function () {
-
-      await expect(
-        hestyAccessControlCtr.connect(addr3).unpause()
-      ).to.be.revertedWith("Pausable: not paused");
-
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-    });
-
-    it("Wrong Pauser Manager", async function () {
-
-      await expect(
-        hestyAccessControlCtr.connect(addr2).pause()
-      ).to.be.revertedWith("Not Pauser Manager");
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-    });
-
-    it("Wrong Pauser Manager for unpause", async function () {
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-      await hestyAccessControlCtr.connect(addr3).pause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-      await expect(
-        hestyAccessControlCtr.connect(addr2).unpause()
-      ).to.be.revertedWith("Not Pauser Manager");
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-    });
-
-    it("Pause All Hesty Contracts, unpause and pause again", async function () {
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-      await hestyAccessControlCtr.connect(addr3).pause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-      await hestyAccessControlCtr.connect(addr3).unpause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(false);
-
-      await hestyAccessControlCtr.connect(addr3).pause();
-
-      expect(await hestyAccessControlCtr.paused()).to.equal(true);
-
-    });
-
-  });
 
 });

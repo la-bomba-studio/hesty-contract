@@ -167,4 +167,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         return super.paused();
     }
 
+    // Function to allow deposits
+    receive() external payable {}
+
 }
