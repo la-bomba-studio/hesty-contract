@@ -5,6 +5,7 @@ require('hardhat-abi-exporter');
 require('hardhat-contract-sizer');
 require('solidity-coverage')
 require("solidity-docgen")
+require('solidity-coverage')
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
