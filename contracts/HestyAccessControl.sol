@@ -28,7 +28,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     =========================================**/
 
     modifier onlyAdminManager(address manager){
-        require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Blacklist Manager");
+        require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Admin Manager");
         _;
     }
 
@@ -75,7 +75,8 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
                 onlyOnwer
     */
     function blacklistUser(address user) external onlyBlackListManager(msg.sender){
-        blackList[user] = false;
+        require(!blackList[user], "Already blacklisted");
+        blackList[user] = true;
     }
 
     /**
@@ -85,6 +86,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
              onlyOnwer
     */
     function unBlacklistUser(address user) external onlyBlackListManager(msg.sender){
+        require(blackList[user], "Not blacklisted");
         blackList[user] = false;
     }
 
@@ -95,6 +97,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
              onlyOnwer
     */
     function approveUserKYC(address user) external onlyKYCManager(msg.sender){
+        require(!kycCompleted[user], "Already Approved");
         kycCompleted[user] = true;
     }
 
@@ -105,6 +108,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     *
     */
     function revertUserKYC(address user) external onlyKYCManager(msg.sender){
+        require(kycCompleted[user], "Not KYC Approved");
         kycCompleted[user] = false;
     }
 
