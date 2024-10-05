@@ -84,10 +84,10 @@ Constants {
 
     /**
         @dev    Constructor for Token Factory
-        @param  fee Investment fee charged by Hesty as Basis Points
-        @param  ownersFee Owner Fee charged by Hesty as Basis Points
-        @param  refFee_ Referaal Fee charged by referrals as Basis Points
-        @param  treasury_ The address that will receive Hesty fees revenue
+        @param  fee Investment fee charged by Hesty (in Basis Points)
+        @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
+        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions
         @param  refCtr_ Contract that manages referrals revenue and claims
@@ -158,8 +158,8 @@ Constants {
     }
 
     /**
-        @dev Initialized Token Factory Contract
-        @param referralSystemCtr_ Referral System Contract that manages referrals rewards
+        @dev    Initialized Token Factory Contract
+        @param  referralSystemCtr_ Referral System Contract that manages referrals rewards
     */
     function initialize(address referralSystemCtr_) external onlyAdmin{
 

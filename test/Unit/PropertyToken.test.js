@@ -1,7 +1,7 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
-describe("HestyAccessControl", function () {
+describe("Property Token", function () {
   let PropertyFactory;
   let propertyFactory;
   let owner;
