@@ -30,11 +30,6 @@
         "internalType": "address",
         "name": "ctrHestyControl_",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "refCtr_",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
