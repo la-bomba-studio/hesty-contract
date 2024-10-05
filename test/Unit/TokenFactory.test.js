@@ -14,10 +14,21 @@ describe("Token Factory", function () {
 
     HestyAccessControl = await ethers.getContractFactory("HestyAccessControl");
     hestyAccessControlCtr = await HestyAccessControl.connect(owner).deploy();
-    TokenFactory = await ethers.getContractFactory("TokenFactory");
-    tokenFactory = await TokenFactory.connect(owner).deploy(300, 1000, 100, owner.address, 1, );
     await hestyAccessControlCtr.deployed();
-    await hestyAccessControlCtr.grantRole(
+
+    TokenFactory = await ethers.getContractFactory("TokenFactory");
+    tokenFactory = await TokenFactory.connect(owner).deploy(300, 1000, 100, owner.address, 1, hestyAccessControlCtr.address);
+    await tokenFactory.deployed();
+
+    Token = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/ERC20.sol:ERC20");
+    token = await Token.connect(owner).deploy("name", "symbol");
+    await token.deployed()
+
+    Referral = await ethers.getContractFactory("ReferralSystem");
+    referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
+    await token.deployed()
+
+  /*  await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.BLACKLIST_MANAGER(),
       addr1.address
     );
@@ -30,32 +41,35 @@ describe("Token Factory", function () {
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.PAUSER_MANAGER(),
       addr3.address
-    );
+    );*/
   });
 
   it("Get constants from Constants files ", async function () {
 
-    expect(await hestyAccessControlCtr.BLACKLIST_MANAGER()).to.equal("0x46a5e99059e0b949704bc0cc0e3748d22c5f6ededc6f4a64b1e645b926d1163b");
+    expect(await tokenFactory.BLACKLIST_MANAGER()).to.equal("0x46a5e99059e0b949704bc0cc0e3748d22c5f6ededc6f4a64b1e645b926d1163b");
 
-    expect(await hestyAccessControlCtr.FUNDS_MANAGER()).to.equal("0x93779bf6be703205517715c86297c193472c9d5533e90609b671022041168a4c");
+    expect(await tokenFactory.FUNDS_MANAGER()).to.equal("0x93779bf6be703205517715c86297c193472c9d5533e90609b671022041168a4c");
 
-    expect(await hestyAccessControlCtr.KYC_MANAGER()).to.equal("0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949");
+    expect(await tokenFactory.KYC_MANAGER()).to.equal("0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949");
 
-    expect(await hestyAccessControlCtr.PAUSER_MANAGER()).to.equal("0x9ad250910475b46679c53074aa5d6cd2421e8c7126f9eb9c2d0aeeebbe1df64d");
+    expect(await tokenFactory.PAUSER_MANAGER()).to.equal("0x9ad250910475b46679c53074aa5d6cd2421e8c7126f9eb9c2d0aeeebbe1df64d");
 
-    expect(await hestyAccessControlCtr.BASIS_POINTS()).to.equal(10_000);
-
-    expect(await hestyAccessControlCtr.WAD()).to.equal(10 ** 6);
 
   });
 
-  it("Only Admin", async function () {
+  it("Initialize", async function () {
 
-    await hestyAccessControlCtr.onlyAdmin(owner.address);
+    expect(await tokenFactory.initialized()).to.equal(false);
 
     await expect(
-      hestyAccessControlCtr.connect(propertyManager).onlyAdmin(propertyManager.address)
+      tokenFactory.connect(propertyManager).initialize(referral.address)
     ).to.be.revertedWith("Not Admin Manager");
+
+    expect(await tokenFactory.initialized()).to.equal(false);
+
+    await tokenFactory.initialize(referral.address)
+
+    expect(await tokenFactory.initialized()).to.equal(true);
 
   });
 
