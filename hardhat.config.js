@@ -6,6 +6,7 @@ require('hardhat-contract-sizer');
 require('solidity-coverage')
 require("solidity-docgen")
 require('solidity-coverage')
+require("hardhat-gas-reporter");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -39,7 +40,7 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      bscTestnet: "VBJGC17JF227TPEH8FGS6BTZ1I6Q1UEX7W",
+      bscTestnet: process.env.BSC_TESTNET_API_KEY,
       baseSepolia: "empty"
     },
     customChains: [
@@ -72,4 +73,11 @@ module.exports = {
     collapseNewlines: true,
     pageExtension: '.md',
   },
+  gasReporter: {
+    currency: 'EUR',
+    enabled: true,
+    L2:"base",
+    L2Etherscan: process.env.L2ETHERSCAN,
+    coinmarketcap:process.env.COINMARKETCAP_API_KEY
+  }
 };

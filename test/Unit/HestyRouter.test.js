@@ -24,6 +24,10 @@ describe("Hesty Router", function () {
     token = await Token.connect(owner).deploy("name", "symbol");
     await token.deployed()
 
+    Referral = await ethers.getContractFactory("ReferralSystem");
+    referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
+    await referral.deployed()
+
     Router = await ethers.getContractFactory("HestyRouter");
     router = await Router.connect(owner).deploy(tokenFactory.address, hestyAccessControlCtr.address);
     await router.deployed()
@@ -89,6 +93,23 @@ describe("Hesty Router", function () {
 
       await tokenFactory.buyTokens(0, 2, addr3.address);
     })
+
+    it("offChainBuyTokens", async function () {
+
+      await expect(
+        router.connect(addr4).offChainBuyTokens(0, addr1.address, 20000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(addr1.address);
+
+      const blockNumBefore = await ethers.provider.getBlockNumber();
+      const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+      const timestampBefore = blockBefore.timestamp;
+      await expect(
+        router.offChainBuyTokens(0, addr1.address, 20000)
+      ).to.emit(tokenFactory, 'NewInvestment')
+        .withArgs(0, addr1.address, 80000, timestampBefore + 1);
+    });
 
 
   })
