@@ -220,4 +220,40 @@ describe("Referral System", function () {
 
   })
 
+  describe("Admin Setters", function () {
+
+    it("setHestyAccessControlCtr", async function () {
+
+      await expect(
+        router.setNewTokenFactory("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      await expect(
+        router.connect(addr4).setNewTokenFactory(addr1.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        router.setNewTokenFactory(addr1.address)
+      ).to.emit(router, 'NewHestyAccessControl')
+        .withArgs(addr1.address);
+    });
+
+    it("setNewTokenFactory", async function () {
+
+      await expect(
+        router.setNewTokenFactory("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      await expect(
+        router.connect(addr4).setNewTokenFactory(addr1.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        router.setNewTokenFactory(addr1.address)
+      ).to.emit(router, 'NewTokenFactory')
+        .withArgs(addr1.address);
+    });
+
+  })
+
 });

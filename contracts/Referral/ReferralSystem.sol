@@ -29,6 +29,8 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
         event  AddPropertyRefRewards(uint256 indexed id, address onBehalfOf, uint256 amount);
     event  AddGlobalRewards(address onBehalfOf, uint256 amount);
+    event NewTokenFactory(address newFactory);
+    event NewHestyAccessControl(address newAccessControl);
 
 
     /**
@@ -168,6 +170,8 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
         require(newControl != address(0), "Not null");
         ctrHestyControl = IHestyAccessControl(newControl);
+
+        emit NewHestyAccessControl(newControl);
     }
 
     function setNewTokenFactory(address newFactory) external onlyAdmin{
@@ -179,5 +183,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         approvedCtrs[newFactory] = true;
 
         tokenFactory = ITokenFactory(newFactory);
+
+        emit NewTokenFactory(newFactory);
     }
 }

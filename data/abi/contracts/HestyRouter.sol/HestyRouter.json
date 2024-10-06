@@ -71,6 +71,19 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "newAccessControl",
+        "type": "address"
+      }
+    ],
+    "name": "NewHestyAccessControl",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "newFactory",
         "type": "address"
       }
