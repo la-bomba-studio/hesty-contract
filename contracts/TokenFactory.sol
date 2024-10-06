@@ -66,6 +66,7 @@ Constants {
     event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 date);
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
+    event                 NewPlatformFee(uint256 newFee);
 
 
     struct PropertyInfo{
@@ -397,7 +398,11 @@ Constants {
         return property[id].threshold <= property[id].raised && property[id].isCompleted;
     }
 
-
+    /**
+        @dev    Returns Property representative token
+        @param id Property Id
+        @return Property Token
+    */
     function getPropertyToken(uint256 id) external view returns(address){
         return property[id].asset;
     }
@@ -468,6 +473,8 @@ Constants {
 
         require(newFee < BASIS_POINTS, "Fee must be valid");
         FEE_BASIS_POINTS = newFee;
+
+        emit NewPlatformFee(newFee);
     }
 
     /**

@@ -110,8 +110,11 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 ### Environment Variables
 
 ROPSTEN_PRIVATE_KEY=
+
 BSC_TESTNET_API_KEY=
+
 L2ETHERSCAN=
+
 COINMARKETCAP_API_KEY=
 
 ### Installation
