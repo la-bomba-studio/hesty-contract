@@ -57,6 +57,7 @@ Constants {
     mapping(address => mapping(uint256 => uint256)) public userInvested; // Amount invested by each user in each property
 
     //Event
+    event              InitializeFactory(address referralCtr);
     event                 CreateProperty(uint256 id);
     event        NewMaxNumberOfReferrals(uint256 number);
     event           NewMaxAmountOfRefRev(uint256 number);
@@ -182,6 +183,9 @@ Constants {
 
         initialized       = true;
         referralSystemCtr = IReferral(referralSystemCtr_);
+
+        emit InitializeFactory(referralSystemCtr_);
+
     }
 
     /**===================================================
@@ -340,7 +344,7 @@ Constants {
         @dev    Claim Investment returns
         @param  id Property id
     */
-    function claimInvestmentreturns(uint256 id) external nonReentrant{
+    function claimInvestmentReturns(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
 
@@ -471,6 +475,12 @@ Constants {
         FEE_BASIS_POINTS = newFee;
 
         emit NewPlatformFee(newFee);
+    }
+
+    function setOwnersFee(uint256 newFee) external onlyAdmin{
+
+        require( OWNERS_FEE_BASIS_POINTS < BASIS_POINTS, "Fee must be valid");
+        OWNERS_FEE_BASIS_POINTS = newFee;
     }
 
     /**

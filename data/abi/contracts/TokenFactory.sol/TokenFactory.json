@@ -84,6 +84,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "referralCtr",
+        "type": "address"
+      }
+    ],
+    "name": "InitializeFactory",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "uint256",
         "name": "propertyId",
@@ -397,7 +410,7 @@
         "type": "uint256"
       }
     ],
-    "name": "claimInvestmentreturns",
+    "name": "claimInvestmentReturns",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
