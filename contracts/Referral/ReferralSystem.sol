@@ -47,7 +47,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     }
 
     modifier whenNotAllPaused(){
-        require(ctrHestyControl.paused(), "All Hesty Paused");
+        require(!ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
@@ -57,7 +57,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     }
 
     modifier whenNotBlackListed(address user){
-        require(ctrHestyControl.blackList(user), "Blacklisted");
+        require(!ctrHestyControl.blackList(user), "Blacklisted");
         _;
     }
 
@@ -161,6 +161,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     }
 
     function setRewardToken(address newToken) external onlyAdmin{
+        require(newToken != address(0), "Not null");
         rewardToken = newToken;
     }
 

@@ -12,9 +12,11 @@ abstract contract Constants {
     /// @notice Math Helper for getting EURC power of decimals
     uint256 internal constant WAD = 10 ** 6;
 
+    uint256 internal constant TEN_POWER_FIFTEEN = 10 ** 15;
+
     /// @notice Multiplier to guarantee math precision safety, is does not ensure 100% but
     ///             the rest is neglectable as EURC has only 6 decimals
-    uint32 internal constant    MULTIPLIER   = 1e9;
+    uint128 internal constant    MULTIPLIER   = 1e32;
 
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3
