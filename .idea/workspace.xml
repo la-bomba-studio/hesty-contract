@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coverage.json" beforeDir="false" afterPath="$PROJECT_DIR$/coverage.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/Unit/PropertyToken.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/PropertyToken.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +57,7 @@
       <recent name="C:\Users\pedro\Documents\GitHub\hesty-contract\contracts\Referral" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Property Token.Basic variables">
+  <component name="RunManager" selected="Mocha.Token Factory.Admin Setters">
     <configuration name="Property Token.Basic variables" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -104,7 +106,7 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Token Factory.Non initialized contract Variable/Getters values.Buy Tokens with referral" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -112,16 +114,14 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options />
-      <test-kind>TEST</test-kind>
+      <test-kind>SUITE</test-kind>
       <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
         <name value="Token Factory" />
-        <name value="Non initialized contract Variable/Getters values" />
-        <name value="Buy Tokens with referral" />
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Token Factory.Revenue Distribution.DistributeRevenue" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
+    <configuration name="Token Factory.Admin Setters" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
       <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
@@ -129,22 +129,21 @@
       <pass-parent-env>true</pass-parent-env>
       <ui>bdd</ui>
       <extra-mocha-options />
-      <test-kind>TEST</test-kind>
+      <test-kind>SUITE</test-kind>
       <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
       <test-names>
         <name value="Token Factory" />
-        <name value="Revenue Distribution" />
-        <name value="DistributeRevenue" />
+        <name value="Admin Setters" />
       </test-names>
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Mocha.Token Factory.Admin Setters" />
+        <item itemvalue="Mocha.Token Factory" />
         <item itemvalue="Mocha.Property Token.Basic variables" />
         <item itemvalue="Mocha.Referral System.Remove Approved Contracts" />
         <item itemvalue="Mocha.Referral System.Add Approved Contracts" />
-        <item itemvalue="Mocha.Token Factory.Revenue Distribution.DistributeRevenue" />
-        <item itemvalue="Mocha.Token Factory.Non initialized contract Variable/Getters values.Buy Tokens with referral" />
       </list>
     </recent_temporary>
   </component>
@@ -199,7 +198,7 @@
       <workItem from="1727689491559" duration="11232000" />
       <workItem from="1727793230072" duration="16994000" />
       <workItem from="1727961525004" duration="61544000" />
-      <workItem from="1728209401240" duration="3989000" />
+      <workItem from="1728209401240" duration="5544000" />
     </task>
     <servers />
   </component>

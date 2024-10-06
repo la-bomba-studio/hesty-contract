@@ -199,12 +199,14 @@ describe("Property Token", function () {
       await propertyToken.connect(addr3).pause();
 
       await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
-      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+      ).to.be.revertedWith("ERC20: insufficient allowance");
 
-      await propertyToken.connect(addr3).unpause();
+      await propertyToken.connect(propertyManager).approve(owner.address, 10);
 
       await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
       ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+
+      await propertyToken.connect(addr3).unpause();
 
       await propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
 
