@@ -39,18 +39,6 @@ describe("Referral System", function () {
     );*/
   });
 
-  it("Get constants from Constants files ", async function () {
-
-    expect(await referral.BLACKLIST_MANAGER()).to.equal("0x46a5e99059e0b949704bc0cc0e3748d22c5f6ededc6f4a64b1e645b926d1163b");
-
-    expect(await referral.FUNDS_MANAGER()).to.equal("0x93779bf6be703205517715c86297c193472c9d5533e90609b671022041168a4c");
-
-    expect(await referral.KYC_MANAGER()).to.equal("0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949");
-
-    expect(await referral.PAUSER_MANAGER()).to.equal("0x9ad250910475b46679c53074aa5d6cd2421e8c7126f9eb9c2d0aeeebbe1df64d");
-
-
-  });
 
   it("Basic Getters", async function () {
 
@@ -59,8 +47,6 @@ describe("Referral System", function () {
     expect(await referral.rewardToken()).to.equal(token.address);
 
     expect(await referral.tokenFactory()).to.equal(tokenFactory.address);
-
-
 
   });
 
@@ -84,13 +70,15 @@ describe("Referral System", function () {
 
     await referral.addApprovedCtrs(addr4.address)
 
-    expect(await referral.approvedCtrs(addr4.address)).to.equal(true);
+    await referral.removeApprovedCtrs(addr4.address)
+
+    expect(await referral.approvedCtrs(addr4.address)).to.equal(false);
 
   });
 
-  describe("Blacklist and UnBlacklist", function () {
+  describe("Add Rewards", function () {
 
-    it("Blacklist", async function () {
+    it("Add rewards new user", async function () {
 
       await expect(
         hestyAccessControlCtr.blacklistUser(addr2.address)

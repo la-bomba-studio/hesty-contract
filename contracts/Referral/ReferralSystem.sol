@@ -79,15 +79,17 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         if(referredBy[user] == address(0)){
             referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
+        }else if(referredBy[user] == onBehalfOf){
+            rewards[onBehalfOf][projectId] += amount;
+            rewardsByProperty[projectId]   += amount;
+            totalRewards[onBehalfOf]       += amount;
         }
-
-        rewards[onBehalfOf][projectId] += amount;
-        rewardsByProperty[projectId]   += amount;
-        totalRewards[onBehalfOf]       += amount;
 
     }
 
     function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external whenNotAllPaused{
+
+        require(approvedCtrs[msg.sender], "Not Approved");
 
         bool txVal = IERC20(rewardToken).transferFrom(msg.sender, address(this), amount);
         require(txVal, "Something odd happened");
@@ -96,9 +98,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         if(referredBy[user] == address(0)){
             referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
+        }else if(referredBy[user] == onBehalfOf){
+            globalRewards[onBehalfOf] += amount;
         }
 
-        globalRewards[onBehalfOf] += amount;
+
 
 
     }
