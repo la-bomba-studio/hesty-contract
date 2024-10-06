@@ -94,6 +94,32 @@ describe("Hesty Router", function () {
       await tokenFactory.buyTokens(0, 2, addr3.address);
     })
 
+    it("adminDistribution", async function () {
+
+      await expect(
+        router.connect(addr4).adminDistribution(0, 20320)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        router.adminDistribution(0, 20320)
+      ).to.be.revertedWith("ERC20: insufficient allowance");
+
+      await token.approve(router.address, 20320)
+
+      await expect(
+        router.adminDistribution(0, 20320)
+      ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(router.address);
+
+      await token.mint(router.address, 20320)
+
+      await expect(
+        router.adminDistribution(0, 20320)
+      ).to.emit(tokenFactory, 'RevenuePayment')
+        .withArgs(0, 20320);
+    });
+
     it("offChainBuyTokens", async function () {
 
       await expect(
