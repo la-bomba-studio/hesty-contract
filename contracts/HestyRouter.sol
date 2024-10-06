@@ -33,26 +33,12 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
     IHestyAccessControl public hestyAccessControl;
 
     modifier onlyAdmin(){
-        IHestyAccessControl(hestyAccessControl).onlyAdmin(msg.sender);
-        _;
-    }
-
-    modifier onlyBlackListManager(address manager){
-        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
-        _;
-    }
-
-    modifier onlyKYCManager(address manager){
-        require(hasRole(KYC_MANAGER, manager), "Not KYC Manager");
-        _;
-    }
-
-    modifier onlyPauserManager(address manager){
-        require(hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
+        hestyAccessControl.onlyAdmin(msg.sender);
         _;
     }
 
     event NewTokenFactory(address newFactory);
+    event NewHestyAccessControl(address newAccessControl);
 
     /**
         @dev    Hesty Router Constructor
@@ -92,13 +78,11 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         ITokenFactory(tokenFactory).adminBuyTokens(propertyId, onBehalfOf, amount);
     }
 
-    function revertUserBuyTokens() external onlyAdmin{
-
-    }
-
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
         require(newControl != address(0), "Not null");
         hestyAccessControl = IHestyAccessControl(newControl);
+
+        emit NewHestyAccessControl(newControl);
     }
 
     function setNewTokenFactory(address newFactory) external onlyAdmin{

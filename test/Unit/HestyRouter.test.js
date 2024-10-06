@@ -139,6 +139,22 @@ describe("Hesty Router", function () {
 
   describe("Admin Setters", function () {
 
+    it("setHestyAccessControlCtr", async function () {
+
+      await expect(
+        router.setHestyAccessControlCtr("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      await expect(
+        router.connect(addr4).setHestyAccessControlCtr(addr1.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        router.setHestyAccessControlCtr(addr1.address)
+      ).to.emit(router, 'NewHestyAccessControl')
+        .withArgs(addr1.address);
+    });
+
     it("setNewTokenFactory", async function () {
 
       await expect(
