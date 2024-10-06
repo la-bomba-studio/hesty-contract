@@ -87,6 +87,88 @@ describe("Referral System", function () {
 
       hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
 
+      referral.addRewards(addr3.address, addr4.address, 0, 2000);
+
+    });
+
+    it("Add globalrewards new user", async function () {
+
+
+      await referral.addGlobalRewards(addr3.address, 2000);
+
+    });
+
+
+    it("Claim globalrewards new user", async function () {
+
+      await referral.addGlobalRewards(addr3.address, 2000);
+
+      await referral.claimGlobalRewards(addr3.address)
+
+    });
+
+    it("Add rewards Double", async function () {
+
+      await expect(
+        hestyAccessControlCtr.blacklistUser(addr2.address)
+      ).to.be.revertedWith("Not Blacklist Manager");
+
+
+      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+
+      await referral.addRewards(addr3.address, addr4.address, 0, 2000);
+      await referral.addRewards(addr3.address, addr4.address, 0, 2000);
+
+
+    });
+
+
+  })
+
+  describe("Setters", function () {
+
+    it("setNewTokenFactory", async function () {
+
+      await expect(
+        referral.connect(addr3).setNewTokenFactory(propertyManager.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        referral.setNewTokenFactory("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      await referral.setNewTokenFactory(propertyManager.address)
+
+
+    });
+
+    it("setHestyAccessControlCtr", async function () {
+
+      await expect(
+        referral.connect(addr3).setHestyAccessControlCtr(propertyManager.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        referral.setHestyAccessControlCtr("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      referral.setHestyAccessControlCtr(propertyManager.address)
+
+
+    });
+
+    it("SetRewardToken", async function () {
+
+      await expect(
+        referral.connect(addr3).setRewardToken(propertyManager.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        referral.setRewardToken("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not null");
+
+      referral.setRewardToken(propertyManager.address)
+
 
     });
 

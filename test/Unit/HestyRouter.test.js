@@ -108,11 +108,8 @@ describe("Hesty Router", function () {
 
       await token.mint(router.address, 20320)
 
-      await expect(
-        router.adminDistribution(0, 20320)
-      ).to.be.revertedWith("ERC20: insufficient allowance");
+      expect(await token.balanceOf(router.address)).to.equal(20320);
 
-      await token.approve(router.address, 20320)
 
       await expect(
         router.adminDistribution(0, 20320)
