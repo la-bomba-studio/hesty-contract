@@ -29,6 +29,12 @@ describe("Property Token", function () {
 
     await propertyToken.deployed();
 
+    // 1_000_000_000 it would mean a 1_000_000_000_000 total investment as ticker price is 1000€ min
+    PropertyToken = await ethers.getContractFactory("PropertyToken");
+    propertyToken2 = await PropertyToken.connect(owner).deploy(owner.address, 1_000_000_000, "Token", "TKN", token.address, hestyAccessControlCtr.address);
+
+    await propertyToken2.deployed();
+
     await propertyToken.grantRole(
       await propertyToken.BLACKLIST_MANAGER(),
       addr1.address
@@ -76,6 +82,56 @@ describe("Property Token", function () {
 
 
   });
+
+  describe("DistributeRevenue and Claim it", function () {
+
+
+
+    it("claimexternal", async function () {
+
+      await token.mint(owner.address, 400000000);
+
+      await token.approve(propertyToken.address, 2000000);
+
+      await propertyToken.distributionRewards(2000000);
+
+      expect(await token.balanceOf(owner.address)).to.equal(398000000);
+
+      expect(await token.balanceOf(propertyToken.address)).to.equal(2000000);
+
+      await propertyToken.claimDividensExternal(owner.address)
+
+      expect(await propertyToken.dividendPerToken()).to.equal("20000000000000000000");
+
+      expect(await token.balanceOf(propertyToken.address)).to.equal(0);
+
+      expect(await token.balanceOf(owner.address)).to.equal(400000000);
+
+    });
+
+    it("claimexternalBigSupply", async function () {
+
+      await token.mint(owner.address, 400000000);
+
+      await token.approve(propertyToken2.address, 2000000);
+
+      await propertyToken2.distributionRewards(2000000);
+
+      expect(await token.balanceOf(owner.address)).to.equal(398000000);
+
+      expect(await token.balanceOf(propertyToken2.address)).to.equal(2000000);
+
+      await propertyToken2.claimDividensExternal(owner.address)
+
+      expect(await propertyToken2.dividendPerToken()).to.equal(200000000000);
+
+      expect(await token.balanceOf(propertyToken2.address)).to.equal(0);
+
+      expect(await token.balanceOf(owner.address)).to.equal(400000000);
+
+    });
+
+  })
 
   describe("Pause and Unpause", function () {
 

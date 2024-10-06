@@ -86,6 +86,9 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
      msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
 
+        // Supplies higher than TEN_POWER_FIFTEEN ether will result in precision lost
+        require(initialSupply_ < TEN_POWER_FIFTEEN, "Precision lost");
+
         // Property Token Supply Issuance
         _mint(address(tokenManagerContract_), initialSupply_ * 1 ether);
 
