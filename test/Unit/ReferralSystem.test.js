@@ -60,6 +60,10 @@ describe("Referral System", function () {
 
     expect(await referral.approvedCtrs(addr4.address)).to.equal(true);
 
+    await expect(
+      referral.addApprovedCtrs(addr4.address)
+    ).to.be.revertedWith("Already Approved");
+
   });
 
   it("Remove Approved Contracts", async function () {
@@ -73,6 +77,10 @@ describe("Referral System", function () {
     await referral.removeApprovedCtrs(addr4.address)
 
     expect(await referral.approvedCtrs(addr4.address)).to.equal(false);
+
+    await expect(
+      referral.removeApprovedCtrs(addr4.address)
+    ).to.be.revertedWith("Not Approved Router");
 
   });
 
@@ -225,32 +233,32 @@ describe("Referral System", function () {
     it("setHestyAccessControlCtr", async function () {
 
       await expect(
-        router.setHestyAccessControlCtr("0x0000000000000000000000000000000000000000")
+        referral.setHestyAccessControlCtr("0x0000000000000000000000000000000000000000")
       ).to.be.revertedWith("Not null");
 
       await expect(
-        router.connect(addr4).setHestyAccessControlCtr(addr1.address)
+        referral.connect(addr4).setHestyAccessControlCtr(addr1.address)
       ).to.be.revertedWith("Not Admin Manager");
 
       await expect(
-        router.setHestyAccessControlCtr(addr1.address)
-      ).to.emit(router, 'NewHestyAccessControl')
+        referral.setHestyAccessControlCtr(addr1.address)
+      ).to.emit(referral, 'NewHestyAccessControl')
         .withArgs(addr1.address);
     });
 
     it("setNewTokenFactory", async function () {
 
       await expect(
-        router.setNewTokenFactory("0x0000000000000000000000000000000000000000")
+        referral.setNewTokenFactory("0x0000000000000000000000000000000000000000")
       ).to.be.revertedWith("Not null");
 
       await expect(
-        router.connect(addr4).setNewTokenFactory(addr1.address)
+        referral.connect(addr4).setNewTokenFactory(addr1.address)
       ).to.be.revertedWith("Not Admin Manager");
 
       await expect(
-        router.setNewTokenFactory(addr1.address)
-      ).to.emit(router, 'NewTokenFactory')
+        referral.setNewTokenFactory(addr1.address)
+      ).to.emit(referral, 'NewTokenFactory')
         .withArgs(addr1.address);
     });
 

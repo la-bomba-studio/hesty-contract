@@ -493,13 +493,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "revertUserBuyTokens",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",

@@ -68,6 +68,7 @@ Constants {
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
+    event                   ClaimProfits(address user, uint256 propertyId);
 
 
     struct PropertyInfo{
@@ -344,6 +345,8 @@ Constants {
         PropertyInfo storage p = property[id];
 
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
+
+        emit ClaimProfits(msg.sender, id);
     }
 
     function recoverFundsInvested(uint256 id) external nonReentrant{
@@ -358,20 +361,6 @@ Constants {
         IERC20(p.paymentToken).transfer(msg.sender, amount);
 
     }
-
-    /**
-    *   @notice Admin Distribution of Property Revenue
-    *
-    *   @param id Property Id
-    *   @param amount Amount of EURC to distribute through property token holders
-    *
-    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin{
-
-        PropertyInfo storage p = property[id];
-        IERC20(p.revenueToken).approve(p.asset, amount);
-        PropertyToken(p.asset).distributionRewards(amount);
-
-    }*/
 
     function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
 
