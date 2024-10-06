@@ -57,6 +57,7 @@ Constants {
     mapping(address => mapping(uint256 => uint256)) public userInvested; // Amount invested by each user in each property
 
     //Event
+    event              InitializeFactory(address referralCtr);
     event                 CreateProperty(uint256 id);
     event        NewMaxNumberOfReferrals(uint256 number);
     event           NewMaxAmountOfRefRev(uint256 number);
@@ -68,6 +69,7 @@ Constants {
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
+    event                   ClaimProfits(address user, uint256 propertyId);
 
 
     struct PropertyInfo{
@@ -181,6 +183,9 @@ Constants {
 
         initialized       = true;
         referralSystemCtr = IReferral(referralSystemCtr_);
+
+        emit InitializeFactory(referralSystemCtr_);
+
     }
 
     /**===================================================
@@ -339,11 +344,13 @@ Constants {
         @dev    Claim Investment returns
         @param  id Property id
     */
-    function claimInvestmentreturns(uint256 id) external nonReentrant{
+    function claimInvestmentReturns(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
 
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
+
+        emit ClaimProfits(msg.sender, id);
     }
 
     function recoverFundsInvested(uint256 id) external nonReentrant{
@@ -358,20 +365,6 @@ Constants {
         IERC20(p.paymentToken).transfer(msg.sender, amount);
 
     }
-
-    /**
-    *   @notice Admin Distribution of Property Revenue
-    *
-    *   @param id Property Id
-    *   @param amount Amount of EURC to distribute through property token holders
-    *
-    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin{
-
-        PropertyInfo storage p = property[id];
-        IERC20(p.revenueToken).approve(p.asset, amount);
-        PropertyToken(p.asset).distributionRewards(amount);
-
-    }*/
 
     function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
 
@@ -482,6 +475,12 @@ Constants {
         FEE_BASIS_POINTS = newFee;
 
         emit NewPlatformFee(newFee);
+    }
+
+    function setOwnersFee(uint256 newFee) external onlyAdmin{
+
+        require( OWNERS_FEE_BASIS_POINTS < BASIS_POINTS, "Fee must be valid");
+        OWNERS_FEE_BASIS_POINTS = newFee;
     }
 
     /**
