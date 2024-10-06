@@ -64,6 +64,7 @@ Constants {
     event   NewPropertyOwnerAddrReceiver(address newAddress);
     event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 date);
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
+    event                 CancelProperty(uint256 propertyId);
 
 
     struct PropertyInfo{
@@ -119,6 +120,14 @@ Constants {
     */
     modifier onlyAdmin(){
         ctrHestyControl.onlyAdmin(msg.sender);
+        _;
+    }
+
+    /**
+        @dev Checks that `msg.sender` is an Admin
+    */
+    modifier onlyFundsManager(){
+        ctrHestyControl.onlyFundsManager(msg.sender);
         _;
     }
 
@@ -226,7 +235,7 @@ Constants {
         @param  amount Amount of tokens that user wants to buy
         @param  ref The referral of the user, address(0) if doesn't exist
     */
-    function buyTokens(uint256 id, uint256 amount, address ref) external payable nonReentrant onlyWhenInitialized whenNotAllPaused {
+    function buyTokens(uint256 id, uint256 amount, address ref) external nonReentrant onlyWhenInitialized whenNotAllPaused {
 
         PropertyInfo storage p = property[id];
 
@@ -344,9 +353,8 @@ Constants {
 
     }
 
-    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant{
+    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
 
-        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
         PropertyInfo storage p    = property[id];
 
         // Require that raise is still active and not expired
@@ -428,16 +436,18 @@ Constants {
     }
 
     /**
-        @dev     In case Hesty gives up from raising funds for property
+        @dev     In case Hesty or property Manager gives up from raising funds for property
                  allow users to claim back their funds
         @param   id Property Id
     */
-    function giveUpOnProperty(uint256 id) external onlyAdmin{
+    function cancelProperty(uint256 id) external onlyAdmin{
 
         require(id < propertyCounter, "Fee must be valid");
 
-        property[id].raiseDeadline = 0;
-        property[id].approved = false;
+        property[id].raiseDeadline = 0; // Important to allow investors to recover funds
+        property[id].approved = false;  // Prevent more investements
+
+        emit CancelProperty(id);
     }
 
     /**

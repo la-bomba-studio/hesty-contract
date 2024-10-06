@@ -10,6 +10,8 @@ interface IHestyAccessControl {
     /// @notice Require that only admins call this function
     function onlyAdmin(address manager) external;
 
+    function onlyFundsManager(address manager) external;
+
     /// @notice Checks if an user has kyc approved in hesty
     function kycCompleted(address user) external returns(bool);
 

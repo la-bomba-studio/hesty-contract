@@ -20,7 +20,7 @@ describe("Token Factory", function () {
     tokenFactory = await TokenFactory.connect(owner).deploy(300, 1000, 100, owner.address, 1, hestyAccessControlCtr.address);
     await tokenFactory.deployed();
 
-    Token = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/ERC20.sol:ERC20");
+    Token = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol:ERC20PresetMinterPauser");
     token = await Token.connect(owner).deploy("name", "symbol");
     await token.deployed()
 
@@ -160,8 +160,65 @@ describe("Token Factory", function () {
 
       await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
+      expect(await tokenFactory.propertyCounter()).to.equal(1);
 
     });
+
+    it("Buy Tokens without referral", async function () {
+
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
+
+      await tokenFactory.initialize(referral.address)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+
+      expect(await tokenFactory.propertyCounter()).to.equal(1);
+
+      await tokenFactory.approveProperty(0, 2937487238472834);
+
+      // Approve owner kyc to allow him to buy property token
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(owner.address);
+
+      await token.approve(tokenFactory.address, 9);
+
+      await token.mint(owner.address, 10000);
+
+      await tokenFactory.buyTokens(0, 2, "0x0000000000000000000000000000000000000000");
+
+
+    });
+
+    it("Buy Tokens with referral", async function () {
+
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
+
+      await tokenFactory.initialize(referral.address)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+
+      expect(await tokenFactory.propertyCounter()).to.equal(1);
+
+      await tokenFactory.approveProperty(0, 2937487238472834);
+
+      // Approve owner kyc to allow him to buy property token
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(owner.address);
+
+      await token.approve(tokenFactory.address, 9);
+
+      await token.mint(owner.address, 10000);
+
+      await tokenFactory.buyTokens(0, 2, addr3.address);
+
+
+    });
+
+
 
 
   })

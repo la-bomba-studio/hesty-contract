@@ -31,6 +31,10 @@ all funds must be able to be claimed back by investors including all the fees ch
 
 NOTE: All these fees can change in the future.
 
+### Vocabulary
+
+Property Owner/Manager - Company or individual that is raising funds to develop the real estate project
+                        
 
 ## Hesty Smart Contracts v0.1
 
@@ -42,7 +46,7 @@ A very simple smart contract that stores all the Hesty Smart Contracts constants
 
 TokenFactory is a smart contract that manages the issuance of tokens that are representatives of
 properties on sale in the Hesty platform.
-By calling createProperty function property owners will issue a new token with a fixed supply 
+By calling `createProperty` function property owners will issue a new token with a fixed supply 
 that are representative of shares of a fund that owns the property.
 At the beginning all the tokens are stores in this Token Factory contract until someone buys them.
 
@@ -74,7 +78,23 @@ doing certain operations.
 
 There are 
 
+## Hesty Property Token (contracts/PropertyToken.sol)
 
+The token that represents the shares of the company that owns the property.
+All the supply is minted when the token is deployed and therefore there is no way
+to increase token supply and the only way to burn supply is send tokens to a burner 
+address.
+
+This contract keeps track of the all time dividends and revenue distributed 
+to the property token holders and the users claimed amounts.
+
+This token overrides `transferFrom` and `transfer` functions in order to implement
+a claim of the dividends until that moment accrued by token holders that will
+be part of the transfer
+
+## Referral System (contracts/Referral/ReferralSystem.sol)
+
+Stores the number of referral and all the related referral revenue a user has.
 
 ## Getting Started
 
@@ -98,6 +118,14 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 2. Create a new property: `const tokenId = await propertyFactory.createProperty(totalSupply, tokenUri, pricePerToken)`
 3. Transfer a property: `await propertyFactory.safeTransferFrom(fromAddress, toAddress, tokenId, amount, data)`
 4. Check property details: `const property = await propertyFactory.properties(tokenId)`
+
+##Faucets
+
+[Euro Circle (EURC) Faucet](https://faucet.circle.com/)
+
+##Coverage
+
+1. Get the coverage: `npx hardhat coverage`
 
 ## Testing
 

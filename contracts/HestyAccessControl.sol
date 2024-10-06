@@ -41,6 +41,11 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         _;
     }
 
+    modifier onlyFundManager(address manager){
+        require(hasRole(FUNDS_MANAGER, manager), "Not Funds Manager");
+        _;
+    }
+
     modifier onlyBlackListManager(address manager){
         require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
         _;
@@ -68,6 +73,8 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
                 onlyOnwer
     */
     function onlyAdmin(address manager) onlyAdminManager(manager) external{}
+
+    function onlyFundsManager(address manager) external onlyFundManager(manager){}
 
     /**
         @notice Blacklist user
