@@ -283,9 +283,9 @@ Constants {
 
             uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
 
-            // maxAmountOfRefRev_ can be lowered and userevenue may be higher than
-            // maxAmountOfRefRev_ after that, causing maxAmountOfRefRev - userRevenue to be negative
-            maxAmountOfRefRev_ = (maxAmountOfRefRev >= userRevenue ) ? maxAmountOfRefRev : userRevenue;
+            // maxAmountOfRefRev can be lowered and userevenue may be higher than
+            // maxAmountOfRefRev after that, causing maxAmountOfRefRev - userRevenue to be negative
+            maxAmountOfRefRev = (maxAmountOfRefRev >= userRevenue ) ? maxAmountOfRefRev : userRevenue;
 
             refFee_ = (userRevenue + refFee_ > maxAmountOfRefRev) ? maxAmountOfRefRev - userRevenue : refFee_;
 

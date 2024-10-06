@@ -14,7 +14,7 @@ interface IReferral {
     function addRewards(address onBehalfOf, address referrer, uint256 projectId, uint256 amount) external;
 
     /// @notice Adds referral rewards to the user claim not indexed to a property
-    function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external;
+    function addGlobalRewards(address onBehalfOf, uint256 amount) external;
 
     /// @notice Claim User Property Referral rewards
     function claimPropertyRewards(address user, uint256 projectId) external;
