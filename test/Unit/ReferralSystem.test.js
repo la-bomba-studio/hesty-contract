@@ -10,7 +10,7 @@ describe("Referral System", function () {
   let addr2;
 
   beforeEach(async function () {
-    [owner, propertyManager, addr1, addr2, addr3] = await ethers.getSigners();
+    [owner, propertyManager, addr1, addr2, addr3, addr4] = await ethers.getSigners();
     HestyAccessControl = await ethers.getContractFactory("HestyAccessControl");
     hestyAccessControlCtr = await HestyAccessControl.connect(owner).deploy();
     await hestyAccessControlCtr.deployed();
@@ -61,6 +61,30 @@ describe("Referral System", function () {
     expect(await referral.tokenFactory()).to.equal(tokenFactory.address);
 
 
+
+  });
+
+  it("Add Approved Contracts", async function () {
+
+    await expect(
+      referral.connect(addr3).addApprovedCtrs(addr4.address)
+    ).to.be.revertedWith("Not Admin Manager");
+
+    await referral.addApprovedCtrs(addr4.address)
+
+    expect(await referral.approvedCtrs(addr4.address)).to.equal(true);
+
+  });
+
+  it("Remove Approved Contracts", async function () {
+
+    await expect(
+      referral.connect(addr3).addApprovedCtrs(addr4.address)
+    ).to.be.revertedWith("Not Admin Manager");
+
+    await referral.addApprovedCtrs(addr4.address)
+
+    expect(await referral.approvedCtrs(addr4.address)).to.equal(true);
 
   });
 

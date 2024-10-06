@@ -306,6 +306,32 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "newControl",
+        "type": "address"
+      }
+    ],
+    "name": "setHestyAccessControlCtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newfactory",
+        "type": "address"
+      }
+    ],
+    "name": "setNewTokenFactory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "newToken",
         "type": "address"
       }

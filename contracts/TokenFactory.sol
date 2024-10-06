@@ -303,7 +303,7 @@ Constants {
         @param  id Property id
         @param  amount The amount of funds in EURC to distribute
     */
-    function distributeRevenue(uint256 id, uint256 amount) external nonReentrant{
+    function distributeRevenue(uint256 id, uint256 amount) external nonReentrant whenNotAllPaused{
 
         PropertyInfo storage p = property[id];
 
