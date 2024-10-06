@@ -27,6 +27,10 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
      mapping(address => bool)    public approvedCtrs;               /// @notice Approved addresses that can add property rewards
 
 
+        event  AddPropertyRefRewards(uint256 indexed id, address onBehalfOf, uint256 amount);
+    event  AddGlobalRewards(address onBehalfOf, uint256 amount);
+
+
     /**
         @dev    Referral System Constructor
         @param  rewardToken_ Token Reward (EURC)
@@ -91,8 +95,15 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
             totalRewards[onBehalfOf]       += amount;
         }
 
+        emit AddPropertyRefRewards(projectId, onBehalfOf, amount);
+
     }
 
+    /**
+        @dev    Add Rewards Not Associated to a Property Project
+        @param  onBehalfOf User who will receive rewards
+        @param  amount The amount of rewards
+    */
     function addGlobalRewards(address onBehalfOf, uint256 amount) external whenNotAllPaused{
 
         require(approvedCtrs[msg.sender], "Not Approved");
@@ -102,7 +113,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
         globalRewards[onBehalfOf] += amount;
 
-
+        emit AddGlobalRewards(onBehalfOf, amount);
     }
 
     function claimPropertyRewards(address user, uint256 projectId) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
@@ -128,12 +139,17 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
 
     /**
-        @dev Return Number of user referrals and user referral revenues
+        @dev    Return Number of user referrals and user referral revenues
+        @param  user The user who referred others
     */
     function getReferrerDetails(address user) external view returns(uint256, uint256, uint256){
         return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
+    /**
+        @dev    Adds Contracts and Addresses that can add referral rewards
+        @param  newReferralRouter Address that will add referral rewards
+    */
     function addApprovedCtrs(address newReferralRouter) external onlyAdmin{
         require(!approvedCtrs[newReferralRouter], "Already Approved");
         approvedCtrs[newReferralRouter] = true;

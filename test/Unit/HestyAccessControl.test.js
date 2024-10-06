@@ -53,6 +53,18 @@ describe("HestyAccessControl", function () {
 
   });
 
+  it("SetSponsorAmount", async function () {
+
+    await expect(
+      hestyAccessControlCtr.connect(propertyManager).onlyAdmin(propertyManager.address)
+    ).to.be.revertedWith("Not Admin Manager");
+
+    await hestyAccessControlCtr.setSponsorAmount(10000000);
+
+    expect(await hestyAccessControlCtr.initialSponsorAmount()).to.equal(10000000);
+
+  });
+
   describe("Blacklist and UnBlacklist", function () {
 
     it("Blacklist", async function () {

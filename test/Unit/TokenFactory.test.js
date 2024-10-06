@@ -283,6 +283,25 @@ describe("Token Factory", function () {
 
   describe("Admin Setters", function () {
 
+    it("setPlatformFee", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setPlatformFee(1000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setPlatformFee(10000)
+      ).to.be.revertedWith("Fee must be valid");
+
+      await expect(
+        tokenFactory.setPlatformFee(1000)
+      ).to.emit(tokenFactory, 'NewPlatformFee')
+        .withArgs(1000);
+
+      expect(await tokenFactory.FEE_BASIS_POINTS()).to.equal(1000);
+
+    });
+
 
 
     it("setMinInvAmount", async function () {
