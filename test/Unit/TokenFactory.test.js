@@ -26,7 +26,7 @@ describe("Token Factory", function () {
 
     Referral = await ethers.getContractFactory("ReferralSystem");
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
-    await token.deployed()
+    await referral.deployed()
 
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.KYC_MANAGER(),
@@ -74,21 +74,6 @@ describe("Token Factory", function () {
 
   });
 
-  it("Initialize", async function () {
-
-    expect(await tokenFactory.initialized()).to.equal(false);
-
-    await expect(
-      tokenFactory.connect(propertyManager).initialize(referral.address)
-    ).to.be.revertedWith("Not Admin Manager");
-
-    expect(await tokenFactory.initialized()).to.equal(false);
-
-    await tokenFactory.initialize(referral.address)
-
-    expect(await tokenFactory.initialized()).to.equal(true);
-
-  });
 
   describe("Non initialized contract Variable/Getters values", function () {
 
@@ -272,6 +257,48 @@ describe("Token Factory", function () {
         tokenFactory.connect(addr4).distributeRevenue(0, 99999)
       ).to.be.revertedWith("ERC20: insufficient allowance");
 
+
+    });
+
+  })
+
+  describe("Admin Setters", function () {
+
+    it("setTreasury", async function () {
+
+      await expect(
+        tokenFactory.setTreasury("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not allowed");
+
+      await expect(
+        tokenFactory.connect(addr4).setTreasury(addr1.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setTreasury(addr1.address)
+      ).to.emit(tokenFactory, 'NewTreasury')
+        .withArgs(addr1.address);
+
+    });
+
+    it("setReferralContract", async function () {
+
+      Referral2 = await ethers.getContractFactory("ReferralSystem");
+      referral2 = await Referral2.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
+      await referral2.deployed()
+
+      await expect(
+        tokenFactory.setReferralContract("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not allowed");
+
+      await expect(
+        tokenFactory.connect(addr4).setReferralContract(referral2.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setReferralContract(referral2.address)
+      ).to.emit(tokenFactory, 'NewReferralSystemCtr')
+        .withArgs(referral2.address);
 
     });
 
