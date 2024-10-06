@@ -69,6 +69,7 @@ Constants {
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
+    event                   NewOwnersFee(uint256 newFee);
     event                   ClaimProfits(address user, uint256 propertyId);
 
 
@@ -479,8 +480,10 @@ Constants {
 
     function setOwnersFee(uint256 newFee) external onlyAdmin{
 
-        require( OWNERS_FEE_BASIS_POINTS < BASIS_POINTS, "Fee must be valid");
+        require( newFee < BASIS_POINTS, "Fee must be valid");
         OWNERS_FEE_BASIS_POINTS = newFee;
+
+        emit NewOwnersFee(newFee);
     }
 
     /**

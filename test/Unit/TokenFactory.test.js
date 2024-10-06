@@ -75,6 +75,8 @@ describe("Token Factory", function () {
   });
 
 
+
+
   describe("Non initialized contract Variable/Getters values", function () {
 
     it("ctrHestyControl, referralSystemCtr", async function () {
@@ -326,10 +328,34 @@ describe("Token Factory", function () {
       await ethers.provider.send("evm_mine", [2937487238472844]);
 
       await tokenFactory.connect(addr4).recoverFundsInvested(0)
+
+
+
+
+        expect(await tokenFactory.isRefClaimable()).to.equal(false);
+
+
     })
   })
 
   describe("Admin Setters", function () {
+
+    it("setOwnersFee", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setOwnersFee(1000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setOwnersFee(10000)
+      ).to.be.revertedWith("Fee must be valid");
+
+      await expect(
+        tokenFactory.setOwnersFee(1000)
+      ).to.emit(tokenFactory, 'NewOwnersFee')
+        .withArgs(1000);
+
+    })
 
     it("setPlatformFee", async function () {
 
