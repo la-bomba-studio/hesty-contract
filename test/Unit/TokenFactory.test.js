@@ -10,7 +10,7 @@ describe("Token Factory", function () {
   let addr2;
 
   beforeEach(async function () {
-    [owner, propertyManager, addr1, addr2, addr3] = await ethers.getSigners();
+    [owner, propertyManager, addr1, addr2, addr3, addr4] = await ethers.getSigners();
 
     HestyAccessControl = await ethers.getContractFactory("HestyAccessControl");
     hestyAccessControlCtr = await HestyAccessControl.connect(owner).deploy();
@@ -164,6 +164,15 @@ describe("Token Factory", function () {
 
     });
 
+
+
+
+
+
+  })
+
+  describe("Buy Tokens", function () {
+
     it("Buy Tokens without referral", async function () {
 
       //Not yet initialized so therefore address(0)
@@ -215,13 +224,45 @@ describe("Token Factory", function () {
 
       await tokenFactory.buyTokens(0, 2, addr3.address);
 
+    });
+  })
+
+  describe("Revenue Distribution", function () {
+    beforeEach(async function () {
+      //Not yet initialized so therefore address(0)
+      expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
+
+      await tokenFactory.initialize(referral.address)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+
+      expect(await tokenFactory.propertyCounter()).to.equal(1);
+
+      await tokenFactory.approveProperty(0, 2937487238472834);
+
+      // Approve owner kyc to allow him to buy property token
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(owner.address);
+
+      await token.approve(tokenFactory.address, 9);
+
+      await token.mint(owner.address, 10000);
+
+      await tokenFactory.buyTokens(0, 2, addr3.address);
+    })
+
+    it("DistributeRevenue", async function () {
+
+        await token.mint(addr4.address, 40000);
+
+        await token.connect(addr4).approve(tokenFactory.address, 10001);
+
+        await tokenFactory.connect(addr4).distributeRevenue(0, 10001);
+
 
     });
 
-
-
-
   })
-
 
 });

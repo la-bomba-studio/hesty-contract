@@ -172,8 +172,8 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     function transfer(address to, uint256 amount) override
                         whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
 
-        claimDividends(payable(msg.sender));
-        claimDividends(payable(to));
+        claimDividends(msg.sender);
+        claimDividends(to);
         return super.transfer(to, amount);
     }
 
@@ -195,8 +195,8 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     function transferFrom(address from, address to, uint256 amount) override
                            whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
 
-        claimDividends(payable(from));
-        claimDividends(payable(to));
+        claimDividends(from);
+        claimDividends(to);
         return super.transfer(to, amount);
     }
 
