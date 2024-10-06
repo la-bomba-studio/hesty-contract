@@ -106,6 +106,14 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 - Hardhat v2.6.2 or later
 - Ethers.js v5.4.5 or later
 - Chai v4.3.4 or later
+
+### Environment Variables
+
+ROPSTEN_PRIVATE_KEY=
+BSC_TESTNET_API_KEY=
+L2ETHERSCAN=
+COINMARKETCAP_API_KEY=
+
 ### Installation
 
 1. Clone the repository: `git clone ${REPO_URL}`
