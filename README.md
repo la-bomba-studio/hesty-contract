@@ -123,6 +123,18 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 
 [Euro Circle (EURC) Faucet](https://faucet.circle.com/)
 
+## Considerations
+
+Due to the fact that the smart contracts will be deployed in Base Blockchain and in 
+the future in equivalent blockchains like Avalanche, Arbitrum, Optimism and others,
+some optimiztions were not adopted in order to increase code legibility and lower 
+code complexity:
+
+- Uint256 is more efficient than using booleans, even more if it is used
+  1 for true and 2 for false. This inefficiency was largely reduced in recent
+  solidity versions but still is more efficient to use uint256. Hesty Smart contracts
+  use booleans even though it slightly less efficient.
+
 ##Coverage
 
 1. Get the coverage: `npx hardhat coverage`
