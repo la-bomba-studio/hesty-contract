@@ -109,13 +109,10 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 
 ### Environment Variables
 
-ROPSTEN_PRIVATE_KEY=
-
-BSC_TESTNET_API_KEY=
-
-L2ETHERSCAN=
-
-COINMARKETCAP_API_KEY=
+`ROPSTEN_PRIVATE_KEY=`
+`BSC_TESTNET_API_KEY=`
+`L2ETHERSCAN=`
+`COINMARKETCAP_API_KEY=`
 
 ### Installation
 
@@ -126,7 +123,8 @@ COINMARKETCAP_API_KEY=
 ## Usage
 
 1. Deploy the contract: `npx hardhat run scripts/deploy.js --network polygon-mumbai`
-2. Create a new property: `const tokenId = await propertyFactory.createProperty(totalSupply, tokenUri, pricePerToken)`
+2. Create a new property: `const tokenId = await propertyFactory.createProperty(amount, tokenPrice, threshold, payType, paymentToken, revenueToken, name,
+   symbol, admin)`
 3. Transfer a property: `await propertyFactory.safeTransferFrom(fromAddress, toAddress, tokenId, amount, data)`
 4. Check property details: `const property = await propertyFactory.properties(tokenId)`
 

@@ -75,7 +75,7 @@ module.exports = {
   },
   gasReporter: {
     currency: 'EUR',
-    enabled: true,
+    enabled: false,
     L2:"base",
     L2Etherscan: process.env.L2ETHERSCAN,
     coinmarketcap:process.env.COINMARKETCAP_API_KEY

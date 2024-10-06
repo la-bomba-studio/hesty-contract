@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interfaces/IHestyAccessControl.sol";
 import "./interfaces/ITokenFactory.sol";
 import "./Constants.sol";
@@ -73,6 +74,11 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         @param amount Amount of funds to distribute
     */
     function adminDistribution(uint256 propertyId, uint256 amount) external onlyAdmin{
+
+        (,address tkn) = ITokenFactory(tokenFactory).getPropertyInfo(propertyId);
+
+        IERC20(tkn).approve(address(tokenFactory), amount);
+
         ITokenFactory(tokenFactory).distributeRevenue(propertyId, amount);
     }
 

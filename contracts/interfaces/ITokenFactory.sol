@@ -16,4 +16,6 @@ interface ITokenFactory {
     /// @notice Return if it is already possible to claim referral revenue of a property
     function isRefClaimable(uint256 id) external view returns(bool);
 
+    function getPropertyInfo(uint256 id) external view returns(address, address);
+
 }

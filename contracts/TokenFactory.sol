@@ -358,14 +358,14 @@ Constants {
     *
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
-    */
+    *
     function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin{
 
         PropertyInfo storage p = property[id];
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
 
-    }
+    }*/
 
     function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
 
@@ -403,9 +403,10 @@ Constants {
         @param id Property Id
         @return Property Token
     */
-    function getPropertyToken(uint256 id) external view returns(address){
-        return property[id].asset;
+    function getPropertyInfo(uint256 id) external view returns(address, address){
+        return (property[id].asset, property[id].revenueToken);
     }
+
 
 
     /**===================================================
