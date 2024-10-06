@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../interfaces/IReferral.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "../interfaces/IHestyAccessControl.sol";
-import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
+import "../interfaces/IReferral.sol";
+import "../interfaces/IHestyAccessControl.sol";
 import "../interfaces/ITokenFactory.sol";
 
 /*
@@ -154,7 +154,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     function setNewTokenFactory(address newfactory) external onlyAdmin{
 
         require(newfactory != address(0), "Not null");
-        
+
         // Remove old approval and add new approval
         approvedCtrs[address(tokenFactory)] = false;
         approvedCtrs[newfactory] = true;
