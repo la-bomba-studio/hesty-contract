@@ -260,9 +260,43 @@ describe("Token Factory", function () {
 
     });
 
+    it("extendRaiseForProperty", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).extendRaiseForProperty(0, 1000000000000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.extendRaiseForProperty(0, 2937487238472824)
+      ).to.be.revertedWith("Invalid deadline");
+
+      await tokenFactory.extendRaiseForProperty(0, 2937487238472838)
+
+      /*  await expect(
+          tokenFactory.extendRaiseForProperty(10000000000000)
+        ).to.emit(tokenFactory, 'NewMinInvestmentLimit')
+          .withArgs(10000000000000);*/
+
+    });
+
   })
 
   describe("Admin Setters", function () {
+
+
+
+    it("setMinInvAmount", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setMinInvAmount(10000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setMinInvAmount(100000)
+      ).to.emit(tokenFactory, 'NewMinInvestmentLimit')
+        .withArgs(100000);
+
+    });
 
     it("setMaxNumberOfReferrals", async function () {
 

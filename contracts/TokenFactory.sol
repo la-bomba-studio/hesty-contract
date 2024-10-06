@@ -164,6 +164,11 @@ Constants {
         _;
     }
 
+    modifier idMustBeValid(uint256 id){
+        require(id < propertyCounter, "Id must be valid");
+        _;
+    }
+
     /**
         @dev    Initialized Token Factory Contract
         @param  referralSystemCtr_ Referral System Contract that manages referrals rewards
@@ -435,9 +440,7 @@ Constants {
         @dev     Approves property to start raise
         @param   id Property Id
     */
-    function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin{
-
-        require(id < propertyCounter, "Id must be valid");
+    function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin idMustBeValid(id){
 
         property[id].approved = true;
         property[id].raiseDeadline = raiseDeadline;
@@ -448,9 +451,7 @@ Constants {
                  allow users to claim back their funds
         @param   id Property Id
     */
-    function cancelProperty(uint256 id) external onlyAdmin{
-
-        require(id < propertyCounter, "Fee must be valid");
+    function cancelProperty(uint256 id) external onlyAdmin idMustBeValid(id){
 
         property[id].raiseDeadline = 0; // Important to allow investors to recover funds
         property[id].approved = false;  // Prevent more investements
@@ -485,7 +486,7 @@ Constants {
         @dev    Fee must be lower than fee charged by platform
         @param  newAddress New Property Owner Address
     */
-    function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external onlyAdmin{
+    function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external onlyAdmin idMustBeValid(id){
 
         require( newAddress != address(0), "Address must be valid");
         property[id].ownerExchAddr = newAddress;
@@ -497,7 +498,7 @@ Constants {
     * @notice Function to extend property raise deadline
     *
     */
-    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin{
+    function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin idMustBeValid(id){
 
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
