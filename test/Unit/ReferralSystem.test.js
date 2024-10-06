@@ -19,20 +19,20 @@ describe("Referral System", function () {
     tokenFactory = await TokenFactory.connect(owner).deploy(300, 1000, 100, owner.address, 1, hestyAccessControlCtr.address);
     await tokenFactory.deployed();
 
-    Token = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/ERC20.sol:ERC20");
+    oken = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol:ERC20PresetMinterPauser");
     token = await Token.connect(owner).deploy("name", "symbol");
     await token.deployed()
 
     Referral = await ethers.getContractFactory("ReferralSystem");
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
-    await token.deployed()
+    await referral.deployed()
 
-    /*
+
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.KYC_MANAGER(),
       addr2.address
     );
-
+/*
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.PAUSER_MANAGER(),
       addr3.address
@@ -81,18 +81,26 @@ describe("Referral System", function () {
     it("Add rewards new user", async function () {
 
       await expect(
-        hestyAccessControlCtr.blacklistUser(addr2.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
+        referral.addRewards(addr3.address, addr4.address, 0, 2000)
+      ).to.be.revertedWith("Not Approved");
 
+      await referral.addApprovedCtrs(owner.address)
 
-      hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      referral.addRewards(addr3.address, addr4.address, 0, 2000);
+      await referral.addRewards(addr3.address, addr4.address, 0, 2000);
 
     });
 
     it("Add globalrewards new user", async function () {
 
+      await expect(
+        referral.addGlobalRewards(addr2.address, 2000)
+      ).to.be.revertedWith("Not Approved");
+
+      await referral.addApprovedCtrs(owner.address)
+
+      await token.mint(owner.address, 2000);
+
+      await token.approve(referral.address, 2000);
 
       await referral.addGlobalRewards(addr3.address, 2000);
 
@@ -100,21 +108,37 @@ describe("Referral System", function () {
 
 
     it("Claim globalrewards new user", async function () {
+      await expect(
+        referral.addGlobalRewards(addr2.address, 2000)
+      ).to.be.revertedWith("Not Approved");
+
+      await referral.addApprovedCtrs(owner.address)
+
+      await token.mint(owner.address, 2000);
+
+      await token.approve(referral.address, 2000);
 
       await referral.addGlobalRewards(addr3.address, 2000);
 
-      await referral.claimGlobalRewards(addr3.address)
+      await token.mint(referral.address, 2000)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(owner.address);
+
+      await referral.claimGlobalRewards(addr3.address);
+
+      expect(await referral.globalRewards(addr3.address)).to.equal(0);
 
     });
 
     it("Add rewards Double", async function () {
 
       await expect(
-        hestyAccessControlCtr.blacklistUser(addr2.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
+        referral.addRewards(addr3.address, addr4.address, 0, 2000)
+      ).to.be.revertedWith("Not Approved");
 
+      await referral.addApprovedCtrs(owner.address)
 
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
+      await token.mint(referral.address, 4000)
 
       await referral.addRewards(addr3.address, addr4.address, 0, 2000);
       await referral.addRewards(addr3.address, addr4.address, 0, 2000);
