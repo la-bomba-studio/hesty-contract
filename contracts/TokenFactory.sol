@@ -283,6 +283,11 @@ Constants {
         emit NewInvestment(id, msg.sender, boughtTokensPrice, block.timestamp);
     }
 
+    /**
+        @dev    Function that tries to add referral rewards
+        @param  ref user that referenced the buyer
+        @param  boughtTokensPrice Amount invested by buyer
+    */
     function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) internal{
         if(ref != address(0)){
 

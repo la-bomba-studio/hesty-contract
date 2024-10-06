@@ -235,6 +235,19 @@
         "type": "address"
       }
     ],
+    "name": "approveKYCOnly",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
     "name": "approveUserKYC",
     "outputs": [],
     "stateMutability": "nonpayable",

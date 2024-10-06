@@ -100,19 +100,19 @@ describe("Hesty Router", function () {
         router.connect(addr4).adminDistribution(0, 20320)
       ).to.be.revertedWith("Not Admin Manager");
 
-      await expect(
-        router.adminDistribution(0, 20320)
-      ).to.be.revertedWith("ERC20: insufficient allowance");
-
-      await token.approve(router.address, 20320)
+      await hestyAccessControlCtr.connect(addr2).approveKYCOnly(router.address);
 
       await expect(
         router.adminDistribution(0, 20320)
       ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
 
-      await hestyAccessControlCtr.connect(addr2).approveUserKYC(router.address);
-
       await token.mint(router.address, 20320)
+
+      await expect(
+        router.adminDistribution(0, 20320)
+      ).to.be.revertedWith("ERC20: insufficient allowance");
+
+      await token.approve(router.address, 20320)
 
       await expect(
         router.adminDistribution(0, 20320)

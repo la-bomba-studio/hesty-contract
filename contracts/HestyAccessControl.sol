@@ -124,6 +124,11 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         kycCompleted[user] = true;
     }
 
+    function approveKYCOnly(address user) external onlyKYCManager(msg.sender){
+        require(!kycCompleted[user], "Already Approved");
+        kycCompleted[user] = true;
+    }
+
     /**
     * @notice Revert user KYC status
       @param user The Address of the user
