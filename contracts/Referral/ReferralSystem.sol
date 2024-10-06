@@ -79,7 +79,13 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         if(referredBy[user] == address(0)){
             referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
+
+            rewards[onBehalfOf][projectId] += amount;
+            rewardsByProperty[projectId]   += amount;
+            totalRewards[onBehalfOf]       += amount;
+
         }else if(referredBy[user] == onBehalfOf){
+
             rewards[onBehalfOf][projectId] += amount;
             rewardsByProperty[projectId]   += amount;
             totalRewards[onBehalfOf]       += amount;
@@ -98,6 +104,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         if(referredBy[user] == address(0)){
             referredBy[user]        = onBehalfOf;
             numberOfRef[onBehalfOf] += 1;
+            globalRewards[onBehalfOf] += amount;
         }else if(referredBy[user] == onBehalfOf){
             globalRewards[onBehalfOf] += amount;
         }
