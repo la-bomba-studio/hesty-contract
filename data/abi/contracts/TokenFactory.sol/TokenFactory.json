@@ -102,6 +102,19 @@
         "type": "uint256"
       }
     ],
+    "name": "NewMaxAmountOfRefRev",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "number",
+        "type": "uint256"
+      }
+    ],
     "name": "NewMaxNumberOfReferrals",
     "type": "event"
   },
@@ -786,6 +799,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newMax",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMaxAmountOfRefRev",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

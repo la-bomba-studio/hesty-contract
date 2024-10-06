@@ -58,6 +58,7 @@ Constants {
     //Event
     event                 CreateProperty(uint256 id);
     event        NewMaxNumberOfReferrals(uint256 number);
+    event           NewMaxAmountOfRefRev(uint256 number);
     event           NewReferralSystemCtr(address newSystemCtr);
     event                    NewTreasury(address newTreasury);
     event          NewMinInvestmentLimit(uint256 newLimit);
@@ -522,9 +523,21 @@ Constants {
     */
     function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin{
 
-        maxAmountOfRefRev = newMax;
+        maxNumberOfReferrals = newMax;
 
         emit NewMaxNumberOfReferrals(newMax);
+    }
+
+    /**
+        @dev    Function to set the maximum amount of referral revenue
+        @dev    It emits a `NewMaxAmountOfRefRev` event.
+        @param  newMax Maximum amount of revenue
+    */
+    function setMaxAmountOfRefRev(uint256 newMax) external onlyAdmin{
+
+        maxAmountOfRefRev = newMax;
+
+        emit NewMaxAmountOfRefRev(newMax);
     }
 
     /**

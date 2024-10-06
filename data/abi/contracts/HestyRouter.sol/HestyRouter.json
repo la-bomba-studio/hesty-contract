@@ -69,6 +69,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newFactory",
+        "type": "address"
+      }
+    ],
+    "name": "NewTokenFactory",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "bytes32",
         "name": "role",
@@ -494,6 +507,32 @@
   {
     "inputs": [],
     "name": "rollbackDefaultAdminDelay",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newControl",
+        "type": "address"
+      }
+    ],
+    "name": "setHestyAccessControlCtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newFactory",
+        "type": "address"
+      }
+    ],
+    "name": "setNewTokenFactory",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
