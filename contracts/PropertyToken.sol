@@ -42,11 +42,6 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         _;
     }
 
-    modifier onlyBlackLister(address manager){
-        require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklister");
-        _;
-    }
-
     modifier whenNotBlackListed(address user){
         require(!ctrHestyControl.blackList(user), "Blacklisted");
         _;

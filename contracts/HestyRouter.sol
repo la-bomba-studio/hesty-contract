@@ -78,10 +78,6 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         ITokenFactory(tokenFactory).adminBuyTokens(propertyId, onBehalfOf, amount);
     }
 
-    function revertUserBuyTokens() external onlyAdmin{
-
-    }
-
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
         require(newControl != address(0), "Not null");
         hestyAccessControl = IHestyAccessControl(newControl);

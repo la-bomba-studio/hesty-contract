@@ -53,6 +53,7 @@ Constants {
     mapping(uint256 => uint256)         public propertyOwnerShare;  // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;              // The referral fee acummulated by each property before completing
 
+
     mapping(address => mapping(uint256 => uint256)) public userInvested; // Amount invested by each user in each property
 
     //Event
