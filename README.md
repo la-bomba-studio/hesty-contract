@@ -31,6 +31,10 @@ all funds must be able to be claimed back by investors including all the fees ch
 
 NOTE: All these fees can change in the future.
 
+### Vocabulary
+
+Property Owner/Manager - Company or individual that is raising funds to develop the real estate project
+                        
 
 ## Hesty Smart Contracts v0.1
 

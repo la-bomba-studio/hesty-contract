@@ -41,6 +41,19 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "propertyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CancelProperty",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -344,6 +357,19 @@
         "type": "uint256"
       }
     ],
+    "name": "cancelProperty",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
     "name": "claimInvestmentreturns",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -487,19 +513,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "giveUpOnProperty",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

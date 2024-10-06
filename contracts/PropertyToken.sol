@@ -58,7 +58,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     }
 
     modifier whenNotAllPaused(){
-        require(ctrHestyControl.paused(), "All Hesty Paused");
+        require(!ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
