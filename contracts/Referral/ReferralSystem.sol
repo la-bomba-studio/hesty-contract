@@ -153,14 +153,14 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         ctrHestyControl = IHestyAccessControl(newControl);
     }
 
-    function setNewTokenFactory(address newfactory) external onlyAdmin{
+    function setNewTokenFactory(address newFactory) external onlyAdmin{
 
-        require(newfactory != address(0), "Not null");
+        require(newFactory != address(0), "Not null");
 
         // Remove old approval and add new approval
         approvedCtrs[address(tokenFactory)] = false;
-        approvedCtrs[newfactory] = true;
+        approvedCtrs[newFactory] = true;
 
-        tokenFactory = ITokenFactory(newfactory);
+        tokenFactory = ITokenFactory(newFactory);
     }
 }

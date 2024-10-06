@@ -51,6 +51,13 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         _;
     }
 
+    event NewTokenFactory(address newFactory);
+
+    /**
+        @dev    Hesty Router Constructor
+        @param  tokenFactory_ Token Factory Contract
+        @param  hestyAccessControl_ Hesty Access Control Contract
+    */
     constructor(address tokenFactory_, address hestyAccessControl_) AccessControlDefaultAdminRules(
         3 days,
         msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
@@ -81,6 +88,18 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
 
     function revertUserBuyTokens() external onlyAdmin{
 
+    }
+
+    function setHestyAccessControlCtr(address newControl) external onlyAdmin{
+        require(newControl != address(0), "Not null");
+        hestyAccessControl = IHestyAccessControl(newControl);
+    }
+
+    function setNewTokenFactory(address newFactory) external onlyAdmin{
+        require(newFactory != address(0), "Not null");
+        tokenFactory = ITokenFactory(newFactory);
+
+        emit NewTokenFactory(newFactory);
     }
 
 }

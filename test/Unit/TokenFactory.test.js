@@ -264,6 +264,33 @@ describe("Token Factory", function () {
 
   describe("Admin Setters", function () {
 
+    it("setMaxNumberOfReferrals", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setMaxNumberOfReferrals(10000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setMaxNumberOfReferrals(100000)
+      ).to.emit(tokenFactory, 'NewMaxNumberOfReferrals')
+        .withArgs(100000);
+
+    });
+
+
+    it("setMaxAmountOfRefRev", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setMaxAmountOfRefRev(100000000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setMaxAmountOfRefRev(10000000)
+      ).to.emit(tokenFactory, 'NewMaxAmountOfRefRev')
+        .withArgs(10000000);
+
+    });
+
     it("setTreasury", async function () {
 
       await expect(
