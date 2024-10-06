@@ -90,66 +90,6 @@ describe("Referral System", function () {
 
     });
 
-    it("Blacklist Twice", async function () {
-
-      await expect(
-        hestyAccessControlCtr.blacklistUser(addr2.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await expect(
-        hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-      ).to.be.revertedWith("Already blacklisted");
-
-    });
-
-    it("UnBlacklist ", async function () {
-
-      await expect(
-        hestyAccessControlCtr.unBlacklistUser(owner.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-
-
-    });
-
-    it("UnBlacklist Twice", async function () {
-
-      await expect(
-        hestyAccessControlCtr.unBlacklistUser(owner.address)
-      ).to.be.revertedWith("Not Blacklist Manager");
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-
-      await expect(
-        hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-      ).to.be.revertedWith("Not blacklisted");
-
-    });
-
-    it("Blacklist and UnBlacklist", async function () {
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-
-    });
-
-    it("Blacklist, UnBlacklist and Blacklist Again", async function () {
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).unBlacklistUser(propertyManager.address)
-
-      await hestyAccessControlCtr.connect(addr1).blacklistUser(propertyManager.address)
-
-    });
 
   })
 

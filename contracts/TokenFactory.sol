@@ -305,6 +305,8 @@ Constants {
     */
     function distributeRevenue(uint256 id, uint256 amount) external nonReentrant whenNotAllPaused{
 
+        require(id < propertyCounter, "Id must be valid");
+
         PropertyInfo storage p = property[id];
 
         IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
@@ -345,8 +347,8 @@ Constants {
     *   @param id Property Id
     *   @param amount Amount of EURC to distribute through property token holders
     */
-    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant{
-        IHestyAccessControl(ctrHestyControl).onlyAdmin(msg.sender);
+    function adminDistributeRevenue(uint256 id, uint256 amount) external nonReentrant onlyAdmin{
+
         PropertyInfo storage p = property[id];
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
@@ -429,7 +431,7 @@ Constants {
     */
     function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin{
 
-        require(id < propertyCounter, "Fee must be valid");
+        require(id < propertyCounter, "Id must be valid");
 
         property[id].approved = true;
         property[id].raiseDeadline = raiseDeadline;

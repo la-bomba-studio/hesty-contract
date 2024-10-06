@@ -24,10 +24,10 @@ import "./Constants.sol";
  */
 contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constants{
 
-    IERC20  public rewardAsset;     // Reward Token (EURC)
+    IERC20  public rewardAsset;                 // Reward Token (EURC)
     IHestyAccessControl public ctrHestyControl; // Hesty Access Control Contract
 
-    uint256 public dividendPerToken; // Dividends per share/token
+    uint256 public dividendPerToken;            // Dividends per share/token
 
     mapping(address => uint256) public xDividendPerToken;   // Last user dividends essential to calculate future rewards
 
