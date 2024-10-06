@@ -188,6 +188,29 @@ describe("Property Token", function () {
 
     });
 
+    it("Pause Property Token and try transferfrom", async function () {
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(addr3.address)
+
+      await propertyToken.transfer(propertyManager.address, 1000);
+
+      await propertyToken.connect(addr3).pause();
+
+      await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
+      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+
+      await propertyToken.connect(addr3).unpause();
+
+      await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
+      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+
+      await propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
+
+
+    });
+
   });
 
 

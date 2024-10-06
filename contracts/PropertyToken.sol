@@ -197,7 +197,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
 
         claimDividends(from);
         claimDividends(to);
-        return super.transfer(to, amount);
+        return super.transferFrom(from, to, amount);
     }
 
     function pause() external onlyPauser(msg.sender){
