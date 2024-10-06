@@ -130,6 +130,27 @@ describe("Referral System", function () {
 
     });
 
+    it("Claim rewards new user", async function () {
+      await expect(
+        referral.addRewards(addr3.address, addr4.address, 0, 2000)
+      ).to.be.revertedWith("Not Approved");
+
+      await referral.addApprovedCtrs(owner.address)
+
+      await token.mint(referral.address, 2000);
+
+      await referral.addRewards(addr3.address, addr4.address, 0, 2000)
+
+      await hestyAccessControlCtr.connect(addr2).approveUserKYC(owner.address);
+
+     await  expect(
+      referral.claimPropertyRewards(addr3.address, 0)
+        ).to.be.revertedWith("Not yet");
+
+      expect(await referral.rewards(addr3.address, 0)).to.equal(2000);
+
+    });
+
     it("Add rewards Double", async function () {
 
       await expect(
