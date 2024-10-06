@@ -133,7 +133,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
    }
 
     function addApprovedCtrs(address newReferralRouter) external onlyAdmin{
-        require(!approvedCtrs[oldReferralRouter], "Already Approved");
+        require(!approvedCtrs[newReferralRouter], "Already Approved");
         approvedCtrs[newReferralRouter] = true;
     }
 
@@ -144,5 +144,21 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     function setRewardToken(address newToken) external onlyAdmin{
         rewardToken = newToken;
+    }
+
+    function setHestyAccessControlCtr(address newControl) external onlyAdmin{
+        require(newControl != address(0), "Not null");
+        ctrHestyControl = IHestyAccessControl(newControl);
+    }
+
+    function setNewTokenFactory(address newfactory) external onlyAdmin{
+
+        require(newfactory != address(0), "Not null");
+        
+        // Remove old approval and add new approval
+        approvedCtrs[address(tokenFactory)] = false;
+        approvedCtrs[newfactory] = true;
+
+        tokenFactory = ITokenFactory(newfactory);
     }
 }
