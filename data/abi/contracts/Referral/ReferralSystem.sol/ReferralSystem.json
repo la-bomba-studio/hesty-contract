@@ -24,7 +24,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "onBehalfOf",
         "type": "address"
@@ -68,6 +68,63 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rew",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimGlobalRewards",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rew",
+        "type": "uint256"
+      }
+    ],
+    "name": "ClaimPropertyRewards",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newReferralRouter",
+        "type": "address"
+      }
+    ],
+    "name": "NewApprovedCtr",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "address",
         "name": "newAccessControl",
@@ -83,11 +140,37 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "newRewardToken",
+        "type": "address"
+      }
+    ],
+    "name": "NewRewardToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "newFactory",
         "type": "address"
       }
     ],
     "name": "NewTokenFactory",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "router",
+        "type": "address"
+      }
+    ],
+    "name": "RemovedApprovedCtr",
     "type": "event"
   },
   {

@@ -143,8 +143,12 @@ code complexity:
   1 for true and 2 for false. This inefficiency was largely reduced in recent
   solidity versions but still is more efficient to use uint256. Hesty Smart contracts
   use booleans even though it slightly less efficient.
+  
+## Generate New Docs
 
-##Coverage
+1. Get the coverage: `npx hardhat docgen`
+
+## Coverage
 
 1. Get the coverage: `npx hardhat coverage`
 
