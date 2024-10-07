@@ -1,24 +1,12 @@
 const { ethers } = require('hardhat');
 
 async function main() {
-  // Deploy PropertyFactory contract
- /* const PropertyFactory = await ethers.getContractFactory('PropertyFactory');
-  const propertyFactory = await PropertyFactory.deploy();
-
-  await propertyFactory.deployed();
-
-  console.log('PropertyFactory deployed to:', propertyFactory.address);
-
-  // Call initialize function to set up contract roles and state variables
-  await propertyFactory.initialize();
-
-  console.log('Contract initialized successfully');*/
-
-
+ 
   let hestyAccessControl;
   let tokenFactory;
   let eurc;
   let referralSystem;
+  let hestyRouter;
 
   [owner, addr1, addr2, ...addrs] = await ethers.getSigners();
   console.log(owner.address)
@@ -42,6 +30,11 @@ async function main() {
   await referralSystem.deployed();
   let vAddress3 = await referralSystem.address;
   console.log("ReferralSystem: " + vAddress3)
+
+  hestyRouter = await ethers.deployContract("HestyRouter", [vAddress, vAddress0]);
+  await hestyRouter.deployed();
+  let vAddress4 = await referralSystem.address;
+  console.log("Hesty Router: " + vAddress4)
 
   console.log("" +
     "                                        .####.########.\n" +
