@@ -14,15 +14,11 @@ contract IHestyAccessControl ctrHestyControl
 address rewardToken
 ```
 
-Hesty Global Access Control
-
 ### tokenFactory
 
 ```solidity
 contract ITokenFactory tokenFactory
 ```
-
-Token contract address of rewards
 
 ### rewards
 
@@ -78,13 +74,48 @@ mapping(address => bool) approvedCtrs
 
 Who reffered the user
 
+### AddPropertyRefRewards
+
+```solidity
+event AddPropertyRefRewards(uint256 id, address onBehalfOf, uint256 amount)
+```
+
+Approved addresses that can add property rewards
+
+### AddGlobalRewards
+
+```solidity
+event AddGlobalRewards(address onBehalfOf, uint256 amount)
+```
+
+### NewTokenFactory
+
+```solidity
+event NewTokenFactory(address newFactory)
+```
+
+### NewHestyAccessControl
+
+```solidity
+event NewHestyAccessControl(address newAccessControl)
+```
+
+### constructor
+
+```solidity
+constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) public
+```
+
+_Referral System Constructor
+        @param  rewardToken_ Token Reward (EURC)
+        @param  ctrHestyControl_ Hesty Access Control Contract
+        @param  tokenFactory_ Token Factory Contract_
+
 ### whenNotAllPaused
 
 ```solidity
 modifier whenNotAllPaused()
 ```
-
-Approved addresses that can add property rewards
 
 ### whenKYCApproved
 
@@ -96,12 +127,6 @@ modifier whenKYCApproved(address user)
 
 ```solidity
 modifier whenNotBlackListed(address user)
-```
-
-### constructor
-
-```solidity
-constructor(address rewardToken_, address ctrHestyControl_, address tokenFactory_) public
 ```
 
 ### onlyAdmin
@@ -127,10 +152,12 @@ _Add Rewards Associated to a Property Project
 ### addGlobalRewards
 
 ```solidity
-function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external
+function addGlobalRewards(address onBehalfOf, uint256 amount) external
 ```
 
-Adds referral rewards to the user claim not indexed to a property
+_Add Rewards Not Associated to a Property Project
+        @param  onBehalfOf User who will receive rewards
+        @param  amount The amount of rewards_
 
 ### claimPropertyRewards
 
@@ -154,11 +181,39 @@ Claim User General Referral rewards (to be implemented in the future)
 function getReferrerDetails(address user) external view returns (uint256, uint256, uint256)
 ```
 
-_Return Number of user referrals and user referral revenues_
+_Return Number of user referrals and user referral revenues
+        @param  user The user who referred others_
+
+### addApprovedCtrs
+
+```solidity
+function addApprovedCtrs(address newReferralRouter) external
+```
+
+_Adds Contracts and Addresses that can add referral rewards
+        @param  newReferralRouter Address that will add referral rewards_
+
+### removeApprovedCtrs
+
+```solidity
+function removeApprovedCtrs(address oldReferralRouter) external
+```
 
 ### setRewardToken
 
 ```solidity
 function setRewardToken(address newToken) external
+```
+
+### setHestyAccessControlCtr
+
+```solidity
+function setHestyAccessControlCtr(address newControl) external
+```
+
+### setNewTokenFactory
+
+```solidity
+function setNewTokenFactory(address newFactory) external
 ```
 

@@ -104,6 +104,12 @@ mapping(uint256 => uint256) refFee
 mapping(address => mapping(uint256 => uint256)) userInvested
 ```
 
+### InitializeFactory
+
+```solidity
+event InitializeFactory(address referralCtr)
+```
+
 ### CreateProperty
 
 ```solidity
@@ -114,6 +120,12 @@ event CreateProperty(uint256 id)
 
 ```solidity
 event NewMaxNumberOfReferrals(uint256 number)
+```
+
+### NewMaxAmountOfRefRev
+
+```solidity
+event NewMaxAmountOfRefRev(uint256 number)
 ```
 
 ### NewReferralSystemCtr
@@ -146,6 +158,54 @@ event NewPropertyOwnerAddrReceiver(address newAddress)
 event NewInvestment(uint256 propertyId, address investor, uint256 amount, uint256 date)
 ```
 
+### RevenuePayment
+
+```solidity
+event RevenuePayment(uint256 propertyId, uint256 amount)
+```
+
+### CancelProperty
+
+```solidity
+event CancelProperty(uint256 propertyId)
+```
+
+### NewPlatformFee
+
+```solidity
+event NewPlatformFee(uint256 newFee)
+```
+
+### NewOwnersFee
+
+```solidity
+event NewOwnersFee(uint256 newFee)
+```
+
+### ClaimProfits
+
+```solidity
+event ClaimProfits(address user, uint256 propertyId)
+```
+
+### CompleteRaise
+
+```solidity
+event CompleteRaise(uint256 propertyId)
+```
+
+### RecoverFunds
+
+```solidity
+event RecoverFunds(address user, uint256 propertyId)
+```
+
+### ApproveProperty
+
+```solidity
+event ApproveProperty(uint256 propertyId)
+```
+
 ### PropertyInfo
 
 ```solidity
@@ -168,22 +228,29 @@ struct PropertyInfo {
 ### constructor
 
 ```solidity
-constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_, address refCtr_) public
+constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_) public
 ```
 
 _Constructor for Token Factory
-        @param  fee Investment fee charged by Hesty as Basis Points
-        @param  ownersFee Owner Fee charged by Hesty as Basis Points
-        @param  refFee_ Referaal Fee charged by referrals as Basis Points
-        @param  treasury_ The address that will receive Hesty fees revenue
+        @param  fee Investment fee charged by Hesty (in Basis Points)
+        @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
+        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
-        @param  ctrHestyControl_ Contract that manages access to certain functions
-        @param  refCtr_ Contract that manages referrals revenue and claims_
+        @param  ctrHestyControl_ Contract that manages access to certain functions_
 
 ### onlyAdmin
 
 ```solidity
 modifier onlyAdmin()
+```
+
+_Checks that `msg.sender` is an Admin_
+
+### onlyFundsManager
+
+```solidity
+modifier onlyFundsManager()
 ```
 
 _Checks that `msg.sender` is an Admin_
@@ -220,6 +287,14 @@ modifier whenNotAllPaused()
 
 _Checks that contracts are not paused_
 
+### idMustBeValid
+
+```solidity
+modifier idMustBeValid(uint256 id)
+```
+
+_Checks if property id is valid_
+
 ### initialize
 
 ```solidity
@@ -227,27 +302,27 @@ function initialize(address referralSystemCtr_) external
 ```
 
 _Initialized Token Factory Contract
-        @param referralSystemCtr_ Referral System Contract that manages referrals rewards_
+        @dev    It emits a `InitializeFactory` event.
+        @param  referralSystemCtr_ Referral System Contract that manages referrals rewards_
 
 ### createProperty
 
 ```solidity
-function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, uint256 raiseEnd, uint8 payType, address paymentToken, address revenueToken, string name, string symbol, address admin) external returns (uint256)
+function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, uint8 payType, address paymentToken, address revenueToken, string name, string symbol, address admin) external returns (uint256)
 ```
 
-@notice Issue a new property token
-
- @param amount The amount of tokens to issue
- @param tokenPrice Token Price
- @param threshold Amount to reach in order to proceed to production
- @param raiseEnd when the raise ends
- @param payType Type of dividends payment
- @param paymentToken Token that will be charged on every investment made
+Issues a new property token
+        @dev    It emits a `CreateProperty` event.
+        @param  amount The amount of tokens to issue
+        @param  tokenPrice Token Price
+        @param  threshold Amount to reach in order to proceed to production
+        @param  payType Type of dividends payment
+        @param  paymentToken Token that will be charged on every investment made
 
 ### buyTokens
 
 ```solidity
-function buyTokens(uint256 id, uint256 amount, address ref) external payable
+function buyTokens(address onBehalfOf, uint256 id, uint256 amount, address ref) external
 ```
 
 _Function to buy property tokens
@@ -259,8 +334,12 @@ _Function to buy property tokens
 ### referralRewards
 
 ```solidity
-function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) internal
+function referralRewards(address onBehalfOf, address ref, uint256 boughtTokensPrice, uint256 id) internal
 ```
+
+_Function that tries to add referral rewards
+        @param  ref user that referenced the buyer
+        @param  boughtTokensPrice Amount invested by buyer_
 
 ### distributeRevenue
 
@@ -268,10 +347,10 @@ function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) int
 function distributeRevenue(uint256 id, uint256 amount) external
 ```
 
-### claimInvestmentreturns
+### claimInvestmentReturns
 
 ```solidity
-function claimInvestmentreturns(uint256 id) external
+function claimInvestmentReturns(uint256 id) external
 ```
 
 ### recoverFundsInvested
@@ -279,17 +358,6 @@ function claimInvestmentreturns(uint256 id) external
 ```solidity
 function recoverFundsInvested(uint256 id) external
 ```
-
-### adminDistributeRevenue
-
-```solidity
-function adminDistributeRevenue(uint256 id, uint256 amount) external
-```
-
-@notice Admin Distribution of Property Revenue
-
-  @param id Property Id
-  @param amount Amount of EURC to distribute through property token holders
 
 ### adminBuyTokens
 
@@ -306,11 +374,15 @@ function isRefClaimable(uint256 id) external view returns (bool)
 _Checks if people can claim their referral share of a property
         @return If it is already possible to claim referral rewards_
 
-### getPropertyToken
+### getPropertyInfo
 
 ```solidity
-function getPropertyToken(uint256 id) external view returns (address)
+function getPropertyInfo(uint256 id) external view returns (address, address)
 ```
+
+_Returns Property representative token
+        @param id Property Id
+        @return Property Token_
 
 ### completeRaise
 
@@ -319,14 +391,30 @@ function completeRaise(uint256 id) external
 ```
 
 _Function to complete the property Raise
-        @dev  Send funds to property owner exchange address and fees to
-              platform multisig_
+        @dev    It emits a `CompleteRaise` event.
+        @dev    Send funds to property owner exchange address and fees to
+                platform multisig_
 
 ### approveProperty
 
 ```solidity
-function approveProperty(uint256 id) external
+function approveProperty(uint256 id, uint256 raiseDeadline) external
 ```
+
+_Approves property to start raise
+        @dev     It emits an `ApproveProperty` event.
+        @param   id Property Id_
+
+### cancelProperty
+
+```solidity
+function cancelProperty(uint256 id) external
+```
+
+_In case Hesty or property Manager gives up from raising funds for property
+                 allow users to claim back their funds
+        @dev     It emits a `CancelProperty` event.
+        @param   id Property Id_
 
 ### setPlatformFee
 
@@ -335,13 +423,20 @@ function setPlatformFee(uint256 newFee) external
 ```
 
 _Function to change platform fee
-    Fee must be lower than total amount raised_
+        @dev     It emits a `NewPlatformFee` event.
+        @dev     Fee must be lower than total amount raised
+        @param   newFee New platform fee_
 
-#### Parameters
+### setOwnersFee
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| newFee | uint256 | New platform fee |
+```solidity
+function setOwnersFee(uint256 newFee) external
+```
+
+_Function to change owners fee
+        @dev     It emits a `NewOwnersFee` event.
+        @dev     Fee must be lower than total amount raised
+        @param   newFee New owners fee_
 
 ### setRefFee
 
@@ -359,8 +454,10 @@ _Function to change referral fee
 function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external
 ```
 
-_Function to change referral fee
+_Function to change owners address where he will receive funds
+        @dev    It emits a `NewPropertyOwnerAddrReceiver` event.
         @dev    Fee must be lower than fee charged by platform
+        @param  id Property Id
         @param  newAddress New Property Owner Address_
 
 ### extendRaiseForProperty
@@ -390,6 +487,16 @@ function setMaxNumberOfReferrals(uint256 newMax) external
 _Function to set the maximum number of referrals a user can have
         @dev    It emits a `NewMaxNumberOfReferrals` event.
         @param  newMax Maximum number of referrals_
+
+### setMaxAmountOfRefRev
+
+```solidity
+function setMaxAmountOfRefRev(uint256 newMax) external
+```
+
+_Function to set the maximum amount of referral revenue
+        @dev    It emits a `NewMaxAmountOfRefRev` event.
+        @param  newMax Maximum amount of revenue_
 
 ### setTreasury
 

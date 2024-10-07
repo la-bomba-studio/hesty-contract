@@ -21,7 +21,7 @@ Adds referral rewards to the user claim indexed to a property
 ### addGlobalRewards
 
 ```solidity
-function addGlobalRewards(address onBehalfOf, address user, uint256 amount) external
+function addGlobalRewards(address onBehalfOf, uint256 amount) external
 ```
 
 Adds referral rewards to the user claim not indexed to a property
