@@ -1,7 +1,7 @@
 const { ethers } = require('hardhat');
 
 async function main() {
- 
+
   let hestyAccessControl;
   let tokenFactory;
   let eurc;
