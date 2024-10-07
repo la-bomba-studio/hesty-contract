@@ -75,6 +75,8 @@ describe("Token Factory", function () {
   });
 
 
+
+
   describe("Non initialized contract Variable/Getters values", function () {
 
     it("ctrHestyControl, referralSystemCtr", async function () {
@@ -180,7 +182,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, "0x0000000000000000000000000000000000000000");
+      await tokenFactory.buyTokens(owner.address,0, 2, "0x0000000000000000000000000000000000000000");
 
 
     });
@@ -207,7 +209,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
 
     });
   })
@@ -234,7 +236,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
     })
 
     it("DistributeRevenue", async function () {
@@ -319,17 +321,38 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
     })
 
     it("recoverFundsInvested", async function () {
       await ethers.provider.send("evm_mine", [2937487238472844]);
 
       await tokenFactory.connect(addr4).recoverFundsInvested(0)
+
+        expect(await tokenFactory.isRefClaimable(0)).to.equal(false);
+
+
     })
   })
 
   describe("Admin Setters", function () {
+
+    it("setOwnersFee", async function () {
+
+      await expect(
+        tokenFactory.connect(addr4).setOwnersFee(1000)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setOwnersFee(10000)
+      ).to.be.revertedWith("Fee must be valid");
+
+      await expect(
+        tokenFactory.setOwnersFee(1000)
+      ).to.emit(tokenFactory, 'NewOwnersFee')
+        .withArgs(1000);
+
+    })
 
     it("setPlatformFee", async function () {
 
