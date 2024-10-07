@@ -8,7 +8,7 @@
 function onlyAdmin(address manager) external
 ```
 
-Require that only admins call this function
+Require that only admins can call this function
 
 ### onlyFundsManager
 
@@ -16,7 +16,7 @@ Require that only admins call this function
 function onlyFundsManager(address manager) external
 ```
 
-Require that only funds manager call this function
+Require that only funds manager can call this function
 
 ### kycCompleted
 
@@ -24,7 +24,7 @@ Require that only funds manager call this function
 function kycCompleted(address user) external returns (bool)
 ```
 
-Checks if an user has kyc approved in hesty
+Checks if an user is KYC approved in hesty
 
 ### paused
 
@@ -32,7 +32,7 @@ Checks if an user has kyc approved in hesty
 function paused() external view returns (bool)
 ```
 
-Checks if there is a global pause
+Checks if there is a global pause of Hesty Contracts
 
 ### blackList
 

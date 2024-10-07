@@ -32,15 +32,11 @@ mapping(address => mapping(uint256 => uint256)) rewards
 mapping(address => uint256) totalRewards
 ```
 
-Rewards earned by user indexed to each property
-
 ### globalRewards
 
 ```solidity
 mapping(address => uint256) globalRewards
 ```
-
-Total rewards earned by user indexed to properties
 
 ### rewardsByProperty
 
@@ -48,15 +44,11 @@ Total rewards earned by user indexed to properties
 mapping(uint256 => uint256) rewardsByProperty
 ```
 
-Total rewards earned by user not indexed to properties
-
 ### numberOfRef
 
 ```solidity
 mapping(address => uint256) numberOfRef
 ```
-
-Total rewards earned by users filtered by property
 
 ### referredBy
 
@@ -64,23 +56,17 @@ Total rewards earned by users filtered by property
 mapping(address => address) referredBy
 ```
 
-Number of referrals a user has
-
 ### approvedCtrs
 
 ```solidity
 mapping(address => bool) approvedCtrs
 ```
 
-Who reffered the user
-
 ### AddPropertyRefRewards
 
 ```solidity
 event AddPropertyRefRewards(uint256 id, address onBehalfOf, uint256 amount)
 ```
-
-Approved addresses that can add property rewards
 
 ### AddGlobalRewards
 
@@ -100,6 +86,36 @@ event NewTokenFactory(address newFactory)
 event NewHestyAccessControl(address newAccessControl)
 ```
 
+### NewRewardToken
+
+```solidity
+event NewRewardToken(address newRewardToken)
+```
+
+### NewApprovedCtr
+
+```solidity
+event NewApprovedCtr(address newReferralRouter)
+```
+
+### RemovedApprovedCtr
+
+```solidity
+event RemovedApprovedCtr(address router)
+```
+
+### ClaimPropertyRewards
+
+```solidity
+event ClaimPropertyRewards(uint256 projectId, address user, uint256 rew)
+```
+
+### ClaimGlobalRewards
+
+```solidity
+event ClaimGlobalRewards(address user, uint256 rew)
+```
+
 ### constructor
 
 ```solidity
@@ -117,17 +133,23 @@ _Referral System Constructor
 modifier whenNotAllPaused()
 ```
 
+_Checks that Hesty Contracts are not paused_
+
 ### whenKYCApproved
 
 ```solidity
 modifier whenKYCApproved(address user)
 ```
 
+_Checks that `user` has kyc completed_
+
 ### whenNotBlackListed
 
 ```solidity
 modifier whenNotBlackListed(address user)
 ```
+
+_Checks that `user` is not blacklisted_
 
 ### onlyAdmin
 
@@ -144,6 +166,7 @@ function addRewards(address onBehalfOf, address user, uint256 projectId, uint256
 ```
 
 _Add Rewards Associated to a Property Project
+        @dev    It emits a `AddPropertyRefRewards` event
         @param  onBehalfOf User who referred and the one that will receive the income
         @param  user The user who were referenced by onBehalfOf user
         @param  projectId The Property project
@@ -156,6 +179,7 @@ function addGlobalRewards(address onBehalfOf, uint256 amount) external
 ```
 
 _Add Rewards Not Associated to a Property Project
+        @dev    It emits a `AddGlobalRewards` event
         @param  onBehalfOf User who will receive rewards
         @param  amount The amount of rewards_
 
@@ -165,7 +189,10 @@ _Add Rewards Not Associated to a Property Project
 function claimPropertyRewards(address user, uint256 projectId) external
 ```
 
-Claim User Property Referral rewards
+_Claim Property Rewards
+        @dev    It emits a `ClaimPropertyRewards` event
+        @param  user The user who earned referral revenue
+        @param  projectId The Property Id_
 
 ### claimGlobalRewards
 
@@ -173,7 +200,9 @@ Claim User Property Referral rewards
 function claimGlobalRewards(address user) external
 ```
 
-Claim User General Referral rewards (to be implemented in the future)
+_Claim Global Rewards
+        @dev    It emits a `ClaimGlobalRewards` event
+        @param  user The user who earned referral revenue_
 
 ### getReferrerDetails
 
@@ -191,6 +220,7 @@ function addApprovedCtrs(address newReferralRouter) external
 ```
 
 _Adds Contracts and Addresses that can add referral rewards
+        @dev    It emits a `NewApprovedCtr` event
         @param  newReferralRouter Address that will add referral rewards_
 
 ### removeApprovedCtrs
@@ -199,11 +229,19 @@ _Adds Contracts and Addresses that can add referral rewards
 function removeApprovedCtrs(address oldReferralRouter) external
 ```
 
+_Remove Approved Contract Routers
+        @dev    It emits a `RemovedApprovedCtr` event
+        @param  oldReferralRouter Address that added referral rewards_
+
 ### setRewardToken
 
 ```solidity
 function setRewardToken(address newToken) external
 ```
+
+_Set New Reward Token
+        @dev    It emits a `NewRewardToken` event
+        @param  newToken The Reward Token Address_
 
 ### setHestyAccessControlCtr
 
@@ -211,9 +249,17 @@ function setRewardToken(address newToken) external
 function setHestyAccessControlCtr(address newControl) external
 ```
 
+_Set New Hesty Accces Control Contract
+        @dev    It emits a `NewHestyAccessControl` event
+        @param  newControl The New Hesty Access Control_
+
 ### setNewTokenFactory
 
 ```solidity
 function setNewTokenFactory(address newFactory) external
 ```
+
+_Set New Hesty Factory Contract
+        @dev    It emits a `NewTokenFactory` event
+        @param  newFactory The New Hesty Factory_
 

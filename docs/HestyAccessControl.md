@@ -14,7 +14,7 @@ uint256 initialSponsorAmount
 mapping(address => bool) kycCompleted
 ```
 
-Checks if an user has kyc approved in hesty
+Checks if an user is KYC approved in hesty
 
 ### blackList
 

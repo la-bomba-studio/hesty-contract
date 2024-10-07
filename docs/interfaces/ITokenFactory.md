@@ -16,7 +16,7 @@ Buy Tokens for users that acquired them off chain through EURO (FIAT)
 function distributeRevenue(uint256 id, uint256 amount) external
 ```
 
-Distribute Revenue through
+Distribute Revenue through holders
 
 ### isRefClaimable
 

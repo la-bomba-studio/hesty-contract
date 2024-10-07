@@ -16,7 +16,7 @@ Returns user referral numbers and revenue
 function addRewards(address onBehalfOf, address referrer, uint256 projectId, uint256 amount) external
 ```
 
-Adds referral rewards to the user claim indexed to a property
+Adds Property Referral Rewards to the user
 
 ### addGlobalRewards
 
@@ -24,7 +24,7 @@ Adds referral rewards to the user claim indexed to a property
 function addGlobalRewards(address onBehalfOf, uint256 amount) external
 ```
 
-Adds referral rewards to the user claim not indexed to a property
+Adds referral rewards to the user (not indexed to a property)
 
 ### claimPropertyRewards
 
@@ -40,5 +40,5 @@ Claim User Property Referral rewards
 function claimGlobalRewards(address user) external
 ```
 
-Claim User General Referral rewards (to be implemented in the future)
+Claim User Global Referral rewards
 
