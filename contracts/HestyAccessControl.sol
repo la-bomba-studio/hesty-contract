@@ -19,9 +19,9 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     uint256 public initialSponsorAmount; // Sponsor initial transactions of users be sending some ETH
 
-    mapping(address => bool)  public kycCompleted;  // Store user KYC status
-    mapping(address => bool)  public blackList;     // Store user Blacklist status
-    mapping(address => bool)  private firstApproval;     // Store user Blacklist status
+    mapping(address => bool)  public kycCompleted;      // Store user KYC status
+    mapping(address => bool)  public blackList;         // Store user Blacklist status
+    mapping(address => bool)  private firstApproval;    // Store user Blacklist status
 
     constructor() AccessControlDefaultAdminRules(
         3 days,
@@ -36,26 +36,41 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     =========================================**/
 
+    /**
+        @dev Checks that `manager` is an Admin
+    */
     modifier onlyAdminManager(address manager){
         require(hasRole(DEFAULT_ADMIN_ROLE, manager), "Not Admin Manager");
         _;
     }
 
+    /**
+        @dev Checks that `manager` is funds manger
+    */
     modifier onlyFundManager(address manager){
         require(hasRole(FUNDS_MANAGER, manager), "Not Funds Manager");
         _;
     }
 
+    /**
+        @dev Checks that `manager` is blackListManager
+    */
     modifier onlyBlackListManager(address manager){
         require(hasRole(BLACKLIST_MANAGER, manager), "Not Blacklist Manager");
         _;
     }
 
+    /**
+        @dev Checks that `manager` is KYC manager
+    */
     modifier onlyKYCManager(address manager){
         require(hasRole(KYC_MANAGER, manager), "Not KYC Manager");
         _;
     }
 
+    /**
+        @dev Checks that `manager` is pauser manger
+    */
     modifier onlyPauserManager(address manager){
         require(hasRole(PAUSER_MANAGER, manager), "Not Pauser Manager");
         _;
@@ -74,6 +89,11 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     */
     function onlyAdmin(address manager) onlyAdminManager(manager) external{}
 
+    /**
+        @notice Only Funds Manager
+        @param  manager The user that wants to call the function
+                onlyFundManager
+    */
     function onlyFundsManager(address manager) external onlyFundManager(manager){}
 
     /**
@@ -124,16 +144,18 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         kycCompleted[user] = true;
     }
 
+    /**
+        @dev    Approve KYC only without sponsoring address
+        @param  user The Address of the user
+    */
     function approveKYCOnly(address user) external onlyKYCManager(msg.sender){
         require(!kycCompleted[user], "Already Approved");
         kycCompleted[user] = true;
     }
 
     /**
-    * @notice Revert user KYC status
-      @param user The Address of the user
-    *
-    *
+        @notice Revert user KYC status
+        @param user The Address of the user
     */
     function revertUserKYC(address user) external onlyKYCManager(msg.sender){
         require(kycCompleted[user], "Not KYC Approved");
@@ -141,24 +163,27 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
     }
 
     /**
-        @notice Pause all Hesty Contracts
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+        @dev    Pause all Hesty Contracts
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer
     */
     function pause() external onlyPauserManager(msg.sender){
         super._pause();
     }
 
     /**
-        @notice Unpause all Hesty Contracts
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+        @dev    Unpause all Hesty Contracts
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer
     */
     function unpause() external onlyPauserManager(msg.sender){
         super._unpause();
     }
 
-
+    /**
+        @dev    Set sponsor amount
+        @param newAmount New sponsor amount
+    */
     function setSponsorAmount(uint256 newAmount) external onlyAdminManager(msg.sender){
         initialSponsorAmount = newAmount;
     }
@@ -179,7 +204,7 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         return super.paused();
     }
 
-    // Function to allow deposits
+    // Function to allow deposits to pay for sponsorship
     receive() external payable {}
 
 }
