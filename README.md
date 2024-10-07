@@ -129,10 +129,9 @@ To use PropertyFactory, you will need an Web3 wallet and some tokens to pay for 
 ## Usage
 
 1. Deploy the contract: `npx hardhat run scripts/deploy.js --network polygon-mumbai`
-2. Create a new property: `const tokenId = await propertyFactory.createProperty(amount, tokenPrice, threshold, payType, paymentToken, revenueToken, name,
+2. Create a new property: `const tokenId = await tokenFactory.createProperty(amount, tokenPrice, threshold, payType, paymentToken, revenueToken, name,
    symbol, admin)`
-3. Transfer a property: `await propertyFactory.safeTransferFrom(fromAddress, toAddress, tokenId, amount, data)`
-4. Check property details: `const property = await propertyFactory.properties(tokenId)`
+3. Buy Property Tokens: `await tokenFactory.buyTokens(address buyer, propertyId, amount, referral)`
 
 ##Faucets
 
@@ -175,3 +174,5 @@ The raise is completed and distribution of rewards is made through property toke
 4. Same as 3 but the investments are  made both onchain and offchain 
 5. Test a general pause of all contracts to check if there are any actions that can be made
     by users
+5. Check if platform earns the 3% from investments, the 10% from all the raised amount
+    and if referrals earned the 1% fee
