@@ -394,32 +394,6 @@ Constants {
 
     }
 
-    /*
-        @dev    Buy Tokens without spending funds, this helpful for offchain investments
-        @dev    It emits a `NewInvestment` event.
-        @param  id Property id
-        @param  buyer The user who will receive the property tokens
-        @param  amount The amount of property tokens to buy
-    */
-    function adminBuyTokens(uint256 id, address buyer, uint256 amount) external nonReentrant onlyFundsManager{
-
-        PropertyInfo storage p    = property[id];
-
-        // Require that raise is still active and not expired
-        require(p.raiseDeadline >= block.timestamp, "Raise expired");
-
-        // Calculate how much costs to buy tokens
-        uint256 boughtTokensPrice = amount * p.price;
-
-        IERC20(p.asset).transfer(buyer, amount);
-
-        p.raised += boughtTokensPrice;
-        property[id] = p;
-
-        emit NewInvestment(id, buyer, boughtTokensPrice, block.timestamp);
-    }
-
-
     /**=====================================
         Viewable Functions
     =========================================*/
@@ -446,6 +420,31 @@ Constants {
     /**===================================================
        OWNER STATE MODIFIABLE FUNTIONS
    ======================================================**/
+
+    /*
+        @dev    Buy Tokens without spending funds, this helpful for offchain investments
+        @dev    It emits a `NewInvestment` event.
+        @param  id Property id
+        @param  buyer The user who will receive the property tokens
+        @param  amount The amount of property tokens to buy
+    */
+    function adminBuyTokens(uint256 id, address buyer, uint256 amount) external nonReentrant onlyFundsManager{
+
+        PropertyInfo storage p    = property[id];
+
+        // Require that raise is still active and not expired
+        require(p.raiseDeadline >= block.timestamp, "Raise expired");
+
+        // Calculate how much costs to buy tokens
+        uint256 boughtTokensPrice = amount * p.price;
+
+        IERC20(p.asset).transfer(buyer, amount);
+
+        p.raised += boughtTokensPrice;
+        property[id] = p;
+
+        emit NewInvestment(id, buyer, boughtTokensPrice, block.timestamp);
+    }
 
     /**
         @dev    Function to complete the property Raise
