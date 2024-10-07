@@ -76,7 +76,13 @@ the last one to occur then it is reverted by admins with ´revertUserBuyTokens´
 Hesty is a smart contract that manages the access control of users
 doing certain operations.
 
-There are 
+There are 5 roles:
+
+- Admin: Controls all the important business logic functions
+- BlackList Manager: Controls blacklisting
+- Funds Manager: Controls funds in Hesty Router
+- KYC Manager: Controls KYC related tasks
+- Pauser Manager: Controls All contracts pause and individual property tokens pauses
 
 ## Hesty Property Token (contracts/PropertyToken.sol)
 
@@ -156,3 +162,16 @@ code complexity:
 
 1. Run the tests: `npx hardhat test`
 
+### Main Flows to test
+    
+1. A flow where all the investments are made onchain. The property is created, 
+then the users invest EURC in the property and get a representative back.
+The raise is completed and distribution of rewards is made through property token holders that can claim those
+   rewards everytime they transfer tokens or through a claim function in the property token.
+2. The same flow as 1, but investments are done onchain and offchain.
+    The offchain investments are made through FIAT and therefore Hesty admins need to 
+    call a offchainBuyTokens function in router to issue property tokens to buyers.
+3.    Same as flow 1 but the raise fails and therefore the users need to recover their investment.
+4. Same as 3 but the investments are  made both onchain and offchain 
+5. Test a general pause of all contracts to check if there are any actions that can be made
+    by users
