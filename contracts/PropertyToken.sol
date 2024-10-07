@@ -7,20 +7,17 @@ import "./interfaces/IHestyAccessControl.sol";
 import "./Constants.sol";
 
 /**
- * @title   Property Token
- *
- * @notice  Token associated to a property that tracks
+    @title   Property Token
+
+    @notice  Token associated to a property that tracks
             investors and stakeholders that are entitled
             to a share of the property generated revenue.
- *
- * @dev     {ERC20} token, including:
- *
- *          - Pre minted initial supply
- *          - Ability for holders to burn (destroy) their tokens
- *          - No access control mechanism (for minting/pausing) and hence no governance
- *
- *
- * @author Pedro G. S. Ferreira
+
+    @dev     {ERC20} token, including:
+
+            - Minted initial supply in constructor
+
+    @author Pedro G. S. Ferreira
  */
 contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constants{
 
@@ -37,21 +34,33 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
 
     =========================================**/
 
+    /**
+        @dev Checks that onlyPauser can call the function
+    */
     modifier onlyPauser(address manager){
         require(hasRole(PAUSER_MANAGER, manager), "Not Pauser");
         _;
     }
 
+    /**
+        @dev Checks that `user` is not blacklisted
+    */
     modifier whenNotBlackListed(address user){
         require(!ctrHestyControl.blackList(user), "Blacklisted");
         _;
     }
 
+    /**
+        @dev Checks that `user` has KYC approved
+    */
     modifier whenKYCApproved(address user){
         require(ctrHestyControl.kycCompleted(user), "No KYC Made");
         _;
     }
 
+    /**
+        @dev Checks that hesty contracts are not all paused
+    */
     modifier whenNotAllPaused(){
         require(!ctrHestyControl.paused(), "All Hesty Paused");
         _;
@@ -99,8 +108,8 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     =========================================**/
 
     /**
-    * @notice Claims users dividends
-      @param amount Token Amount that users wants to buy
+        @dev    Claims users dividends
+        @param  amount Token Amount that users wants to buy
     */
 
     function distributionRewards(uint256 amount) external{
@@ -198,10 +207,16 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         return super.transferFrom(from, to, amount);
     }
 
+    /**
+        @dev Pauses Property Token Only
+    */
     function pause() external onlyPauser(msg.sender){
         super._pause();
     }
 
+    /**
+        @dev Unpauses Property Token Only
+    */
     function unpause() external onlyPauser(msg.sender){
         super._unpause();
     }
