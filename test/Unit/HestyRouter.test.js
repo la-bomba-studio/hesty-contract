@@ -91,7 +91,7 @@ describe("Hesty Router", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address, 0, 2, addr3.address);
     })
 
     it("adminDistribution", async function () {

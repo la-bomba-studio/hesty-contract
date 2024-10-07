@@ -71,6 +71,9 @@ Constants {
     event                 NewPlatformFee(uint256 newFee);
     event                   NewOwnersFee(uint256 newFee);
     event                   ClaimProfits(address user, uint256 propertyId);
+    event                  CompleteRaise(uint256 propertyId);
+    event                   RecoverFunds(address indexed user, uint256 propertyId);
+    event                ApproveProperty(uint256 propertyId);
 
 
     struct PropertyInfo{
@@ -108,14 +111,16 @@ Constants {
     ){
 
         require(refFee_ < fee, "Ref fee invalid");
+        require(fee < BASIS_POINTS, "Invalid Platform Fee");
         require(ownersFee < BASIS_POINTS, "Invalid Fee");
+
         FEE_BASIS_POINTS        = fee;
+        OWNERS_FEE_BASIS_POINTS = ownersFee;
         REF_FEE_BASIS_POINTS    = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
         maxNumberOfReferrals    = 20;               // Start with max 20 referrrals
         maxAmountOfRefRev       = 10000 * WAD;      // Start with max 10000€ of revenue
-        OWNERS_FEE_BASIS_POINTS = ownersFee;
         initialized             = false;
         ctrHestyControl         = IHestyAccessControl(ctrHestyControl_);
 
@@ -169,6 +174,9 @@ Constants {
         _;
     }
 
+    /**
+        @dev Checks if property id is valid
+    */
     modifier idMustBeValid(uint256 id){
         require(id < propertyCounter, "Id must be valid");
         _;
@@ -249,7 +257,7 @@ Constants {
         @param  amount Amount of tokens that user wants to buy
         @param  ref The referral of the user, address(0) if doesn't exist
     */
-    function buyTokens(uint256 id, uint256 amount, address ref) external nonReentrant onlyWhenInitialized whenNotAllPaused {
+    function buyTokens(address onBehalfOf, uint256 id, uint256 amount, address ref) external nonReentrant onlyWhenInitialized whenNotAllPaused {
 
         PropertyInfo storage p = property[id];
 
@@ -270,7 +278,7 @@ Constants {
         IERC20(p.paymentToken).transferFrom(msg.sender, address(this), total);
 
         // Transfer Asset to buyer
-        IERC20(p.asset).transfer(msg.sender, amount);
+        IERC20(p.asset).transfer(onBehalfOf, amount);
 
         //
         platformFee[id]              += fee;
@@ -282,12 +290,12 @@ Constants {
         ownersPlatformFee[id]  += ownersFee;
         propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
 
-        referralRewards(ref, boughtTokensPrice, id);
+        referralRewards(onBehalfOf, ref, boughtTokensPrice, id);
 
         p.raised     += boughtTokensPrice;
         property[id] = p;
 
-        emit NewInvestment(id, msg.sender, boughtTokensPrice, block.timestamp);
+        emit NewInvestment(id, onBehalfOf, boughtTokensPrice, block.timestamp);
     }
 
     /**
@@ -295,7 +303,7 @@ Constants {
         @param  ref user that referenced the buyer
         @param  boughtTokensPrice Amount invested by buyer
     */
-    function referralRewards(address ref, uint256 boughtTokensPrice, uint256 id) internal{
+    function referralRewards(address onBehalfOf, address ref, uint256 boughtTokensPrice, uint256 id) internal{
         if(ref != address(0)){
 
             (uint256 userNumberRefs,uint256 userRevenue,) = referralSystemCtr.getReferrerDetails(ref);
@@ -313,7 +321,7 @@ Constants {
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
                 // Try to Add Referral rewards but don't stop if it fails
-                try referralSystemCtr.addRewards(ref, msg.sender, id, refFee_){
+                try referralSystemCtr.addRewards(onBehalfOf, ref, id, refFee_){
                     refFee[id] += refFee_;
                 }catch{
 
@@ -354,6 +362,10 @@ Constants {
         emit ClaimProfits(msg.sender, id);
     }
 
+    /*
+        @dev    Claim Investment returns
+        @param  id Property id
+    */
     function recoverFundsInvested(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
@@ -365,9 +377,17 @@ Constants {
 
         IERC20(p.paymentToken).transfer(msg.sender, amount);
 
+        emit RecoverFunds(msg.sender, id);
+
     }
 
-    function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external nonReentrant onlyFundsManager{
+    /*
+        @dev    Buy Tokens without spending funds, this helpful for offchain investments
+        @param  id Property id
+        @param  buyer The user who will receive the property tokens
+        @param  amount The amount of property tokens to buy
+    */
+    function adminBuyTokens(uint256 id, address buyer, uint256 amount) external nonReentrant onlyFundsManager{
 
         PropertyInfo storage p    = property[id];
 
@@ -440,6 +460,8 @@ Constants {
         refFee[id] = 0;
         IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), refFee[id]);
 
+        emit CompleteRaise(id);
+
     }
 
     /**
@@ -450,6 +472,8 @@ Constants {
 
         property[id].approved = true;
         property[id].raiseDeadline = raiseDeadline;
+
+        emit ApproveProperty(id);
     }
 
     /**
@@ -466,9 +490,9 @@ Constants {
     }
 
     /**
-    * @dev     Function to change platform fee
-    * @dev     Fee must be lower than total amount raised
-    * @param   newFee New platform fee
+        @dev     Function to change platform fee
+        @dev     Fee must be lower than total amount raised
+        @param   newFee New platform fee
     */
     function setPlatformFee(uint256 newFee) external onlyAdmin{
 
@@ -478,6 +502,12 @@ Constants {
         emit NewPlatformFee(newFee);
     }
 
+    /**
+        @dev     Function to change owners fee
+        @dev     It emits a `NewOwnersFee` event.
+        @dev     Fee must be lower than total amount raised
+        @param   newFee New owners fee
+    */
     function setOwnersFee(uint256 newFee) external onlyAdmin{
 
         require( newFee < BASIS_POINTS, "Fee must be valid");

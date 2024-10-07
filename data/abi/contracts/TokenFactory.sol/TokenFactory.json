@@ -45,6 +45,19 @@
         "type": "uint256"
       }
     ],
+    "name": "ApproveProperty",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "propertyId",
+        "type": "uint256"
+      }
+    ],
     "name": "CancelProperty",
     "type": "event"
   },
@@ -65,6 +78,19 @@
       }
     ],
     "name": "ClaimProfits",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "propertyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "CompleteRaise",
     "type": "event"
   },
   {
@@ -173,6 +199,19 @@
         "type": "uint256"
       }
     ],
+    "name": "NewOwnersFee",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newFee",
+        "type": "uint256"
+      }
+    ],
     "name": "NewPlatformFee",
     "type": "event"
   },
@@ -213,6 +252,25 @@
       }
     ],
     "name": "NewTreasury",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "propertyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "RecoverFunds",
     "type": "event"
   },
   {
@@ -368,6 +426,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "onBehalfOf",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "id",
@@ -886,6 +949,19 @@
       }
     ],
     "name": "setNewPropertyOwnerReceiverAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "newFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setOwnersFee",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

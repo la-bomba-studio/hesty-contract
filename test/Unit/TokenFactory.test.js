@@ -182,7 +182,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, "0x0000000000000000000000000000000000000000");
+      await tokenFactory.buyTokens(owner.address,0, 2, "0x0000000000000000000000000000000000000000");
 
 
     });
@@ -209,7 +209,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
 
     });
   })
@@ -236,7 +236,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
     })
 
     it("DistributeRevenue", async function () {
@@ -321,7 +321,7 @@ describe("Token Factory", function () {
 
       await token.mint(owner.address, 10000);
 
-      await tokenFactory.buyTokens(0, 2, addr3.address);
+      await tokenFactory.buyTokens(owner.address,0, 2, addr3.address);
     })
 
     it("recoverFundsInvested", async function () {
@@ -329,10 +329,7 @@ describe("Token Factory", function () {
 
       await tokenFactory.connect(addr4).recoverFundsInvested(0)
 
-
-
-
-        expect(await tokenFactory.isRefClaimable()).to.equal(false);
+        expect(await tokenFactory.isRefClaimable(0)).to.equal(false);
 
 
     })
