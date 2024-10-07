@@ -166,6 +166,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     /**
         @dev    Adds Contracts and Addresses that can add referral rewards
+        @dev    It emits a `NewApprovedCtr` event
         @param  newReferralRouter Address that will add referral rewards
     */
     function addApprovedCtrs(address newReferralRouter) external onlyAdmin{
@@ -175,6 +176,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         emit NewApprovedCtr(newReferralRouter);
     }
 
+    /**
+        @dev    Remove Approved Contract Routers
+        @dev    It emits a `RemovedApprovedCtr` event
+        @param  oldReferralRouter Address that added referral rewards
+    */
     function removeApprovedCtrs(address oldReferralRouter) external onlyAdmin{
         require(approvedCtrs[oldReferralRouter], "Not Approved Router");
         approvedCtrs[oldReferralRouter] = false;
@@ -182,6 +188,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         emit RemovedApprovedCtr(oldReferralRouter);
     }
 
+    /**
+        @dev    Set New Reward Token
+        @dev    It emits a `NewRewardToken` event
+        @param  newToken The Reward Token Address
+    */
     function setRewardToken(address newToken) external onlyAdmin{
         require(newToken != address(0), "Not null");
         rewardToken = newToken;
@@ -189,6 +200,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         emit NewRewardToken(newToken);
     }
 
+    /**
+        @dev    Set New Hesty Accces Control Contract
+        @dev    It emits a `NewHestyAccessControl` event
+        @param  newControl The New Hesty Access Control
+    */
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
         require(newControl != address(0), "Not null");
         ctrHestyControl = IHestyAccessControl(newControl);
@@ -196,6 +212,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         emit NewHestyAccessControl(newControl);
     }
 
+    /**
+        @dev    Set New Hesty Factory Contract
+        @dev    It emits a `NewTokenFactory` event
+        @param  newFactory The New Hesty Factory
+    */
     function setNewTokenFactory(address newFactory) external onlyAdmin{
 
         require(newFactory != address(0), "Not null");
