@@ -20,7 +20,7 @@ import "../interfaces/ITokenFactory.sol";
 contract ReferralSystem is ReentrancyGuard, IReferral {
 
     IHestyAccessControl public ctrHestyControl;                     // Hesty Global Access Control
-    address             public rewardToken;                         // Token contract address of rewards
+    address             public rewardToken;                         // Token Contract Address of rewards
     ITokenFactory       public tokenFactory;                        // Token Factory Contract
 
     mapping(address => mapping(uint256 =>uint256)) public rewards;  // Rewards earned by user indexed to each property

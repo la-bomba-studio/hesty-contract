@@ -10,7 +10,7 @@ interface ITokenFactory {
     /// @notice Buy Tokens for users that acquired them off chain through EURO (FIAT)
     function adminBuyTokens(uint256 id, address buyer,  uint256 amount) external;
 
-    /// @notice Distribute Revenue through
+    /// @notice Distribute Revenue through holders
     function distributeRevenue(uint256 id, uint256 amount) external;
 
     /// @notice Return if it is already possible to claim referral revenue of a property
