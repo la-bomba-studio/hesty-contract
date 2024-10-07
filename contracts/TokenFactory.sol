@@ -207,7 +207,7 @@ Constants {
     ======================================================**/
 
     /**
-        @notice Issues a new property token
+        @dev    Issues a new property token
         @dev    It emits a `CreateProperty` event.
         @param  amount The amount of tokens to issue
         @param  tokenPrice Token Price
@@ -229,12 +229,13 @@ Constants {
 
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
 
-        address newAsset = address(new PropertyToken(address(this),
-                                                            amount,
-                                                            name,
-                                                            symbol,
-                                                            revenueToken,
-                                                            admin));
+        address newAsset = address(
+                            new PropertyToken(address(this),
+                                                    amount,
+                                                    name,
+                                                    symbol,
+                                                    revenueToken,
+                                                    admin));
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
                                                     threshold,
@@ -251,12 +252,14 @@ Constants {
 
 
         emit CreateProperty(propertyCounter - 1);
+
         return propertyCounter - 1;
     }
 
 
     /**
         @dev    Function to buy property tokens
+        @dev    It emits a `NewInvestment` event.
         @dev    If there is a referral store the fee to pay and transfer funds to this contract
         @param  id Property id
         @param  amount Amount of tokens that user wants to buy
@@ -285,7 +288,7 @@ Constants {
         // Transfer Asset to buyer
         IERC20(p.asset).transfer(onBehalfOf, amount);
 
-        //
+        // Store Platform fee and user Invested Amount Paid
         platformFee[id]              += fee;
         userInvested[msg.sender][id] += boughtTokensPrice;
 
@@ -295,6 +298,7 @@ Constants {
         ownersPlatformFee[id]  += ownersFee;
         propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
 
+        // Add Referral rewards in the referralSystemCtr
         referralRewards(onBehalfOf, ref, boughtTokensPrice, id);
 
         p.raised     += boughtTokensPrice;
@@ -448,6 +452,7 @@ Constants {
         @dev    It emits a `CompleteRaise` event.
         @dev    Send funds to property owner exchange address and fees to
                 platform multisig
+        @param  id Property Id
     */
     function completeRaise(uint256 id) external onlyAdmin{
 
@@ -479,6 +484,7 @@ Constants {
         @dev     Approves property to start raise
         @dev     It emits an `ApproveProperty` event.
         @param   id Property Id
+        @param   raiseDeadline when the raise will end
     */
     function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin idMustBeValid(id){
 
@@ -557,8 +563,10 @@ Constants {
     }
 
     /**
-    * @notice Function to extend property raise deadline
-    *
+        @dev    Function to extend property raise deadline
+        @param  id Property id
+        @param  newDeadline The deadline for the raise
+
     */
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin idMustBeValid(id){
 

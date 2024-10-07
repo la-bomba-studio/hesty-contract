@@ -14,23 +14,29 @@ import "../interfaces/ITokenFactory.sol";
 */
 contract ReferralSystem is ReentrancyGuard, IReferral {
 
-     IHestyAccessControl public ctrHestyControl;                    // Hesty Global Access Control
-     address             public rewardToken;                        // Token contract address of rewards
-     ITokenFactory       public tokenFactory;                       // Token Factory Contract
+    IHestyAccessControl public ctrHestyControl;                     // Hesty Global Access Control
+    address             public rewardToken;                         // Token contract address of rewards
+    ITokenFactory       public tokenFactory;                        // Token Factory Contract
 
-     mapping(address => mapping(uint256 =>uint256)) public rewards; /// @notice Rewards earned by user indexed to each property
-     mapping(address => uint256) public totalRewards;               /// @notice Total rewards earned by user indexed to properties
-     mapping(address => uint256) public globalRewards;              /// @notice Total rewards earned by user not indexed to properties
-     mapping(uint256 =>uint256)  public rewardsByProperty;          /// @notice Total rewards earned by users filtered by property
-     mapping(address => uint256) public numberOfRef;                /// @notice Number of referrals a user has
-     mapping(address => address) public referredBy;                 /// @notice Who reffered the user
-     mapping(address => bool)    public approvedCtrs;               /// @notice Approved addresses that can add property rewards
+    mapping(address => mapping(uint256 =>uint256)) public rewards;  // Rewards earned by user indexed to each property
+
+    mapping(address => uint256) public totalRewards;                // Total rewards earned by user indexed to properties
+    mapping(address => uint256) public globalRewards;               // Total rewards earned by user not indexed to properties
+    mapping(uint256 =>uint256)  public rewardsByProperty;           // Total rewards earned by users filtered by property
+    mapping(address => uint256) public numberOfRef;                 // Number of referrals a user has
+    mapping(address => address) public referredBy;                  // Who reffered the user
+    mapping(address => bool)    public approvedCtrs;                // Approved addresses that can add property rewards
 
 
-        event  AddPropertyRefRewards(uint256 indexed id, address onBehalfOf, uint256 amount);
-    event  AddGlobalRewards(address onBehalfOf, uint256 amount);
-    event NewTokenFactory(address newFactory);
-    event NewHestyAccessControl(address newAccessControl);
+    event   AddPropertyRefRewards(uint256 indexed id, address onBehalfOf, uint256 amount);
+    event        AddGlobalRewards(address indexed onBehalfOf, uint256 amount);
+    event         NewTokenFactory(address newFactory);
+    event   NewHestyAccessControl(address newAccessControl);
+    event          NewRewardToken(address newRewardToken);
+    event          NewApprovedCtr(address newReferralRouter);
+    event      RemovedApprovedCtr(address router);
+    event    ClaimPropertyRewards(uint256 indexed projectId, address user, uint256 rew);
+    event      ClaimGlobalRewards(address indexed user, uint256 rew);
 
 
     /**
@@ -118,6 +124,11 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         emit AddGlobalRewards(onBehalfOf, amount);
     }
 
+    /**
+        @dev    Claim Property Rewards
+        @param  user The user who earned referral revenue
+        @param  projectId The Property Id
+    */
     function claimPropertyRewards(address user, uint256 projectId) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
 
         require(tokenFactory.isRefClaimable(projectId), "Not yet");
@@ -127,18 +138,23 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
         IERC20(rewardToken).transfer(user, rew);
 
+        emit ClaimPropertyRewards(projectId, user, rew);
     }
 
+    /**
+        @dev    Claim Global Rewards
+        @param  user The user who earned referral revenue
+    */
     function claimGlobalRewards(address user) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
-
 
         uint256 rew   = globalRewards[user];
         globalRewards[user] = 0;
 
         IERC20(rewardToken).transfer(user, rew);
 
-    }
+        emit ClaimGlobalRewards(user, rew);
 
+    }
 
     /**
         @dev    Return Number of user referrals and user referral revenues
@@ -155,16 +171,22 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
     function addApprovedCtrs(address newReferralRouter) external onlyAdmin{
         require(!approvedCtrs[newReferralRouter], "Already Approved");
         approvedCtrs[newReferralRouter] = true;
+
+        emit NewApprovedCtr(newReferralRouter);
     }
 
     function removeApprovedCtrs(address oldReferralRouter) external onlyAdmin{
         require(approvedCtrs[oldReferralRouter], "Not Approved Router");
         approvedCtrs[oldReferralRouter] = false;
+
+        emit RemovedApprovedCtr(oldReferralRouter);
     }
 
     function setRewardToken(address newToken) external onlyAdmin{
         require(newToken != address(0), "Not null");
         rewardToken = newToken;
+
+        emit NewRewardToken(newToken);
     }
 
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
