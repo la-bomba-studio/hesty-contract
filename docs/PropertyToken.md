@@ -2,15 +2,17 @@
 
 ## PropertyToken
 
-Token associated to a property that tracks
-            investors and stakeholders that are entitled
-            to a share of the property generated revenue.
+### rewardAsset
 
-_{ERC20} token, including:
+```solidity
+contract IERC20 rewardAsset
+```
 
-         - Pre minted initial supply
-         - Ability for holders to burn (destroy) their tokens
-         - No access control mechanism (for minting/pausing) and hence no governance_
+### ctrHestyControl
+
+```solidity
+contract IHestyAccessControl ctrHestyControl
+```
 
 ### dividendPerToken
 
@@ -18,28 +20,10 @@ _{ERC20} token, including:
 uint256 dividendPerToken
 ```
 
-Multiplier to guarantee math safety in gwei, everything else is neglectable
-
 ### xDividendPerToken
 
 ```solidity
 mapping(address => uint256) xDividendPerToken
-```
-
-Dividends per share/token
-
-### ctrHestyControl
-
-```solidity
-address ctrHestyControl
-```
-
-Last user dividends essential to calculate future rewards
-
-### rewardAsset
-
-```solidity
-contract IERC20 rewardAsset
 ```
 
 ### onlyPauser
@@ -48,17 +32,7 @@ contract IERC20 rewardAsset
 modifier onlyPauser(address manager)
 ```
 
-======================================
-
-    MODIFIER FUNCTIONS
-
-    =========================================*
-
-### onlyBlackLister
-
-```solidity
-modifier onlyBlackLister(address manager)
-```
+_Checks that onlyPauser can call the function_
 
 ### whenNotBlackListed
 
@@ -66,17 +40,23 @@ modifier onlyBlackLister(address manager)
 modifier whenNotBlackListed(address user)
 ```
 
+_Checks that `user` is not blacklisted_
+
 ### whenKYCApproved
 
 ```solidity
 modifier whenKYCApproved(address user)
 ```
 
+_Checks that `user` has KYC approved_
+
 ### whenNotAllPaused
 
 ```solidity
 modifier whenNotAllPaused()
 ```
+
+_Checks that hesty contracts are not all paused_
 
 ### constructor
 
@@ -85,7 +65,13 @@ constructor(address tokenManagerContract_, uint256 initialSupply_, string name_,
 ```
 
 _Mints initialSupply_ * 1 ether of tokens and transfers them
-           to Token Factory
+                to Token Factory
+        @param  tokenManagerContract_ Contract that will manage initial issued supply
+        @param  initialSupply_ Initial Property Token Supply
+        @param  name_ Token Name
+        @param  symbol_ Token Symbol/Ticker
+        @param  rewardAsset_ Token that will distributed through holders has an investment return (EURC)
+        @param  ctrHestyControl_ Contract that has the power to manage access to the token
 
 See {ERC20-constructor}._
 
@@ -95,8 +81,8 @@ See {ERC20-constructor}._
 function distributionRewards(uint256 amount) external
 ```
 
-Claims users dividends
-      @param amount Token Amount that users wants to buy
+_Claims users dividends
+        @param  amount Token Amount that users wants to buy_
 
 ### claimDividensExternal
 
@@ -150,9 +136,13 @@ See {ERC20-constructor}._
 function pause() external
 ```
 
+_Pauses Property Token Only_
+
 ### unpause
 
 ```solidity
 function unpause() external
 ```
+
+_Unpauses Property Token Only_
 

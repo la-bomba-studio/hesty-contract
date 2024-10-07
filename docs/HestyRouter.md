@@ -14,28 +14,16 @@ contract ITokenFactory tokenFactory
 contract IHestyAccessControl hestyAccessControl
 ```
 
-### onlyAdmin
+### NewTokenFactory
 
 ```solidity
-modifier onlyAdmin()
+event NewTokenFactory(address newFactory)
 ```
 
-### onlyBlackListManager
+### NewHestyAccessControl
 
 ```solidity
-modifier onlyBlackListManager(address manager)
-```
-
-### onlyKYCManager
-
-```solidity
-modifier onlyKYCManager(address manager)
-```
-
-### onlyPauserManager
-
-```solidity
-modifier onlyPauserManager(address manager)
+event NewHestyAccessControl(address newAccessControl)
 ```
 
 ### constructor
@@ -43,6 +31,18 @@ modifier onlyPauserManager(address manager)
 ```solidity
 constructor(address tokenFactory_, address hestyAccessControl_) public
 ```
+
+_Hesty Router Constructor
+        @param  tokenFactory_ Token Factory Contract
+        @param  hestyAccessControl_ Hesty Access Control Contract_
+
+### onlyAdmin
+
+```solidity
+modifier onlyAdmin()
+```
+
+_Checks that `msg.sender` is an Admin_
 
 ### adminDistribution
 
@@ -66,9 +66,21 @@ _Buy Tokens for users that paid in FIAT currency (EUR)
         @param  onBehalfOf The user address of who bought with FIAT
         @param  amount Amount of funds to distribute_
 
-### revertUserBuyTokens
+### setHestyAccessControlCtr
 
 ```solidity
-function revertUserBuyTokens() external
+function setHestyAccessControlCtr(address newControl) external
 ```
+
+_Set Hesty Access Control Contract
+        @param  newControl Hesty Access Control Contract_
+
+### setNewTokenFactory
+
+```solidity
+function setNewTokenFactory(address newFactory) external
+```
+
+_Set New Token Factory
+        @param  newFactory New Token Factory_
 

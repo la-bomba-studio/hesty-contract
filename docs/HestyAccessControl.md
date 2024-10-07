@@ -2,16 +2,33 @@
 
 ## HestyAccessControl
 
+### initialSponsorAmount
+
+```solidity
+uint256 initialSponsorAmount
+```
+
 ### kycCompleted
 
 ```solidity
 mapping(address => bool) kycCompleted
 ```
 
+Checks if an user has kyc approved in hesty
+
 ### blackList
 
 ```solidity
 mapping(address => bool) blackList
+```
+
+Checks if user is blacklisted from operating on Hesty or with
+        Hesty issued property tokens
+
+### constructor
+
+```solidity
+constructor() public
 ```
 
 ### onlyAdminManager
@@ -20,11 +37,15 @@ mapping(address => bool) blackList
 modifier onlyAdminManager(address manager)
 ```
 
-======================================
+_Checks that `manager` is an Admin_
 
-    MODIFIER FUNCTIONS
+### onlyFundManager
 
-    =========================================*
+```solidity
+modifier onlyFundManager(address manager)
+```
+
+_Checks that `manager` is funds manger_
 
 ### onlyBlackListManager
 
@@ -32,11 +53,15 @@ modifier onlyAdminManager(address manager)
 modifier onlyBlackListManager(address manager)
 ```
 
+_Checks that `manager` is blackListManager_
+
 ### onlyKYCManager
 
 ```solidity
 modifier onlyKYCManager(address manager)
 ```
+
+_Checks that `manager` is KYC manager_
 
 ### onlyPauserManager
 
@@ -44,11 +69,7 @@ modifier onlyKYCManager(address manager)
 modifier onlyPauserManager(address manager)
 ```
 
-### constructor
-
-```solidity
-constructor() public
-```
+_Checks that `manager` is pauser manger_
 
 ### onlyAdmin
 
@@ -59,6 +80,16 @@ function onlyAdmin(address manager) external
 Only Admin
         @param  manager The user that wants to call the function
                 onlyOnwer
+
+### onlyFundsManager
+
+```solidity
+function onlyFundsManager(address manager) external
+```
+
+Only Funds Manager
+        @param  manager The user that wants to call the function
+                onlyFundManager
 
 ### blacklistUser
 
@@ -91,7 +122,16 @@ function approveUserKYC(address user) external
 Approve user KYC
                 @param user The Address of the user
         @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+             onlyOnwer, in case user has less funds than sponsor amount send a few ETH
+
+### approveKYCOnly
+
+```solidity
+function approveKYCOnly(address user) external
+```
+
+_Approve KYC only without sponsoring address
+        @param  user The Address of the user_
 
 ### revertUserKYC
 
@@ -100,7 +140,7 @@ function revertUserKYC(address user) external
 ```
 
 Revert user KYC status
-      @param user The Address of the user
+        @param user The Address of the user
 
 ### pause
 
@@ -108,9 +148,9 @@ Revert user KYC status
 function pause() external
 ```
 
-Pause all Hesty Contracts
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+_Pause all Hesty Contracts
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer_
 
 ### unpause
 
@@ -118,24 +158,23 @@ Pause all Hesty Contracts
 function unpause() external
 ```
 
-Unpause all Hesty Contracts
-        @dev Require this approval to allow users move Hesty derivatives
-             onlyOnwer
+_Unpause all Hesty Contracts
+        @dev    Require this approval to allow users move Hesty derivatives
+                onlyOnwer_
 
-### isUserKYCValid
+### setSponsorAmount
 
 ```solidity
-function isUserKYCValid(address user) external view returns (bool)
+function setSponsorAmount(uint256 newAmount) external
 ```
 
-Returns KYC status
+_Set sponsor amount
+        @param newAmount New sponsor amount_
 
-        @return boolean that confirms if kyc is valid or not
-
-### isAllPaused
+### paused
 
 ```solidity
-function isAllPaused() external view returns (bool)
+function paused() public view returns (bool)
 ```
 
 _Returns Paused Status
@@ -143,13 +182,9 @@ _Returns Paused Status
              the logic of the marketplace
         @return boolean Checks if contracts are paused_
 
-### isUserBlackListed
+### receive
 
 ```solidity
-function isUserBlackListed(address user) external view returns (bool)
+receive() external payable
 ```
-
-_Returns user blacklist status
-        @param  user The user address
-        @return boolean Checks if user is blacklisted or not_
 

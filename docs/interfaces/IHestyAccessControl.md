@@ -10,26 +10,34 @@ function onlyAdmin(address manager) external
 
 Require that only admins call this function
 
-### isUserKYCValid
+### onlyFundsManager
 
 ```solidity
-function isUserKYCValid(address user) external returns (bool)
+function onlyFundsManager(address manager) external
+```
+
+Require that only funds manager call this function
+
+### kycCompleted
+
+```solidity
+function kycCompleted(address user) external returns (bool)
 ```
 
 Checks if an user has kyc approved in hesty
 
-### isAllPaused
+### paused
 
 ```solidity
-function isAllPaused() external returns (bool)
+function paused() external view returns (bool)
 ```
 
 Checks if there is a global pause
 
-### isUserBlackListed
+### blackList
 
 ```solidity
-function isUserBlackListed(address user) external returns (bool)
+function blackList(address user) external returns (bool)
 ```
 
 Checks if user is blacklisted from operating on Hesty or with

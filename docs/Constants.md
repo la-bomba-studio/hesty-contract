@@ -18,6 +18,21 @@ uint256 WAD
 
 Math Helper for getting EURC power of decimals
 
+### TEN_POWER_FIFTEEN
+
+```solidity
+uint256 TEN_POWER_FIFTEEN
+```
+
+### MULTIPLIER
+
+```solidity
+uint128 MULTIPLIER
+```
+
+Multiplier to guarantee math precision safety, is does not ensure 100% but
+            the rest is neglectable as EURC has only 6 decimals
+
 ### BLACKLIST_MANAGER
 
 ```solidity

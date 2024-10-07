@@ -26,3 +26,11 @@ function isRefClaimable(uint256 id) external view returns (bool)
 
 Return if it is already possible to claim referral revenue of a property
 
+### getPropertyInfo
+
+```solidity
+function getPropertyInfo(uint256 id) external view returns (address, address)
+```
+
+Return property info the token asset address and the revenue address
+
