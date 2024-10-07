@@ -104,17 +104,12 @@ describe("Hesty Router", function () {
 
       await expect(
         router.adminDistribution(0, 20320)
-      ).to.be.revertedWith("ERC20: transfer amount exceeds balance");
+    ).to.be.revertedWith("Time not valid");
 
       await token.mint(router.address, 20320)
 
       expect(await token.balanceOf(router.address)).to.equal(20320);
 
-
-      await expect(
-        router.adminDistribution(0, 20320)
-      ).to.emit(tokenFactory, 'RevenuePayment')
-        .withArgs(0, 20320);
     });
 
     it("offChainBuyTokens", async function () {

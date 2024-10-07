@@ -245,26 +245,23 @@ describe("Token Factory", function () {
 
         await token.connect(addr4).approve(tokenFactory.address, 20002);
 
-        await tokenFactory.connect(addr4).distributeRevenue(0, 10001);
-
       await expect(
         tokenFactory.connect(addr4).distributeRevenue(1, 10001)
       ).to.be.revertedWith("Id must be valid");
 
       await expect(
         tokenFactory.connect(addr4).distributeRevenue(0, 9999)
-      ).to.be.revertedWith("Amount too low");
+      ).to.be.revertedWith("Time not valid");
 
-      await expect(
-        tokenFactory.connect(addr4).distributeRevenue(0, 99999)
-      ).to.be.revertedWith("ERC20: insufficient allowance");
 
 
     });
 
     it("ClaimReturns", async function () {
 
-      await tokenFactory.connect(addr4).claimInvestmentReturns(0);
+      await expect(
+        tokenFactory.connect(addr4).claimInvestmentReturns(0)
+    ).to.be.revertedWith("Time not valid");
 
     });
 

@@ -352,6 +352,8 @@ Constants {
 
         PropertyInfo storage p = property[id];
 
+        require(p.isCompleted, "Time not valid");
+
         IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
         IERC20(p.revenueToken).approve(p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
@@ -368,6 +370,8 @@ Constants {
     function claimInvestmentReturns(uint256 id) external nonReentrant{
 
         PropertyInfo storage p = property[id];
+
+        require(p.isCompleted, "Time not valid");
 
         PropertyToken(p.asset).claimDividensExternal(msg.sender);
 

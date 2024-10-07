@@ -311,13 +311,13 @@ _Initialized Token Factory Contract
 function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, uint8 payType, address paymentToken, address revenueToken, string name, string symbol, address admin) external returns (uint256)
 ```
 
-Issues a new property token
+_Issues a new property token
         @dev    It emits a `CreateProperty` event.
         @param  amount The amount of tokens to issue
         @param  tokenPrice Token Price
         @param  threshold Amount to reach in order to proceed to production
         @param  payType Type of dividends payment
-        @param  paymentToken Token that will be charged on every investment made
+        @param  paymentToken Token that will be charged on every investment made_
 
 ### buyTokens
 
@@ -326,6 +326,7 @@ function buyTokens(address onBehalfOf, uint256 id, uint256 amount, address ref) 
 ```
 
 _Function to buy property tokens
+        @dev    It emits a `NewInvestment` event.
         @dev    If there is a referral store the fee to pay and transfer funds to this contract
         @param  id Property id
         @param  amount Amount of tokens that user wants to buy
@@ -359,12 +360,6 @@ function claimInvestmentReturns(uint256 id) external
 function recoverFundsInvested(uint256 id) external
 ```
 
-### adminBuyTokens
-
-```solidity
-function adminBuyTokens(uint256 id, address buyer, uint256 amount) external
-```
-
 ### isRefClaimable
 
 ```solidity
@@ -384,6 +379,16 @@ _Returns Property representative token
         @param id Property Id
         @return Property Token_
 
+### adminBuyTokens
+
+```solidity
+function adminBuyTokens(uint256 id, address buyer, uint256 amount) external
+```
+
+===================================================
+       OWNER STATE MODIFIABLE FUNTIONS
+   ======================================================*
+
 ### completeRaise
 
 ```solidity
@@ -393,7 +398,8 @@ function completeRaise(uint256 id) external
 _Function to complete the property Raise
         @dev    It emits a `CompleteRaise` event.
         @dev    Send funds to property owner exchange address and fees to
-                platform multisig_
+                platform multisig
+        @param  id Property Id_
 
 ### approveProperty
 
@@ -403,7 +409,8 @@ function approveProperty(uint256 id, uint256 raiseDeadline) external
 
 _Approves property to start raise
         @dev     It emits an `ApproveProperty` event.
-        @param   id Property Id_
+        @param   id Property Id
+        @param   raiseDeadline when the raise will end_
 
 ### cancelProperty
 
@@ -466,7 +473,9 @@ _Function to change owners address where he will receive funds
 function extendRaiseForProperty(uint256 id, uint256 newDeadline) external
 ```
 
-Function to extend property raise deadline
+_Function to extend property raise deadline
+        @param  id Property id
+        @param  newDeadline The deadline for the raise_
 
 ### setMinInvAmount
 
