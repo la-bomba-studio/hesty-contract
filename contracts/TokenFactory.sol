@@ -321,7 +321,7 @@ Constants {
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
                 // Try to Add Referral rewards but don't stop if it fails
-                try referralSystemCtr.addRewards(onBehalfOf, ref, id, refFee_){
+                try referralSystemCtr.addRewards(ref, onBehalfOf,id, refFee_){
                     refFee[id] += refFee_;
                 }catch{
 
