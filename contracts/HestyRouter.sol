@@ -32,11 +32,6 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
     ITokenFactory public tokenFactory;
     IHestyAccessControl public hestyAccessControl;
 
-    modifier onlyAdmin(){
-        hestyAccessControl.onlyAdmin(msg.sender);
-        _;
-    }
-
     event NewTokenFactory(address newFactory);
     event NewHestyAccessControl(address newAccessControl);
 
@@ -51,6 +46,14 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
     ){
         tokenFactory        = ITokenFactory(tokenFactory_);
         hestyAccessControl  = IHestyAccessControl(hestyAccessControl_);
+    }
+
+    /**
+        @dev Checks that `msg.sender` is an Admin
+    */
+    modifier onlyAdmin(){
+        hestyAccessControl.onlyAdmin(msg.sender);
+        _;
     }
 
     /**
@@ -78,6 +81,10 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         ITokenFactory(tokenFactory).adminBuyTokens(propertyId, onBehalfOf, amount);
     }
 
+    /**
+        @dev    Set Hesty Access Control Contract
+        @param  newControl Hesty Access Control Contract
+    */
     function setHestyAccessControlCtr(address newControl) external onlyAdmin{
         require(newControl != address(0), "Not null");
         hestyAccessControl = IHestyAccessControl(newControl);
@@ -85,6 +92,10 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules{
         emit NewHestyAccessControl(newControl);
     }
 
+    /**
+        @dev    Set New Token Factory
+        @param  newFactory New Token Factory
+    */
     function setNewTokenFactory(address newFactory) external onlyAdmin{
         require(newFactory != address(0), "Not null");
         tokenFactory = ITokenFactory(newFactory);

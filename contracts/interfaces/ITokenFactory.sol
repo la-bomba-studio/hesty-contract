@@ -16,6 +16,7 @@ interface ITokenFactory {
     /// @notice Return if it is already possible to claim referral revenue of a property
     function isRefClaimable(uint256 id) external view returns(bool);
 
+    /// @notice Return property info the token asset address and the revenue address
     function getPropertyInfo(uint256 id) external view returns(address, address);
 
 }

@@ -11,13 +11,17 @@ import "./interfaces/IHestyAccessControl.sol";
 import "./Constants.sol";
 
 /*
-*
-*   @title Token Factory
-*
-*   @notice
-*
-*   @author Pedro G. S. Ferreira
-*
+
+    @title Token Factory
+
+    @notice Manages issuance of property tokens, stores them until they are bought
+            and manages the distribution of revenue through holders. Allows
+            investors to also claim the investment returns.
+            In case the property fails to raise then allows users to claim
+            funds back.
+
+    @author Pedro G. S. Ferreira
+
     .##.....##.########.########.#########.##....##.
     .##.....##.##.......##..........##......##..##.
     .##.....##.##.........##........##........##.
@@ -25,7 +29,7 @@ import "./Constants.sol";
     .##.....##.##..........##.......##........##.
     .##.....##.##.........##........##........##.
     .##.....##.########.########....##........##.
-*
+
 */
 
 contract TokenFactory is
@@ -184,6 +188,7 @@ Constants {
 
     /**
         @dev    Initialized Token Factory Contract
+        @dev    It emits a `InitializeFactory` event.
         @param  referralSystemCtr_ Referral System Contract that manages referrals rewards
     */
     function initialize(address referralSystemCtr_) external onlyAdmin{
@@ -202,13 +207,13 @@ Constants {
     ======================================================**/
 
     /**
-        @notice Issue a new property token
-
-        @param amount The amount of tokens to issue
-        @param tokenPrice Token Price
-        @param threshold Amount to reach in order to proceed to production
-        @param payType Type of dividends payment
-        @param paymentToken Token that will be charged on every investment made
+        @notice Issues a new property token
+        @dev    It emits a `CreateProperty` event.
+        @param  amount The amount of tokens to issue
+        @param  tokenPrice Token Price
+        @param  threshold Amount to reach in order to proceed to production
+        @param  payType Type of dividends payment
+        @param  paymentToken Token that will be charged on every investment made
     */
     function createProperty(
         uint256 amount,
@@ -304,6 +309,7 @@ Constants {
         @param  boughtTokensPrice Amount invested by buyer
     */
     function referralRewards(address onBehalfOf, address ref, uint256 boughtTokensPrice, uint256 id) internal{
+
         if(ref != address(0)){
 
             (uint256 userNumberRefs,uint256 userRevenue,) = referralSystemCtr.getReferrerDetails(ref);
@@ -332,6 +338,7 @@ Constants {
 
     /*
         @dev    Distribution of revenue through property token holders
+        @dev    It emits a `RevenuePayment` event.
         @param  id Property id
         @param  amount The amount of funds in EURC to distribute
     */
@@ -351,6 +358,7 @@ Constants {
 
     /*
         @dev    Claim Investment returns
+        @dev    It emits a `ClaimProfits` event.
         @param  id Property id
     */
     function claimInvestmentReturns(uint256 id) external nonReentrant{
@@ -364,6 +372,7 @@ Constants {
 
     /*
         @dev    Claim Investment returns
+        @dev    It emits a `RecoverFunds` event.
         @param  id Property id
     */
     function recoverFundsInvested(uint256 id) external nonReentrant{
@@ -383,6 +392,7 @@ Constants {
 
     /*
         @dev    Buy Tokens without spending funds, this helpful for offchain investments
+        @dev    It emits a `NewInvestment` event.
         @param  id Property id
         @param  buyer The user who will receive the property tokens
         @param  amount The amount of property tokens to buy
@@ -434,9 +444,10 @@ Constants {
    ======================================================**/
 
     /**
-        @dev  Function to complete the property Raise
-        @dev  Send funds to property owner exchange address and fees to
-              platform multisig
+        @dev    Function to complete the property Raise
+        @dev    It emits a `CompleteRaise` event.
+        @dev    Send funds to property owner exchange address and fees to
+                platform multisig
     */
     function completeRaise(uint256 id) external onlyAdmin{
 
@@ -466,6 +477,7 @@ Constants {
 
     /**
         @dev     Approves property to start raise
+        @dev     It emits an `ApproveProperty` event.
         @param   id Property Id
     */
     function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin idMustBeValid(id){
@@ -479,6 +491,7 @@ Constants {
     /**
         @dev     In case Hesty or property Manager gives up from raising funds for property
                  allow users to claim back their funds
+        @dev     It emits a `CancelProperty` event.
         @param   id Property Id
     */
     function cancelProperty(uint256 id) external onlyAdmin idMustBeValid(id){
@@ -491,6 +504,7 @@ Constants {
 
     /**
         @dev     Function to change platform fee
+        @dev     It emits a `NewPlatformFee` event.
         @dev     Fee must be lower than total amount raised
         @param   newFee New platform fee
     */
@@ -528,8 +542,10 @@ Constants {
     }
 
     /**
-        @dev    Function to change referral fee
+        @dev    Function to change owners address where he will receive funds
+        @dev    It emits a `NewPropertyOwnerAddrReceiver` event.
         @dev    Fee must be lower than fee charged by platform
+        @param  id Property Id
         @param  newAddress New Property Owner Address
     */
     function setNewPropertyOwnerReceiverAddress(uint256 id, address newAddress) external onlyAdmin idMustBeValid(id){
