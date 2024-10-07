@@ -9,8 +9,13 @@ import "../interfaces/IHestyAccessControl.sol";
 import "../interfaces/ITokenFactory.sol";
 
 /*
-* @notice This referral system is build a part
-            from the
+    @title Hesty Referral System
+
+    @notice This referral system that tracks, stores Hesty
+            referral rewards and allows users to claim those
+            rewards.
+
+    @author Pedro G. S. Ferreira
 */
 contract ReferralSystem is ReentrancyGuard, IReferral {
 
@@ -54,16 +59,25 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     }
 
+    /**
+        @dev Checks that Hesty Contracts are not paused
+    */
     modifier whenNotAllPaused(){
         require(!ctrHestyControl.paused(), "All Hesty Paused");
         _;
     }
 
+    /**
+        @dev Checks that `user` has kyc completed
+    */
     modifier whenKYCApproved(address user){
         require(ctrHestyControl.kycCompleted(user), "No KYC Made");
         _;
     }
 
+    /**
+        @dev Checks that `user` is not blacklisted
+    */
     modifier whenNotBlackListed(address user){
         require(!ctrHestyControl.blackList(user), "Blacklisted");
         _;
@@ -79,6 +93,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     /**
         @dev    Add Rewards Associated to a Property Project
+        @dev    It emits a `AddPropertyRefRewards` event
         @param  onBehalfOf User who referred and the one that will receive the income
         @param  user The user who were referenced by onBehalfOf user
         @param  projectId The Property project
@@ -109,6 +124,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     /**
         @dev    Add Rewards Not Associated to a Property Project
+        @dev    It emits a `AddGlobalRewards` event
         @param  onBehalfOf User who will receive rewards
         @param  amount The amount of rewards
     */
@@ -126,6 +142,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     /**
         @dev    Claim Property Rewards
+        @dev    It emits a `ClaimPropertyRewards` event
         @param  user The user who earned referral revenue
         @param  projectId The Property Id
     */
@@ -143,6 +160,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
 
     /**
         @dev    Claim Global Rewards
+        @dev    It emits a `ClaimGlobalRewards` event
         @param  user The user who earned referral revenue
     */
     function claimGlobalRewards(address user) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed(msg.sender){
