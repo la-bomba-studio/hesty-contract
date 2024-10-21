@@ -16,7 +16,7 @@ abstract contract Constants {
 
     /// @notice Multiplier to guarantee math precision safety, is does not ensure 100% but
     ///             the rest is neglectable as EURC has only 6 decimals
-    uint128 internal constant    MULTIPLIER   = 1e32;
+    uint128 internal constant MULTIPLIER  = 1e32;
 
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3
