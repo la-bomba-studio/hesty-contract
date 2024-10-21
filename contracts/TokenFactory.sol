@@ -42,7 +42,7 @@ Constants {
     uint256 public propertyCounter;         // Number of properties created until now
     uint256 public minInvAmount;            // Minimum amount allowed to invest
     uint256 public maxNumberOfReferrals;    // Maximum Number of Referrals that a user can have
-    uint256 public maxAmountOfRefRev;       // Maximum Amount of Revenue a Referral can earn
+    uint256 public maxAmountOfRefRev;       // Maximum Amount of Referral Revenue users can earn
     uint256 public FEE_BASIS_POINTS;        // Investment Fee charged by Hesty (in Basis Points)
     uint256 public REF_FEE_BASIS_POINTS;    // Referral Fee charged by referrals (in Basis Points)
     address public treasury;                // Address that will receive Hesty fees revenue
@@ -50,14 +50,14 @@ Constants {
 
 
     mapping(uint256 => PropertyInfo)    public property;                // Stores properties info
-    mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee charged by the platform on every investment
-    mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee charged by the platform on every investment
+    mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee earned by the platform on every investment
+    mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee earned by the platform on every investment
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
     mapping(uint256 => uint256)         public OWNERS_FEE_BASIS_POINTS; // Owners Fee charged by Hesty (in Basis Points) in each project
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
-    mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount invested by each user in each property
+    mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
 
 
     //Event
@@ -258,7 +258,12 @@ Constants {
         @param  amount Amount of tokens that user wants to buy
         @param  ref The referral of the user, address(0) if doesn't exist
     */
-    function buyTokens(address onBehalfOf, uint256 id, uint256 amount, address ref) external nonReentrant onlyWhenInitialized whenNotAllPaused {
+    function buyTokens(
+        address onBehalfOf,
+        uint256 id,
+        uint256 amount,
+        address ref
+    ) external nonReentrant onlyWhenInitialized whenNotAllPaused {
 
         PropertyInfo storage p = property[id];
 
@@ -269,8 +274,7 @@ Constants {
         require(!property[id].isCompleted, "Property Sale Completed");
 
         // Calculate how much costs to buy tokens and
-        // Calculate the investment fee and then
-        // get the total investment cost
+        // Calculate the investment fee and then get the total investment cost
         uint256 boughtTokensPrice = amount * p.price;
         uint256 fee               = boughtTokensPrice * FEE_BASIS_POINTS / BASIS_POINTS;
         uint256 total             = boughtTokensPrice + fee;
@@ -354,7 +358,7 @@ Constants {
     /*
         @dev    Get Property Tokens after property raize is complete
         @dev    It emits a `GetInvestmentTokens` event.
-        @param  user Get Property Tokens after raize ending
+        @param  user User address
         @param  id Property id
     */
     function getInvestmentTokens(address user, uint256 id) external nonReentrant whenNotAllPaused{
