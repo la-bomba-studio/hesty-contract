@@ -44,40 +44,38 @@ Constants {
     uint256 public maxNumberOfReferrals;    // Maximum Number of Referrals that a user can have
     uint256 public maxAmountOfRefRev;       // Maximum Amount of Revenue a Referral can earn
     uint256 public FEE_BASIS_POINTS;        // Investment Fee charged by Hesty (in Basis Points)
-    uint256 public OWNERS_FEE_BASIS_POINTS; // Owners Fee charged by Hesty (in Basis Points)
     uint256 public REF_FEE_BASIS_POINTS;    // Referral Fee charged by referrals (in Basis Points)
-
-    address public treasury; // Address that will receive Hesty fees revenue
-
-    bool    public initialized; // Checks if the contract is already initialized
-
-    mapping(uint256 => PropertyInfo)    public property;            // Stores properties info
-    mapping(uint256 => uint256)         public platformFee;         // (Property id => fee amount) The fee charged by the platform on every investment
-    mapping(uint256 => uint256)         public ownersPlatformFee;   // The fee charged by the platform on every investment
-    mapping(uint256 => uint256)         public propertyOwnerShare;  // The amount reserved to propertyOwner
-    mapping(uint256 => uint256)         public refFee;              // The referral fee acummulated by each property before completing
+    address public treasury;                // Address that will receive Hesty fees revenue
+    bool    public initialized;             // Checks if the contract is already initialized
 
 
-    mapping(address => mapping(uint256 => uint256)) public userInvested; // Amount invested by each user in each property
+    mapping(uint256 => PropertyInfo)    public property;                // Stores properties info
+    mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee charged by the platform on every investment
+    mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee charged by the platform on every investment
+    mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
+    mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
+    mapping(uint256 => uint256)         public OWNERS_FEE_BASIS_POINTS; // Owners Fee charged by Hesty (in Basis Points) in each project
+
+    mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
+    mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount invested by each user in each property
+
 
     //Event
     event              InitializeFactory(address referralCtr);
     event                 CreateProperty(uint256 id);
-    event        NewMaxNumberOfReferrals(uint256 number);
-    event           NewMaxAmountOfRefRev(uint256 number);
     event           NewReferralSystemCtr(address newSystemCtr);
     event                    NewTreasury(address newTreasury);
-    event          NewMinInvestmentLimit(uint256 newLimit);
     event   NewPropertyOwnerAddrReceiver(address newAddress);
     event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 date);
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
-    event                   NewOwnersFee(uint256 newFee);
-    event                   ClaimProfits(address user, uint256 propertyId);
+    event                   NewOwnersFee(uint256 indexed id, uint256 newFee);
+    event                   ClaimProfits(address indexed user, uint256 propertyId);
     event                  CompleteRaise(uint256 propertyId);
     event                   RecoverFunds(address indexed user, uint256 propertyId);
     event                ApproveProperty(uint256 propertyId);
+    event            GetInvestmentTokens(address indexed user, uint256 propertyId);
 
 
     struct PropertyInfo{
@@ -85,7 +83,6 @@ Constants {
         uint256 threshold;      // Amount necessary to proceed with investment
         uint256 raised;         // Amount raised until now
         uint256 raiseDeadline;  // When the fundraising ends
-        uint8   payType;        // Type of investment return
         bool    isCompleted;    // Checks if the raise is completed
         bool    approved;       // Checks if the raise can start
         address owner;          // Property Manager/owner
@@ -100,7 +97,7 @@ Constants {
         @dev    Constructor for Token Factory
         @param  fee Investment fee charged by Hesty (in Basis Points)
         @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
-        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  refFee_ Referral Fee charged by referrals (in Basis Points)
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions
@@ -119,11 +116,10 @@ Constants {
         require(ownersFee < BASIS_POINTS, "Invalid Fee");
 
         FEE_BASIS_POINTS        = fee;
-        OWNERS_FEE_BASIS_POINTS = ownersFee;
         REF_FEE_BASIS_POINTS    = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
-        maxNumberOfReferrals    = 20;               // Start with max 20 referrrals
+        maxNumberOfReferrals    = 20;               // Start with max 20 referrals
         maxAmountOfRefRev       = 10000 * WAD;      // Start with max 10000€ of revenue
         initialized             = false;
         ctrHestyControl         = IHestyAccessControl(ctrHestyControl_);
@@ -212,14 +208,13 @@ Constants {
         @param  amount The amount of tokens to issue
         @param  tokenPrice Token Price
         @param  threshold Amount to reach in order to proceed to production
-        @param  payType Type of dividends payment
         @param  paymentToken Token that will be charged on every investment made
     */
     function createProperty(
         uint256 amount,
+        uint256 listingTokenFee,
         uint tokenPrice,
         uint256 threshold,
-        uint8 payType,
         address paymentToken,
         address revenueToken,
         string memory name,
@@ -228,6 +223,7 @@ Constants {
     ) external whenKYCApproved(msg.sender) whenNotAllPaused whenNotBlackListed returns(uint256) {
 
         require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
+        require( listingTokenFee < BASIS_POINTS, "Fee must be valid");
 
         address newAsset = address(
                             new PropertyToken(address(this),
@@ -241,7 +237,6 @@ Constants {
                                                     threshold,
                                                     0,
                                                     0,
-                                                    payType,
                                                     false,
                                                     false,
                                                     msg.sender,
@@ -250,6 +245,7 @@ Constants {
                                                     newAsset,
                                                     revenueToken);
 
+        OWNERS_FEE_BASIS_POINTS[propertyCounter - 1] = listingTokenFee;
 
         emit CreateProperty(propertyCounter - 1);
 
@@ -291,9 +287,10 @@ Constants {
         // Store Platform fee and user Invested Amount Paid
         platformFee[id]              += fee;
         userInvested[msg.sender][id] += boughtTokensPrice;
+        rightForTokens[onBehalfOf][id] += amount;
 
         /// @dev Calculate owners fee
-        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS / BASIS_POINTS;
+        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS[id] / BASIS_POINTS;
 
         ownersPlatformFee[id]  += ownersFee;
         propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
@@ -348,8 +345,6 @@ Constants {
     */
     function distributeRevenue(uint256 id, uint256 amount) external nonReentrant whenNotAllPaused{
 
-        require(id < propertyCounter, "Id must be valid");
-
         PropertyInfo storage p = property[id];
 
         require(p.isCompleted, "Time not valid");
@@ -363,11 +358,28 @@ Constants {
     }
 
     /*
+        @dev    Get Property Tokens after property raize is complete
+        @dev    It emits a `GetInvestmentTokens` event.
+        @param  id Property id
+    */
+    function getInvestmentTokens(address user, uint256 id) external nonReentrant whenNotAllPaused{
+
+        PropertyInfo storage p = property[id];
+
+        require(p.isCompleted, "Time not valid");
+
+        // Transfer Asset to buyer
+        IERC20(p.asset).transfer(user, rightForTokens[user][id]);
+
+        emit GetInvestmentTokens(user, id);
+    }
+
+    /*
         @dev    Claim Investment returns
         @dev    It emits a `ClaimProfits` event.
         @param  id Property id
     */
-    function claimInvestmentReturns(uint256 id) external nonReentrant{
+    function claimInvestmentReturns(uint256 id) external nonReentrant whenNotAllPaused{
 
         PropertyInfo storage p = property[id];
 
@@ -383,7 +395,7 @@ Constants {
         @dev    It emits a `RecoverFunds` event.
         @param  id Property id
     */
-    function recoverFundsInvested(uint256 id) external nonReentrant{
+    function recoverFundsInvested(uint256 id) external nonReentrant whenNotAllPaused idMustBeValid(id){
 
         PropertyInfo storage p = property[id];
 
@@ -474,7 +486,6 @@ Constants {
         propertyOwnerShare[id] = 0;
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, propertyOwnerShare[id]);
 
-
         /// @dev fund the referralSystem Contract with property referrals share
         refFee[id] = 0;
         IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), refFee[id]);
@@ -506,7 +517,7 @@ Constants {
     function cancelProperty(uint256 id) external onlyAdmin idMustBeValid(id){
 
         property[id].raiseDeadline = 0; // Important to allow investors to recover funds
-        property[id].approved = false;  // Prevent more investements
+        property[id].approved = false;  // Prevent more investments
 
         emit CancelProperty(id);
     }
@@ -531,12 +542,12 @@ Constants {
         @dev     Fee must be lower than total amount raised
         @param   newFee New owners fee
     */
-    function setOwnersFee(uint256 newFee) external onlyAdmin{
+    function setOwnersFee(uint256 id, uint256 newFee) external onlyAdmin{
 
         require( newFee < BASIS_POINTS, "Fee must be valid");
-        OWNERS_FEE_BASIS_POINTS = newFee;
+        OWNERS_FEE_BASIS_POINTS[id] = newFee;
 
-        emit NewOwnersFee(newFee);
+        emit NewOwnersFee(id, newFee);
     }
 
     /**
@@ -545,7 +556,6 @@ Constants {
         @param newFee New referral fee
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
-
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
@@ -569,7 +579,6 @@ Constants {
         @dev    Function to extend property raise deadline
         @param  id Property id
         @param  newDeadline The deadline for the raise
-
     */
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin idMustBeValid(id){
 
@@ -579,39 +588,27 @@ Constants {
 
     /**
         @dev    Function to set minimum investment amount
-        @dev    It emits a `NewMinInvestmentLimit` event.
         @param  newMinInv Minimum Investment Amount
     */
     function setMinInvAmount(uint256 newMinInv) external onlyAdmin{
-
         require(newMinInv > 0, "Amount too low");
         minInvAmount = newMinInv;
-
-        emit NewMinInvestmentLimit(newMinInv);
     }
 
     /**
         @dev    Function to set the maximum number of referrals a user can have
-        @dev    It emits a `NewMaxNumberOfReferrals` event.
         @param  newMax Maximum number of referrals
     */
     function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin{
-
         maxNumberOfReferrals = newMax;
-
-        emit NewMaxNumberOfReferrals(newMax);
     }
 
     /**
         @dev    Function to set the maximum amount of referral revenue
-        @dev    It emits a `NewMaxAmountOfRefRev` event.
         @param  newMax Maximum amount of revenue
     */
     function setMaxAmountOfRefRev(uint256 newMax) external onlyAdmin{
-
         maxAmountOfRefRev = newMax;
-
-        emit NewMaxAmountOfRefRev(newMax);
     }
 
     /**

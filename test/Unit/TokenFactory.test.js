@@ -145,7 +145,7 @@ describe("Token Factory", function () {
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
-      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
       expect(await tokenFactory.propertyCounter()).to.equal(1);
 
@@ -169,7 +169,7 @@ describe("Token Factory", function () {
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
-      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+      await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
       expect(await tokenFactory.propertyCounter()).to.equal(1);
 
@@ -196,7 +196,7 @@ describe("Token Factory", function () {
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
-      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+      await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
       expect(await tokenFactory.propertyCounter()).to.equal(1);
 
@@ -223,7 +223,7 @@ describe("Token Factory", function () {
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
-      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+      await tokenFactory.connect(propertyManager).createProperty(1000000, 1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
       expect(await tokenFactory.propertyCounter()).to.equal(1);
 
@@ -244,10 +244,6 @@ describe("Token Factory", function () {
         await token.mint(addr4.address, 40000);
 
         await token.connect(addr4).approve(tokenFactory.address, 20002);
-
-      await expect(
-        tokenFactory.connect(addr4).distributeRevenue(1, 10001)
-      ).to.be.revertedWith("Id must be valid");
 
       await expect(
         tokenFactory.connect(addr4).distributeRevenue(0, 9999)
@@ -305,7 +301,7 @@ describe("Token Factory", function () {
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
-      await tokenFactory.connect(propertyManager).createProperty(1000000, 4, 10000000, 0, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
+      await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
       expect(await tokenFactory.propertyCounter()).to.equal(1);
 
@@ -337,17 +333,17 @@ describe("Token Factory", function () {
     it("setOwnersFee", async function () {
 
       await expect(
-        tokenFactory.connect(addr4).setOwnersFee(1000)
+        tokenFactory.connect(addr4).setOwnersFee(0, 1000)
       ).to.be.revertedWith("Not Admin Manager");
 
       await expect(
-        tokenFactory.setOwnersFee(10000)
+        tokenFactory.setOwnersFee(0, 10000)
       ).to.be.revertedWith("Fee must be valid");
 
       await expect(
-        tokenFactory.setOwnersFee(1000)
+        tokenFactory.setOwnersFee(0, 1000)
       ).to.emit(tokenFactory, 'NewOwnersFee')
-        .withArgs(1000);
+        .withArgs(0, 1000);
 
     })
 
@@ -378,11 +374,6 @@ describe("Token Factory", function () {
         tokenFactory.connect(addr4).setMinInvAmount(10000)
       ).to.be.revertedWith("Not Admin Manager");
 
-      await expect(
-        tokenFactory.setMinInvAmount(100000)
-      ).to.emit(tokenFactory, 'NewMinInvestmentLimit')
-        .withArgs(100000);
-
     });
 
     it("setMaxNumberOfReferrals", async function () {
@@ -390,11 +381,6 @@ describe("Token Factory", function () {
       await expect(
         tokenFactory.connect(addr4).setMaxNumberOfReferrals(10000)
       ).to.be.revertedWith("Not Admin Manager");
-
-      await expect(
-        tokenFactory.setMaxNumberOfReferrals(100000)
-      ).to.emit(tokenFactory, 'NewMaxNumberOfReferrals')
-        .withArgs(100000);
 
     });
 
@@ -405,10 +391,6 @@ describe("Token Factory", function () {
         tokenFactory.connect(addr4).setMaxAmountOfRefRev(100000000)
       ).to.be.revertedWith("Not Admin Manager");
 
-      await expect(
-        tokenFactory.setMaxAmountOfRefRev(10000000)
-      ).to.emit(tokenFactory, 'NewMaxAmountOfRefRev')
-        .withArgs(10000000);
 
     });
 

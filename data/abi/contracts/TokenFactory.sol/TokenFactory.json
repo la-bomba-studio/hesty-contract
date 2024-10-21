@@ -65,7 +65,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "user",
         "type": "address"
@@ -104,6 +104,25 @@
       }
     ],
     "name": "CreateProperty",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "propertyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "GetInvestmentTokens",
     "type": "event"
   },
   {
@@ -154,44 +173,11 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
-        "name": "number",
+        "name": "id",
         "type": "uint256"
-      }
-    ],
-    "name": "NewMaxAmountOfRefRev",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "number",
-        "type": "uint256"
-      }
-    ],
-    "name": "NewMaxNumberOfReferrals",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newLimit",
-        "type": "uint256"
-      }
-    ],
-    "name": "NewMinInvestmentLimit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
+      },
       {
         "indexed": false,
         "internalType": "uint256",
@@ -345,7 +331,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "OWNERS_FEE_BASIS_POINTS",
     "outputs": [
       {
@@ -500,6 +492,11 @@
       },
       {
         "internalType": "uint256",
+        "name": "listingTokenFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "tokenPrice",
         "type": "uint256"
       },
@@ -507,11 +504,6 @@
         "internalType": "uint256",
         "name": "threshold",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "payType",
-        "type": "uint8"
       },
       {
         "internalType": "address",
@@ -595,6 +587,24 @@
       }
     ],
     "name": "extendRaiseForProperty",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getInvestmentTokens",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -776,11 +786,6 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint8",
-        "name": "payType",
-        "type": "uint8"
-      },
-      {
         "internalType": "bool",
         "name": "isCompleted",
         "type": "bool"
@@ -899,6 +904,30 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "rightForTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "newMax",
         "type": "uint256"
@@ -955,6 +984,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "newFee",
