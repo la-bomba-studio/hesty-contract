@@ -281,12 +281,9 @@ Constants {
         // Charge investment cost from user
         IERC20(p.paymentToken).transferFrom(msg.sender, address(this), total);
 
-        // Transfer Asset to buyer
-        IERC20(p.asset).transfer(onBehalfOf, amount);
-
         // Store Platform fee and user Invested Amount Paid
-        platformFee[id]              += fee;
-        userInvested[msg.sender][id] += boughtTokensPrice;
+        platformFee[id]                += fee;
+        userInvested[msg.sender][id]   += boughtTokensPrice;
         rightForTokens[onBehalfOf][id] += amount;
 
         /// @dev Calculate owners fee
