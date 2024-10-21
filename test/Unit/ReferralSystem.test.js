@@ -16,7 +16,7 @@ describe("Referral System", function () {
     await hestyAccessControlCtr.deployed();
 
     TokenFactory = await ethers.getContractFactory("TokenFactory");
-    tokenFactory = await TokenFactory.connect(owner).deploy(300, 1000, 100, owner.address, 1, hestyAccessControlCtr.address);
+    tokenFactory = await TokenFactory.connect(owner).deploy(300, 100, owner.address, 1, hestyAccessControlCtr.address);
     await tokenFactory.deployed();
 
     oken = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol:ERC20PresetMinterPauser");

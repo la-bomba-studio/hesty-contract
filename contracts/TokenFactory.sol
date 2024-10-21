@@ -96,7 +96,6 @@ Constants {
     /**
         @dev    Constructor for Token Factory
         @param  fee Investment fee charged by Hesty (in Basis Points)
-        @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
         @param  refFee_ Referral Fee charged by referrals (in Basis Points)
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
@@ -104,7 +103,6 @@ Constants {
     */
     constructor(
         uint256 fee,
-        uint256 ownersFee,
         uint256 refFee_,
         address treasury_,
         uint256 minInvAmount_,
@@ -113,7 +111,6 @@ Constants {
 
         require(refFee_ < fee, "Ref fee invalid");
         require(fee < BASIS_POINTS, "Invalid Platform Fee");
-        require(ownersFee < BASIS_POINTS, "Invalid Fee");
 
         FEE_BASIS_POINTS        = fee;
         REF_FEE_BASIS_POINTS    = refFee_;
