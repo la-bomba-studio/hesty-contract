@@ -357,6 +357,7 @@ Constants {
     /*
         @dev    Get Property Tokens after property raize is complete
         @dev    It emits a `GetInvestmentTokens` event.
+        @param  user Get Property Tokens after raize ending
         @param  id Property id
     */
     function getInvestmentTokens(address user, uint256 id) external nonReentrant whenNotAllPaused{
@@ -366,7 +367,8 @@ Constants {
         require(p.isCompleted, "Time not valid");
 
         // Transfer Asset to buyer
-        IERC20(p.asset).transfer(user, rightForTokens[user][id]);
+        if(rightForTokens[user][id] > 0)
+            IERC20(p.asset).transfer(user, rightForTokens[user][id]);
 
         emit GetInvestmentTokens(user, id);
     }
@@ -374,36 +376,38 @@ Constants {
     /*
         @dev    Claim Investment returns
         @dev    It emits a `ClaimProfits` event.
+        @param  user that will receive investment returns
         @param  id Property id
     */
-    function claimInvestmentReturns(uint256 id) external nonReentrant whenNotAllPaused{
+    function claimInvestmentReturns(address user, uint256 id) external nonReentrant whenNotAllPaused{
 
         PropertyInfo storage p = property[id];
 
         require(p.isCompleted, "Time not valid");
 
-        PropertyToken(p.asset).claimDividensExternal(msg.sender);
+        PropertyToken(p.asset).claimDividensExternal(user);
 
-        emit ClaimProfits(msg.sender, id);
+        emit ClaimProfits(user, id);
     }
 
     /*
         @dev    Claim Investment returns
         @dev    It emits a `RecoverFunds` event.
+        @param  user that will receive recover investment
         @param  id Property id
     */
-    function recoverFundsInvested(uint256 id) external nonReentrant whenNotAllPaused idMustBeValid(id){
+    function recoverFundsInvested(address user, uint256 id) external nonReentrant whenNotAllPaused idMustBeValid(id){
 
         PropertyInfo storage p = property[id];
 
         require(p.raiseDeadline < block.timestamp && !p.isCompleted, "Time not valid"); // @dev it must be < not <=
 
-        uint256 amount               = userInvested[msg.sender][id];
-        userInvested[msg.sender][id] = 0;
+        uint256 amount         = userInvested[user][id];
+        userInvested[user][id] = 0;
 
-        IERC20(p.paymentToken).transfer(msg.sender, amount);
+        IERC20(p.paymentToken).transfer(user, amount);
 
-        emit RecoverFunds(msg.sender, id);
+        emit RecoverFunds(user, id);
 
     }
 
@@ -413,6 +417,7 @@ Constants {
 
     /**
         @dev    Checks if people can claim their referral share of a property
+        @param  id Property Id
         @return If it is already possible to claim referral rewards
     */
     function isRefClaimable(uint256 id) external view returns(bool){
