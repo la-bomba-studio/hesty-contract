@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" afterDir="false" />
-    </list>
+    <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -206,7 +201,7 @@
       <workItem from="1728657688972" duration="1187000" />
       <workItem from="1728751583047" duration="595000" />
       <workItem from="1729263876087" duration="5306000" />
-      <workItem from="1729477962970" duration="4399000" />
+      <workItem from="1729477962970" duration="5049000" />
     </task>
     <servers />
   </component>

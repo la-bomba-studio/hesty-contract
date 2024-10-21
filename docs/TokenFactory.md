@@ -44,12 +44,6 @@ uint256 maxAmountOfRefRev
 uint256 FEE_BASIS_POINTS
 ```
 
-### OWNERS_FEE_BASIS_POINTS
-
-```solidity
-uint256 OWNERS_FEE_BASIS_POINTS
-```
-
 ### REF_FEE_BASIS_POINTS
 
 ```solidity
@@ -98,10 +92,22 @@ mapping(uint256 => uint256) propertyOwnerShare
 mapping(uint256 => uint256) refFee
 ```
 
+### OWNERS_FEE_BASIS_POINTS
+
+```solidity
+mapping(uint256 => uint256) OWNERS_FEE_BASIS_POINTS
+```
+
 ### userInvested
 
 ```solidity
 mapping(address => mapping(uint256 => uint256)) userInvested
+```
+
+### rightForTokens
+
+```solidity
+mapping(address => mapping(uint256 => uint256)) rightForTokens
 ```
 
 ### InitializeFactory
@@ -116,18 +122,6 @@ event InitializeFactory(address referralCtr)
 event CreateProperty(uint256 id)
 ```
 
-### NewMaxNumberOfReferrals
-
-```solidity
-event NewMaxNumberOfReferrals(uint256 number)
-```
-
-### NewMaxAmountOfRefRev
-
-```solidity
-event NewMaxAmountOfRefRev(uint256 number)
-```
-
 ### NewReferralSystemCtr
 
 ```solidity
@@ -138,12 +132,6 @@ event NewReferralSystemCtr(address newSystemCtr)
 
 ```solidity
 event NewTreasury(address newTreasury)
-```
-
-### NewMinInvestmentLimit
-
-```solidity
-event NewMinInvestmentLimit(uint256 newLimit)
 ```
 
 ### NewPropertyOwnerAddrReceiver
@@ -179,7 +167,7 @@ event NewPlatformFee(uint256 newFee)
 ### NewOwnersFee
 
 ```solidity
-event NewOwnersFee(uint256 newFee)
+event NewOwnersFee(uint256 id, uint256 newFee)
 ```
 
 ### ClaimProfits
@@ -206,6 +194,12 @@ event RecoverFunds(address user, uint256 propertyId)
 event ApproveProperty(uint256 propertyId)
 ```
 
+### GetInvestmentTokens
+
+```solidity
+event GetInvestmentTokens(address user, uint256 propertyId)
+```
+
 ### PropertyInfo
 
 ```solidity
@@ -214,7 +208,6 @@ struct PropertyInfo {
   uint256 threshold;
   uint256 raised;
   uint256 raiseDeadline;
-  uint8 payType;
   bool isCompleted;
   bool approved;
   address owner;
@@ -234,7 +227,7 @@ constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, 
 _Constructor for Token Factory
         @param  fee Investment fee charged by Hesty (in Basis Points)
         @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
-        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  refFee_ Referral Fee charged by referrals (in Basis Points)
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions_
@@ -308,7 +301,7 @@ _Initialized Token Factory Contract
 ### createProperty
 
 ```solidity
-function createProperty(uint256 amount, uint256 tokenPrice, uint256 threshold, uint8 payType, address paymentToken, address revenueToken, string name, string symbol, address admin) external returns (uint256)
+function createProperty(uint256 amount, uint256 listingTokenFee, uint256 tokenPrice, uint256 threshold, address paymentToken, address revenueToken, string name, string symbol, address admin) external returns (uint256)
 ```
 
 _Issues a new property token
@@ -316,7 +309,6 @@ _Issues a new property token
         @param  amount The amount of tokens to issue
         @param  tokenPrice Token Price
         @param  threshold Amount to reach in order to proceed to production
-        @param  payType Type of dividends payment
         @param  paymentToken Token that will be charged on every investment made_
 
 ### buyTokens
@@ -348,16 +340,22 @@ _Function that tries to add referral rewards
 function distributeRevenue(uint256 id, uint256 amount) external
 ```
 
+### getInvestmentTokens
+
+```solidity
+function getInvestmentTokens(address user, uint256 id) external
+```
+
 ### claimInvestmentReturns
 
 ```solidity
-function claimInvestmentReturns(uint256 id) external
+function claimInvestmentReturns(address user, uint256 id) external
 ```
 
 ### recoverFundsInvested
 
 ```solidity
-function recoverFundsInvested(uint256 id) external
+function recoverFundsInvested(address user, uint256 id) external
 ```
 
 ### isRefClaimable
@@ -367,6 +365,7 @@ function isRefClaimable(uint256 id) external view returns (bool)
 ```
 
 _Checks if people can claim their referral share of a property
+        @param  id Property Id
         @return If it is already possible to claim referral rewards_
 
 ### getPropertyInfo
@@ -437,7 +436,7 @@ _Function to change platform fee
 ### setOwnersFee
 
 ```solidity
-function setOwnersFee(uint256 newFee) external
+function setOwnersFee(uint256 id, uint256 newFee) external
 ```
 
 _Function to change owners fee
@@ -484,7 +483,6 @@ function setMinInvAmount(uint256 newMinInv) external
 ```
 
 _Function to set minimum investment amount
-        @dev    It emits a `NewMinInvestmentLimit` event.
         @param  newMinInv Minimum Investment Amount_
 
 ### setMaxNumberOfReferrals
@@ -494,7 +492,6 @@ function setMaxNumberOfReferrals(uint256 newMax) external
 ```
 
 _Function to set the maximum number of referrals a user can have
-        @dev    It emits a `NewMaxNumberOfReferrals` event.
         @param  newMax Maximum number of referrals_
 
 ### setMaxAmountOfRefRev
@@ -504,7 +501,6 @@ function setMaxAmountOfRefRev(uint256 newMax) external
 ```
 
 _Function to set the maximum amount of referral revenue
-        @dev    It emits a `NewMaxAmountOfRefRev` event.
         @param  newMax Maximum amount of revenue_
 
 ### setTreasury
