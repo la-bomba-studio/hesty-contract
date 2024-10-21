@@ -45,19 +45,19 @@ Constants {
     uint256 public maxAmountOfRefRev;       // Maximum Amount of Revenue a Referral can earn
     uint256 public FEE_BASIS_POINTS;        // Investment Fee charged by Hesty (in Basis Points)
     uint256 public REF_FEE_BASIS_POINTS;    // Referral Fee charged by referrals (in Basis Points)
-    address public treasury; // Address that will receive Hesty fees revenue
-    bool    public initialized; // Checks if the contract is already initialized
+    address public treasury;                // Address that will receive Hesty fees revenue
+    bool    public initialized;             // Checks if the contract is already initialized
 
 
     mapping(uint256 => PropertyInfo)    public property;                // Stores properties info
     mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee charged by the platform on every investment
     mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee charged by the platform on every investment
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
-    mapping(uint256 => uint256)         public refFee;                  // The referral fee acummulated by each property before completing
+    mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
     mapping(uint256 => uint256)         public OWNERS_FEE_BASIS_POINTS; // Owners Fee charged by Hesty (in Basis Points) in each project
 
-    mapping(address => mapping(uint256 => uint256)) public userInvested; // Amount invested by each user in each property
-    mapping(address => mapping(uint256 => uint256)) public rightForTokens; // Amount invested by each user in each property
+    mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
+    mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount invested by each user in each property
 
 
     //Event
@@ -97,7 +97,7 @@ Constants {
         @dev    Constructor for Token Factory
         @param  fee Investment fee charged by Hesty (in Basis Points)
         @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
-        @param  refFee_ Referaal Fee charged by referrals (in Basis Points)
+        @param  refFee_ Referral Fee charged by referrals (in Basis Points)
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest
         @param  ctrHestyControl_ Contract that manages access to certain functions
@@ -116,11 +116,10 @@ Constants {
         require(ownersFee < BASIS_POINTS, "Invalid Fee");
 
         FEE_BASIS_POINTS        = fee;
-       // OWNERS_FEE_BASIS_POINTS = ownersFee;
         REF_FEE_BASIS_POINTS    = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
-        maxNumberOfReferrals    = 20;               // Start with max 20 referrrals
+        maxNumberOfReferrals    = 20;               // Start with max 20 referrals
         maxAmountOfRefRev       = 10000 * WAD;      // Start with max 10000€ of revenue
         initialized             = false;
         ctrHestyControl         = IHestyAccessControl(ctrHestyControl_);
@@ -557,7 +556,6 @@ Constants {
         @param newFee New referral fee
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
-
         require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
         REF_FEE_BASIS_POINTS = newFee;
     }
@@ -581,7 +579,6 @@ Constants {
         @dev    Function to extend property raise deadline
         @param  id Property id
         @param  newDeadline The deadline for the raise
-
     */
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin idMustBeValid(id){
 
