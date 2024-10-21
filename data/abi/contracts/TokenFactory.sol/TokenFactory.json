@@ -460,6 +460,11 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
@@ -858,6 +863,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "id",

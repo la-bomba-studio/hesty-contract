@@ -256,7 +256,7 @@ describe("Token Factory", function () {
     it("ClaimReturns", async function () {
 
       await expect(
-        tokenFactory.connect(addr4).claimInvestmentReturns(0)
+        tokenFactory.connect(addr4).claimInvestmentReturns(addr4.address, 0)
     ).to.be.revertedWith("Time not valid");
 
     });
@@ -264,7 +264,7 @@ describe("Token Factory", function () {
     it("recoverFundsInvested", async function () {
 
       await expect(
-        tokenFactory.connect(addr4).recoverFundsInvested(0)
+        tokenFactory.connect(addr4).recoverFundsInvested(addr4.address, 0)
     ).to.be.revertedWith("Time not valid");
 
 
@@ -320,7 +320,7 @@ describe("Token Factory", function () {
     it("recoverFundsInvested", async function () {
       await ethers.provider.send("evm_mine", [2937487238472844]);
 
-      await tokenFactory.connect(addr4).recoverFundsInvested(0)
+      await tokenFactory.connect(addr4).recoverFundsInvested(addr4.address, 0)
 
         expect(await tokenFactory.isRefClaimable(0)).to.equal(false);
 
