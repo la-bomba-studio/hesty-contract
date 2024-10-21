@@ -221,12 +221,11 @@ struct PropertyInfo {
 ### constructor
 
 ```solidity
-constructor(uint256 fee, uint256 ownersFee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_) public
+constructor(uint256 fee, uint256 refFee_, address treasury_, uint256 minInvAmount_, address ctrHestyControl_) public
 ```
 
 _Constructor for Token Factory
         @param  fee Investment fee charged by Hesty (in Basis Points)
-        @param  ownersFee Owner Fee charged by Hesty (in Basis Points)
         @param  refFee_ Referral Fee charged by referrals (in Basis Points)
         @param  treasury_ The Multi-Signature Address that will receive Hesty fees revenue
         @param  minInvAmount_ Minimum amount a user can invest

@@ -11,7 +11,7 @@ import "./Constants.sol";
 *
 *   @title Hesty Router
 *
-*   @notice Receives funds from CEXs (example BisonBank)
+*   @notice Receives funds from CEXs (example BisonBank or other)
 *           and waits from distribution by Hesty
 *
 *   @author Pedro G. S. Ferreira
