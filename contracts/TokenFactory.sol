@@ -479,19 +479,23 @@ Constants {
         property[id].isCompleted = true;
 
         /// @dev Send accumulated fees charged to investors
+        uint256 tempPlatformFee = platformFee[id];
+        IERC20(property[id].paymentToken).transfer(treasury, tempPlatformFee);
         platformFee[id] = 0;
-        IERC20(property[id].paymentToken).transfer(treasury, platformFee[id]);
 
+        uint256 tempOwnersFee = ownersPlatformFee[id];
+        IERC20(property[id].paymentToken).transfer(treasury,  tempOwnersFee);
         ownersPlatformFee[id] = 0;
-        IERC20(property[id].paymentToken).transfer(treasury,  ownersPlatformFee[id]);
 
         /// @dev Send property owners their share
+        uint256 tempPropertyOwnerShare = propertyOwnerShare[id];
+        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, tempPropertyOwnerShare);
         propertyOwnerShare[id] = 0;
-        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, propertyOwnerShare[id]);
 
         /// @dev fund the referralSystem Contract with property referrals share
+        uint256 tempRefFee = refFee[id];
+        IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), tempRefFee);
         refFee[id] = 0;
-        IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), refFee[id]);
 
         emit CompleteRaise(id);
 
