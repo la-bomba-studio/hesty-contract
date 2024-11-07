@@ -537,7 +537,7 @@ Constants {
     */
     function setPlatformFee(uint256 newFee) external onlyAdmin{
 
-        require(newFee < BASIS_POINTS, "Fee must be valid");
+        require(newFee < BASIS_POINTS && newFee > refFeeBasisPoints, "Fee must be valid");
         platformFeeBasisPoints = newFee;
 
         emit NewPlatformFee(newFee);
