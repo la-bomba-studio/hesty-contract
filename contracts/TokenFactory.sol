@@ -322,11 +322,10 @@ Constants {
 
             // maxAmountOfRefRev can be lowered and userevenue may be higher than
             // maxAmountOfRefRev after that, causing maxAmountOfRefRev - userRevenue to be negative
-            maxAmountOfRefRev = (maxAmountOfRefRev >= userRevenue ) ? maxAmountOfRefRev : userRevenue;
+            uint256 maxAmountOfLocalRefRev = (maxAmountOfRefRev >= userRevenue ) ? maxAmountOfRefRev : userRevenue;
 
-            refFee_ = (userRevenue + refFee_ > maxAmountOfRefRev) ? maxAmountOfRefRev - userRevenue : refFee_;
-
-
+            refFee_ = (userRevenue + refFee_ > maxAmountOfLocalRefRev) ? maxAmountOfLocalRefRev - userRevenue : refFee_;
+            
             /// @dev maxNumberOfReferral = 20 && maxAmountOfRefRev = €10000
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
