@@ -43,8 +43,8 @@ Constants {
     uint256 public minInvAmount;            // Minimum amount allowed to invest
     uint256 public maxNumberOfReferrals;    // Maximum Number of Referrals that a user can have
     uint256 public maxAmountOfRefRev;       // Maximum Amount of Referral Revenue users can earn
-    uint256 public FEE_BASIS_POINTS;        // Investment Fee charged by Hesty (in Basis Points)
-    uint256 public REF_FEE_BASIS_POINTS;    // Referral Fee charged by referrals (in Basis Points)
+    uint256 public platformFeeBasisPoints;  // Investment Fee charged by Hesty (in Basis Points)
+    uint256 public refFeeBasisPoints;    // Referral Fee charged by referrals (in Basis Points)
     address public treasury;                // Address that will receive Hesty fees revenue
     bool    public initialized;             // Checks if the contract is already initialized
 
@@ -54,7 +54,7 @@ Constants {
     mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee earned by the platform on every investment
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
-    mapping(uint256 => uint256)         public OWNERS_FEE_BASIS_POINTS; // Owners Fee charged by Hesty (in Basis Points) in each project
+    mapping(uint256 => uint256)         public ownersFeeBasisPoints; // Owners Fee charged by Hesty (in Basis Points) in each project
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
     mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
@@ -112,8 +112,8 @@ Constants {
         require(refFee_ < fee, "Ref fee invalid");
         require(fee < BASIS_POINTS, "Invalid Platform Fee");
 
-        FEE_BASIS_POINTS        = fee;
-        REF_FEE_BASIS_POINTS    = refFee_;
+        platformFeeBasisPoints  = fee;
+        refFeeBasisPoints       = refFee_;
         minInvAmount            = minInvAmount_;
         treasury                = treasury_;
         maxNumberOfReferrals    = 20;               // Start with max 20 referrals
@@ -242,7 +242,7 @@ Constants {
                                                     newAsset,
                                                     revenueToken);
 
-        OWNERS_FEE_BASIS_POINTS[propertyCounter - 1] = listingTokenFee;
+        ownersFeeBasisPoints[propertyCounter - 1] = listingTokenFee;
 
         emit CreateProperty(propertyCounter - 1);
 
@@ -276,7 +276,7 @@ Constants {
         // Calculate how much costs to buy tokens and
         // Calculate the investment fee and then get the total investment cost
         uint256 boughtTokensPrice = amount * p.price;
-        uint256 fee               = boughtTokensPrice * FEE_BASIS_POINTS / BASIS_POINTS;
+        uint256 fee               = boughtTokensPrice * platformFeeBasisPoints / BASIS_POINTS;
         uint256 total             = boughtTokensPrice + fee;
 
         // Charge investment cost from user
@@ -288,7 +288,7 @@ Constants {
         rightForTokens[onBehalfOf][id] += amount;
 
         /// @dev Calculate owners fee
-        uint256 ownersFee = boughtTokensPrice * OWNERS_FEE_BASIS_POINTS[id] / BASIS_POINTS;
+        uint256 ownersFee = boughtTokensPrice * ownersFeeBasisPoints[id] / BASIS_POINTS;
 
         ownersPlatformFee[id]  += ownersFee;
         propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
@@ -313,7 +313,7 @@ Constants {
 
             (uint256 userNumberRefs,uint256 userRevenue,) = referralSystemCtr.getReferrerDetails(ref);
 
-            uint256 refFee_ = boughtTokensPrice * REF_FEE_BASIS_POINTS / BASIS_POINTS;
+            uint256 refFee_ = boughtTokensPrice * refFeeBasisPoints / BASIS_POINTS;
 
             // maxAmountOfRefRev can be lowered and userevenue may be higher than
             // maxAmountOfRefRev after that, causing maxAmountOfRefRev - userRevenue to be negative
@@ -538,7 +538,7 @@ Constants {
     function setPlatformFee(uint256 newFee) external onlyAdmin{
 
         require(newFee < BASIS_POINTS, "Fee must be valid");
-        FEE_BASIS_POINTS = newFee;
+        platformFeeBasisPoints = newFee;
 
         emit NewPlatformFee(newFee);
     }
@@ -552,7 +552,7 @@ Constants {
     function setOwnersFee(uint256 id, uint256 newFee) external onlyAdmin{
 
         require( newFee < BASIS_POINTS, "Fee must be valid");
-        OWNERS_FEE_BASIS_POINTS[id] = newFee;
+        ownersFeeBasisPoints[id] = newFee;
 
         emit NewOwnersFee(id, newFee);
     }
@@ -563,8 +563,8 @@ Constants {
         @param newFee New referral fee
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
-        require( newFee < FEE_BASIS_POINTS, "Fee must be valid");
-        REF_FEE_BASIS_POINTS = newFee;
+        require( newFee < platformFeeBasisPoints, "Fee must be valid");
+        refFeeBasisPoints = newFee;
     }
 
     /**
