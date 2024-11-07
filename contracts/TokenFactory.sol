@@ -80,6 +80,7 @@ Constants {
 
     struct PropertyInfo{
         uint256 price;          // Price for each property token
+        uint256 amountToSell;
         uint256 threshold;      // Amount necessary to proceed with investment
         uint256 raised;         // Amount raised until now
         uint256 raiseDeadline;  // When the fundraising ends
@@ -231,6 +232,7 @@ Constants {
                                                     admin));
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
+                                                    amount,
                                                     threshold,
                                                     0,
                                                     0,
@@ -267,15 +269,18 @@ Constants {
 
         PropertyInfo storage p = property[id];
 
+        // Calculate how much costs to buy tokens
+        uint256 boughtTokensPrice = amount * p.price;
+
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
-        require(amount >= minInvAmount, "Lower than min");
+        require(amount * p.price >= minInvAmount, "Lower than min");
         require(property[id].approved, "Property Not For Sale");
         require(!property[id].isCompleted, "Property Sale Completed");
+        require(p.raised + boughtTokensPrice  < p.price * p.amountToSell, "");
+        amount = (p.amountToSell - (p.raised / p.price) >= amount) ? amount : p.amountToSell - amount ;
 
-        // Calculate how much costs to buy tokens and
         // Calculate the investment fee and then get the total investment cost
-        uint256 boughtTokensPrice = amount * p.price;
         uint256 fee               = boughtTokensPrice * platformFeeBasisPoints / BASIS_POINTS;
         uint256 total             = boughtTokensPrice + fee;
 
@@ -283,7 +288,7 @@ Constants {
         IERC20(p.paymentToken).transferFrom(msg.sender, address(this), total);
 
         // Store Platform fee and user Invested Amount Paid
-        platformFee[id]                += fee;
+        platformFee[id]  += fee;
         userInvested[msg.sender][id]   += boughtTokensPrice;
         rightForTokens[onBehalfOf][id] += amount;
 
@@ -328,6 +333,7 @@ Constants {
                 // Try to Add Referral rewards but don't stop if it fails
                 try referralSystemCtr.addRewards(ref, onBehalfOf,id, refFee_){
                     refFee[id] += refFee_;
+
                 }catch{
 
                 }
@@ -479,21 +485,22 @@ Constants {
         property[id].isCompleted = true;
 
         /// @dev Send accumulated fees charged to investors
-        uint256 tempPlatformFee = platformFee[id];
-        IERC20(property[id].paymentToken).transfer(treasury, tempPlatformFee);
+        uint256 tempPlatformFee         = platformFee[id];
+        uint256 tempOwnersFee           = ownersPlatformFee[id];
+        uint256 tempPropertyOwnerShare  = propertyOwnerShare[id];
+        uint256 tempRefFee              = refFee[id];
+
+        IERC20(property[id].paymentToken).transfer(treasury, tempRefFee - tempPlatformFee);
         platformFee[id] = 0;
 
-        uint256 tempOwnersFee = ownersPlatformFee[id];
         IERC20(property[id].paymentToken).transfer(treasury,  tempOwnersFee);
         ownersPlatformFee[id] = 0;
 
         /// @dev Send property owners their share
-        uint256 tempPropertyOwnerShare = propertyOwnerShare[id];
         IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, tempPropertyOwnerShare);
         propertyOwnerShare[id] = 0;
 
         /// @dev fund the referralSystem Contract with property referrals share
-        uint256 tempRefFee = refFee[id];
         IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), tempRefFee);
         refFee[id] = 0;
 
