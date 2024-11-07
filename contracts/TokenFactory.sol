@@ -518,7 +518,7 @@ Constants {
     /**
         @dev     In case Hesty or property Manager gives up from raising funds for property
                  allow users to claim back their funds
-        @dev     It emits a `CancelProperty` event.
+        @dev     It emits a `CancelProperty` event
         @param   id Property Id
     */
     function cancelProperty(uint256 id) external onlyAdmin idMustBeValid(id){
