@@ -463,7 +463,7 @@ Constants {
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
 
-        IERC20(p.asset).transfer(buyer, amount);
+        rightForTokens[buyer][id] += amount;
 
         p.raised += boughtTokensPrice;
         property[id] = p;
@@ -505,7 +505,6 @@ Constants {
         refFee[id] = 0;
 
         emit CompleteRaise(id);
-
     }
 
     /**

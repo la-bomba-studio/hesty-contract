@@ -23,7 +23,6 @@
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Constants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Constants.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyAccessControl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyAccessControl.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyRouter.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyRouter.md" afterDir="false" />
@@ -259,7 +258,7 @@
       <workItem from="1729477962970" duration="7619000" />
       <workItem from="1730726970865" duration="3436000" />
       <workItem from="1730815033758" duration="1880000" />
-      <workItem from="1730983708927" duration="11820000" />
+      <workItem from="1730983708927" duration="12359000" />
     </task>
     <servers />
   </component>
