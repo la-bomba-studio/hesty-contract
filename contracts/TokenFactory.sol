@@ -521,6 +521,8 @@ Constants {
     */
     function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin idMustBeValid(id){
 
+        require(!property[id].approved, "Already Approved");
+
         property[id].approved = true;
         property[id].raiseDeadline = raiseDeadline;
 

@@ -4,6 +4,7 @@ pragma solidity 0.8.19;
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./interfaces/IHestyAccessControl.sol";
+import "./interfaces/IRouter.sol";
 import "./Constants.sol";
 
 
@@ -207,6 +208,10 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
 
     function owner() public  override(IHestyAccessControl, AccessControlDefaultAdminRules) view returns(address){
         return super.owner();
+    }
+
+    function confirmAccessControlAdmin(address router) external onlyAdminManager(msg.sender){
+        IRouter(router).confirmAccessControlChange();
     }
 
     // Function to allow deposits to pay for sponsorship

@@ -167,6 +167,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newAccessControl",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "dalay",
+        "type": "uint256"
+      }
+    ],
+    "name": "hestyAccessControlScheduled",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "BLACKLIST_MANAGER",
     "outputs": [
@@ -285,6 +304,13 @@
       }
     ],
     "name": "changeDefaultAdminDelay",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "confirmAccessControlChange",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -475,6 +501,32 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "pendingHestyAccessControl",
+    "outputs": [
+      {
+        "internalType": "contract IHestyAccessControl",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newControl",
+        "type": "address"
+      }
+    ],
+    "name": "proposeNewAccessControl",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -513,19 +565,6 @@
   {
     "inputs": [],
     "name": "rollbackDefaultAdminDelay",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newControl",
-        "type": "address"
-      }
-    ],
-    "name": "setHestyAccessControlCtr",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
