@@ -7,6 +7,9 @@ pragma solidity 0.8.19;
  */
 interface IHestyAccessControl {
 
+    /// @notice Return Owner
+    function owner() external view returns(address);
+
     /// @notice Require that only admins can call this function
     function onlyAdmin(address manager) external;
 

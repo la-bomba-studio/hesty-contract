@@ -205,6 +205,10 @@ contract HestyAccessControl is IHestyAccessControl, AccessControlDefaultAdminRul
         return super.paused();
     }
 
+    function owner() public  override(IHestyAccessControl, AccessControlDefaultAdminRules) view returns(address){
+        return super.owner();
+    }
+
     // Function to allow deposits to pay for sponsorship
     receive() external payable {}
 

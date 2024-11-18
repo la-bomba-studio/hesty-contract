@@ -84,10 +84,11 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         string memory  name_,
         string memory symbol_,
         address rewardAsset_,
-        address ctrHestyControl_
+        address ctrHestyControl_,
+        address owner
     ) ERC20(name_, symbol_) AccessControlDefaultAdminRules(
     3 days,
-     msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
+     owner // Explicit initial `DEFAULT_ADMIN_ROLE` holder
     ){
 
         // Supplies higher than TEN_POWER_FIFTEEN ether will result in precision lost
@@ -112,7 +113,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         @param  amount Token Amount that users wants to buy
     */
 
-    function distributionRewards(uint256 amount) external{
+    function distributionRewards(uint256 amount) external whenNotPaused{
 
         require(amount > BASIS_POINTS, "Amount too low");
 
@@ -128,7 +129,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     * @notice Claims users dividends
       @param  user User Address that will receive dividends
     */
-    function claimDividensExternal(address user) external{
+    function claimDividensExternal(address user) external whenPaused{
         claimDividends(user);
     }
 
@@ -177,7 +178,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     * See {ERC20-constructor}.
     */
     function transfer(address to, uint256 amount) override
-                        whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
+                        whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() whenNotPaused public returns(bool){
 
         claimDividends(msg.sender);
         claimDividends(to);
@@ -200,7 +201,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     * See {ERC20-constructor}.
     */
     function transferFrom(address from, address to, uint256 amount) override
-                           whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() public returns(bool){
+                           whenNotBlackListed(to) whenKYCApproved(to) whenNotAllPaused() whenNotPaused public returns(bool){
 
         claimDividends(from);
         claimDividends(to);

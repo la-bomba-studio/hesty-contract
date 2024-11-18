@@ -30,6 +30,11 @@
         "internalType": "address",
         "name": "ctrHestyControl_",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",

@@ -71,7 +71,12 @@ Constants {
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
+    event                 NewMaxNReferrals(uint256 newNumber);
+    event                 NewMaxReferralRevenue(uint256 newAmount);
+    event                 NewPropertyDeadline(uint256 propertyId, uint256 newDeadline);
     event                   NewOwnersFee(uint256 indexed id, uint256 newFee);
+    event                   NewReferralFee(uint256 newFee);
+    event                   NewMinInvestmentAmount(uint256 minInvestmentAmount);
     event                   ClaimProfits(address indexed user, uint256 propertyId);
     event                  CompleteRaise(uint256 propertyId);
     event                   RecoverFunds(address indexed user, uint256 propertyId);
@@ -230,7 +235,8 @@ Constants {
                                                     name,
                                                     symbol,
                                                     address(revenueToken),
-                                                    admin));
+                                                    admin,
+                                                    ctrHestyControl.owner() ));
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
                                                     amount,
@@ -478,7 +484,7 @@ Constants {
                 platform multisig
         @param  id Property Id
     */
-    function completeRaise(uint256 id) external onlyAdmin{
+    function completeRaise(uint256 id) external onlyAdmin {
 
         require(!property[id].isCompleted, "Already Completed");
 
@@ -555,7 +561,7 @@ Constants {
         @dev     Fee must be lower than total amount raised
         @param   newFee New owners fee
     */
-    function setOwnersFee(uint256 id, uint256 newFee) external onlyAdmin{
+    function setOwnersFee(uint256 id, uint256 newFee) external onlyAdmin idMustBeValid(id){
 
         require( newFee < BASIS_POINTS, "Fee must be valid");
         ownersFeeBasisPoints[id] = newFee;
@@ -569,8 +575,11 @@ Constants {
         @param newFee New referral fee
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
+
         require( newFee < platformFeeBasisPoints, "Fee must be valid");
         refFeeBasisPoints = newFee;
+
+        emit NewReferralFee(newFee);
     }
 
     /**
@@ -597,6 +606,8 @@ Constants {
 
         require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
+
+        emit NewPropertyDeadline(id, newDeadline);
     }
 
     /**
@@ -606,6 +617,8 @@ Constants {
     function setMinInvAmount(uint256 newMinInv) external onlyAdmin{
         require(newMinInv > 0, "Amount too low");
         minInvAmount = newMinInv;
+
+        emit NewMinInvestmentAmount(newMinInv);
     }
 
     /**
@@ -613,7 +626,10 @@ Constants {
         @param  newMax Maximum number of referrals
     */
     function setMaxNumberOfReferrals(uint256 newMax) external onlyAdmin{
+
         maxNumberOfReferrals = newMax;
+
+        emit NewMaxNReferrals(newMax);
     }
 
     /**
@@ -621,7 +637,10 @@ Constants {
         @param  newMax Maximum amount of revenue
     */
     function setMaxAmountOfRefRev(uint256 newMax) external onlyAdmin{
+
         maxAmountOfRefRev = newMax;
+
+        emit NewMaxReferralRevenue(newMax);
     }
 
     /**
