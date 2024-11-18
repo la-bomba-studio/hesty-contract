@@ -23,6 +23,7 @@
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Constants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Constants.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyAccessControl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyAccessControl.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyRouter.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyRouter.md" afterDir="false" />
@@ -83,7 +84,7 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/pedro/Documents/GitHub/hesty-frontend",
+    "last_opened_file_path": "C:/Users/pedro/Documents/GitHub/hesty-contract",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -258,7 +259,11 @@
       <workItem from="1729477962970" duration="7619000" />
       <workItem from="1730726970865" duration="3436000" />
       <workItem from="1730815033758" duration="1880000" />
-      <workItem from="1730983708927" duration="13002000" />
+      <workItem from="1730983708927" duration="16195000" />
+      <workItem from="1731062634660" duration="1938000" />
+      <workItem from="1731084050152" duration="593000" />
+      <workItem from="1731260733580" duration="1793000" />
+      <workItem from="1731911987523" duration="450000" />
     </task>
     <servers />
   </component>

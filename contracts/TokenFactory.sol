@@ -4,6 +4,7 @@ pragma solidity 0.8.19;
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {PropertyToken} from "./PropertyToken.sol";
 import "./interfaces/ITokenFactory.sol";
 import "./interfaces/IReferral.sol";
@@ -88,9 +89,9 @@ Constants {
         bool    approved;       // Checks if the raise can start
         address owner;          // Property Manager/owner
         address ownerExchAddr;  // Property Owner/Manager exchange address to receive euroc
-        address paymentToken;   // Token used to buy property tokens/assets
+        IERC20 paymentToken;    // Token used to buy property tokens/assets
         address asset;          // Property token contract
-        address revenueToken;   // Revenue token for investors
+        IERC20 revenueToken;    // Revenue token for investors
 
     }
 
@@ -228,7 +229,7 @@ Constants {
                                                     amount,
                                                     name,
                                                     symbol,
-                                                    revenueToken,
+                                                    address(revenueToken),
                                                     admin));
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
@@ -240,9 +241,9 @@ Constants {
                                                     false,
                                                     msg.sender,
                                                     msg.sender,
-                                                    paymentToken,
+                                                    IERC20(paymentToken),
                                                     newAsset,
-                                                    revenueToken);
+                                                    IERC20(revenueToken));
 
         ownersFeeBasisPoints[propertyCounter - 1] = listingTokenFee;
 
@@ -265,7 +266,7 @@ Constants {
         uint256 id,
         uint256 amount,
         address ref
-    ) external nonReentrant onlyWhenInitialized whenNotAllPaused {
+    ) external nonReentrant onlyWhenInitialized whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed{
 
         PropertyInfo storage p = property[id];
 
@@ -285,7 +286,7 @@ Constants {
         uint256 total             = boughtTokensPrice + fee;
 
         // Charge investment cost from user
-        IERC20(p.paymentToken).transferFrom(msg.sender, address(this), total);
+        SafeERC20.safeTransferFrom(p.paymentToken,msg.sender, address(this), total);
 
         // Store Platform fee and user Invested Amount Paid
         platformFee[id]  += fee;
@@ -325,7 +326,7 @@ Constants {
             uint256 maxAmountOfLocalRefRev = (maxAmountOfRefRev >= userRevenue ) ? maxAmountOfRefRev : userRevenue;
 
             refFee_ = (userRevenue + refFee_ > maxAmountOfLocalRefRev) ? maxAmountOfLocalRefRev - userRevenue : refFee_;
-            
+
             /// @dev maxNumberOfReferral = 20 && maxAmountOfRefRev = €10000
             if(userNumberRefs < maxNumberOfReferrals && refFee_ > 0){
 
@@ -352,8 +353,8 @@ Constants {
 
         require(p.isCompleted, "Time not valid");
 
-        IERC20(p.revenueToken).transferFrom(msg.sender, address(this), amount);
-        IERC20(p.revenueToken).approve(p.asset, amount);
+        SafeERC20.safeTransferFrom(p.revenueToken, msg.sender, address(this), amount);
+        SafeERC20.forceApprove(p.revenueToken, p.asset, amount);
         PropertyToken(p.asset).distributionRewards(amount);
 
         emit RevenuePayment(id, amount);
@@ -436,7 +437,7 @@ Constants {
         @return Property Token
     */
     function getPropertyInfo(uint256 id) external view returns(address, address){
-        return (property[id].asset, property[id].revenueToken);
+        return (address(property[id].asset), address(property[id].revenueToken));
     }
 
 

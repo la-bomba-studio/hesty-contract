@@ -111,14 +111,18 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
             rewardsByProperty[projectId]   += amount;
             totalRewards[onBehalfOf]       += amount;
 
+            emit AddPropertyRefRewards(projectId, onBehalfOf, amount);
+
         }else if(referredBy[user] == onBehalfOf){
 
             rewards[onBehalfOf][projectId] += amount;
             rewardsByProperty[projectId]   += amount;
             totalRewards[onBehalfOf]       += amount;
+
+            emit AddPropertyRefRewards(projectId, onBehalfOf, amount);
         }
 
-        emit AddPropertyRefRewards(projectId, onBehalfOf, amount);
+
 
     }
 
