@@ -380,8 +380,11 @@ Constants {
         require(p.isCompleted, "Time not valid");
 
         // Transfer Asset to buyer
-        if(rightForTokens[user][id] > 0)
+        if(rightForTokens[user][id] > 0){
             IERC20(p.asset).transfer(user, rightForTokens[user][id]);
+            rightForTokens[user][id] = 0;
+        }
+
 
         emit GetInvestmentTokens(user, id);
     }
