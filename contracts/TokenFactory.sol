@@ -56,6 +56,7 @@ Constants {
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
     mapping(uint256 => uint256)         public ownersFeeBasisPoints; // Owners Fee charged by Hesty (in Basis Points) in each project
+    mapping(address => bool)            public tokensWhitelist; // Payment Token whitelist
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
     mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
@@ -82,6 +83,8 @@ Constants {
     event                   RecoverFunds(address indexed user, uint256 propertyId);
     event                ApproveProperty(uint256 propertyId);
     event            GetInvestmentTokens(address indexed user, uint256 propertyId);
+    event            AddWhitelistToken(address token);
+    event            RemoveWhitelistToken(address token);
 
 
     struct PropertyInfo{
@@ -226,7 +229,7 @@ Constants {
         address admin
     ) external whenKYCApproved(msg.sender) whenNotAllPaused whenNotBlackListed returns(uint256) {
 
-        require(paymentToken != address(0) && revenueToken != address(0), "Invalid pay token");
+        require(tokensWhitelist[paymentToken] && tokensWhitelist[revenueToken], "Invalid pay token");
         require( listingTokenFee < BASIS_POINTS, "Fee must be valid");
 
         address newAsset = address(
@@ -674,6 +677,24 @@ Constants {
         referralSystemCtr = IReferral(newReferralContract);
 
         emit NewReferralSystemCtr(newReferralContract);
+    }
+
+    function addWhitelistedToken(address newToken) external onlyAdmin{
+
+        require(newToken != address(0), "Not allowed");
+
+        tokensWhitelist[newToken] = true;
+
+        emit AddWhitelistToken(newToken);
+    }
+
+    function removeWhitelistedToken(address oldToken) external onlyAdmin{
+
+        require(oldToken != address(0), "Not allowed");
+
+        tokensWhitelist[oldToken] = false;
+
+        emit RemoveWhitelistToken(oldToken);
     }
 
 }
