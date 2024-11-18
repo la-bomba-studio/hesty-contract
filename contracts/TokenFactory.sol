@@ -420,6 +420,7 @@ Constants {
 
         uint256 amount         = userInvested[user][id];
         userInvested[user][id] = 0;
+        rightForTokens[user][id] = 0;
 
         IERC20(p.paymentToken).transfer(user, amount);
 
