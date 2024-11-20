@@ -496,6 +496,7 @@ Constants {
 
         require(property[id].approved,"Cancelled or not even started");
         require(!property[id].isCompleted, "Already Completed");
+        require(property[id].raised >= property[id].threshold , "Threshold not met");
 
         property[id].isCompleted = true;
 
