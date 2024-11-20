@@ -2,6 +2,7 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "./interfaces/IHestyAccessControl.sol";
 import "./Constants.sol";
@@ -159,8 +160,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
         xDividendPerToken[account] = dividendPerToken;
 
         if(amount > 0){
-            (bool success) = rewardAsset.transfer(account, amount);
-            require(success, "Failed Transfer");
+            SafeERC20.safeTransfer(rewardAsset, account, amount);
         }
 
     }

@@ -2,6 +2,7 @@
 pragma solidity 0.8.19;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "../interfaces/IReferral.sol";
@@ -157,7 +158,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         uint256 rew   = rewards[user][projectId];
         rewards[user][projectId] = 0;
 
-        IERC20(rewardToken).transfer(user, rew);
+        SafeERC20.safeTransfer(IERC20(rewardToken), user, rew);
 
         emit ClaimPropertyRewards(projectId, user, rew);
     }
@@ -172,7 +173,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         uint256 rew   = globalRewards[user];
         globalRewards[user] = 0;
 
-        IERC20(rewardToken).transfer(user, rew);
+        SafeERC20.safeTransfer(IERC20(rewardToken),user, rew);
 
         emit ClaimGlobalRewards(user, rew);
 

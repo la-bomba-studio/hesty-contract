@@ -2,8 +2,6 @@
 pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {PropertyToken} from "./PropertyToken.sol";
 import "./interfaces/ITokenFactory.sol";
@@ -45,24 +43,23 @@ Constants {
     uint256 public maxNumberOfReferrals;    // Maximum Number of Referrals that a user can have
     uint256 public maxAmountOfRefRev;       // Maximum Amount of Referral Revenue users can earn
     uint256 public platformFeeBasisPoints;  // Investment Fee charged by Hesty (in Basis Points)
-    uint256 public refFeeBasisPoints;    // Referral Fee charged by referrals (in Basis Points)
+    uint256 public refFeeBasisPoints;       // Referral Fee charged by referrals (in Basis Points)
     address public treasury;                // Address that will receive Hesty fees revenue
-    bool    public initialized;             // Checks if the contract is already initialized
-
+    bool    private initialized;            // Checks if the contract is already initialized
 
     mapping(uint256 => PropertyInfo)    public property;                // Stores properties info
     mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee earned by the platform on every investment
     mapping(uint256 => uint256)         public ownersPlatformFee;       // The fee earned by the platform on every investment
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
-    mapping(uint256 => uint256)         public ownersFeeBasisPoints; // Owners Fee charged by Hesty (in Basis Points) in each project
-    mapping(address => bool)            public tokensWhitelist; // Payment Token whitelist
+    mapping(uint256 => uint256)         public ownersFeeBasisPoints;    // Owners Fee charged by Hesty (in Basis Points) in each project
+    mapping(address => bool)            public tokensWhitelist;         // Payment Token whitelist
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
     mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
 
 
-    //Event
+    //Events
     event              InitializeFactory(address referralCtr);
     event                 CreateProperty(uint256 id);
     event           NewReferralSystemCtr(address newSystemCtr);
@@ -72,19 +69,19 @@ Constants {
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
-    event                 NewMaxNReferrals(uint256 newNumber);
-    event                 NewMaxReferralRevenue(uint256 newAmount);
-    event                 NewPropertyDeadline(uint256 propertyId, uint256 newDeadline);
+    event               NewMaxNReferrals(uint256 newNumber);
+    event          NewMaxReferralRevenue(uint256 newAmount);
+    event            NewPropertyDeadline(uint256 propertyId, uint256 newDeadline);
     event                   NewOwnersFee(uint256 indexed id, uint256 newFee);
-    event                   NewReferralFee(uint256 newFee);
-    event                   NewMinInvestmentAmount(uint256 minInvestmentAmount);
+    event                 NewReferralFee(uint256 newFee);
+    event         NewMinInvestmentAmount(uint256 minInvestmentAmount);
     event                   ClaimProfits(address indexed user, uint256 propertyId);
     event                  CompleteRaise(uint256 propertyId);
     event                   RecoverFunds(address indexed user, uint256 propertyId);
     event                ApproveProperty(uint256 propertyId);
     event            GetInvestmentTokens(address indexed user, uint256 propertyId);
-    event            AddWhitelistToken(address token);
-    event            RemoveWhitelistToken(address token);
+    event              AddWhitelistToken(address token);
+    event           RemoveWhitelistToken(address token);
 
 
     struct PropertyInfo{
@@ -95,13 +92,15 @@ Constants {
         uint256 raiseDeadline;  // When the fundraising ends
         bool    isCompleted;    // Checks if the raise is completed
         bool    approved;       // Checks if the raise can start
-        address owner;          // Property Manager/owner
+        bool    extended;
+        address owner;          // Hesty
         address ownerExchAddr;  // Property Owner/Manager exchange address to receive euroc
         IERC20 paymentToken;    // Token used to buy property tokens/assets
         address asset;          // Property token contract
         IERC20 revenueToken;    // Revenue token for investors
 
     }
+
 
     /**
         @dev    Constructor for Token Factory
@@ -227,10 +226,10 @@ Constants {
         string memory name,
         string memory symbol,
         address admin
-    ) external whenKYCApproved(msg.sender) whenNotAllPaused whenNotBlackListed returns(uint256) {
+    ) external whenKYCApproved(msg.sender) onlyWhenInitialized whenNotAllPaused whenNotBlackListed returns(uint256) {
 
         require(tokensWhitelist[paymentToken] && tokensWhitelist[revenueToken], "Invalid pay token");
-        require( listingTokenFee < BASIS_POINTS, "Fee must be valid");
+        require( listingTokenFee < MAX_FEE_POINTS, "Fee must be valid");
 
         address newAsset = address(
                             new PropertyToken(address(this),
@@ -246,6 +245,7 @@ Constants {
                                                     threshold,
                                                     0,
                                                     0,
+                                                    false,
                                                     false,
                                                     false,
                                                     msg.sender,
@@ -275,7 +275,7 @@ Constants {
         uint256 id,
         uint256 amount,
         address ref
-    ) external nonReentrant onlyWhenInitialized whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed{
+    ) external nonReentrant whenNotAllPaused whenKYCApproved(msg.sender) whenNotBlackListed{
 
         PropertyInfo storage p = property[id];
 
@@ -384,7 +384,7 @@ Constants {
 
         // Transfer Asset to buyer
         if(rightForTokens[user][id] > 0){
-            IERC20(p.asset).transfer(user, rightForTokens[user][id]);
+            SafeERC20.safeTransfer(IERC20(p.asset), user, rightForTokens[user][id]);
             rightForTokens[user][id] = 0;
         }
 
@@ -420,12 +420,13 @@ Constants {
         PropertyInfo storage p = property[id];
 
         require(p.raiseDeadline < block.timestamp && !p.isCompleted, "Time not valid"); // @dev it must be < not <=
+        require(p.raised < p.threshold, "Threshold reached, cannot recover funds");
 
         uint256 amount         = userInvested[user][id];
         userInvested[user][id] = 0;
         rightForTokens[user][id] = 0;
 
-        IERC20(p.paymentToken).transfer(user, amount);
+        SafeERC20.safeTransfer(p.paymentToken, user, amount);
 
         emit RecoverFunds(user, id);
 
@@ -503,18 +504,18 @@ Constants {
         uint256 tempPropertyOwnerShare  = propertyOwnerShare[id];
         uint256 tempRefFee              = refFee[id];
 
-        IERC20(property[id].paymentToken).transfer(treasury, tempRefFee - tempPlatformFee);
+        SafeERC20.safeTransfer(property[id].paymentToken, treasury, tempRefFee - tempPlatformFee);
         platformFee[id] = 0;
 
-        IERC20(property[id].paymentToken).transfer(treasury,  tempOwnersFee);
+        SafeERC20.safeTransfer(property[id].paymentToken,treasury,  tempOwnersFee);
         ownersPlatformFee[id] = 0;
 
         /// @dev Send property owners their share
-        IERC20(property[id].paymentToken).transfer(property[id].ownerExchAddr, tempPropertyOwnerShare);
+        SafeERC20.safeTransfer(property[id].paymentToken,property[id].ownerExchAddr, tempPropertyOwnerShare);
         propertyOwnerShare[id] = 0;
 
         /// @dev fund the referralSystem Contract with property referrals share
-        IERC20(property[id].paymentToken).transfer(address(referralSystemCtr), tempRefFee);
+        SafeERC20.safeTransfer(property[id].paymentToken,address(referralSystemCtr), tempRefFee);
         refFee[id] = 0;
 
         emit CompleteRaise(id);
@@ -585,7 +586,7 @@ Constants {
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
 
-        require( newFee < platformFeeBasisPoints && newFee < MAX_FEE_POINTS, "Fee must be valid");
+        require( newFee < platformFeeBasisPoints, "Fee must be valid");
         refFeeBasisPoints = newFee;
 
         emit NewReferralFee(newFee);
@@ -613,8 +614,9 @@ Constants {
     */
     function extendRaiseForProperty(uint256 id, uint256 newDeadline) external onlyAdmin idMustBeValid(id){
 
-        require(property[id].raiseDeadline < newDeadline, "Invalid deadline");
+        require(property[id].raiseDeadline < newDeadline && property[id].raiseDeadline + EXTENDED_TIME >= newDeadline  && !property[id].extended, "Invalid deadline");
         property[id].raiseDeadline = newDeadline;
+        property[id].extended = true;
 
         emit NewPropertyDeadline(id, newDeadline);
     }
