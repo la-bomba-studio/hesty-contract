@@ -23,14 +23,11 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules, IRouter{
 
     ITokenFactory public tokenFactory;
     IHestyAccessControl public hestyAccessControl;
-
     IHestyAccessControl public pendingHestyAccessControl;
-    uint256 private delay;
-    uint256 private pendingDelay;
 
     event NewTokenFactory(address newFactory);
     event NewHestyAccessControl(address newAccessControl);
-    event hestyAccessControlScheduled(address newAccessControl, uint256 dalay);
+    event HestyAccessControlPending(address newAccessControl);
 
     /**
         @dev    Hesty Router Constructor
@@ -43,7 +40,6 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules, IRouter{
     ){
         tokenFactory        = ITokenFactory(tokenFactory_);
         hestyAccessControl  = IHestyAccessControl(hestyAccessControl_);
-        delay = 3600 * 48; // 48 hours
     }
 
     /**
@@ -84,34 +80,25 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules, IRouter{
         @param  newControl Hesty Access Control Contract
     */
     function proposeNewAccessControl(address newControl) external onlyAdmin{
+
         require(newControl != address(0), "Not null");
 
         pendingHestyAccessControl = IHestyAccessControl(newControl);
 
-        pendingDelay = block.timestamp + delay;
-
-        emit hestyAccessControlScheduled(newControl, pendingDelay);
+        emit HestyAccessControlPending(newControl);
 
     }
 
     function confirmAccessControlChange() external override(IRouter){
 
-        require(msg.sender == address(pendingHestyAccessControl),"");
+        require(msg.sender == address(pendingHestyAccessControl),"Wrong Router");
 
-        require(block.timestamp > pendingDelay,"Not time");
         hestyAccessControl = pendingHestyAccessControl;
 
-        delete pendingDelay;
         delete pendingHestyAccessControl;
 
         emit NewHestyAccessControl(address(hestyAccessControl));
     }
-
-    function isScheduleSetF(uint48 schedule) private pure returns (bool) {
-        return schedule != 0;
-    }
-
-
 
     /**
         @dev    Set New Token Factory
