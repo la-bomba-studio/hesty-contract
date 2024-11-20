@@ -494,6 +494,7 @@ Constants {
     */
     function completeRaise(uint256 id) external onlyAdmin {
 
+        require(property[id].approved,"Cancelled or not even started");
         require(!property[id].isCompleted, "Already Completed");
 
         property[id].isCompleted = true;

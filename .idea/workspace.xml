@@ -24,11 +24,6 @@
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/IRouter.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IRouter.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/Constants.sol/Constants.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/HestyAccessControl.sol/HestyAccessControl.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/HestyAccessControl.sol/HestyAccessControl.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/HestyRouter.sol/HestyRouter.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/HestyRouter.sol/HestyRouter.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/Constants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Constants.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyAccessControl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyAccessControl.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/HestyRouter.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyRouter.md" afterDir="false" />
@@ -269,7 +264,7 @@
       <workItem from="1731084050152" duration="593000" />
       <workItem from="1731260733580" duration="1793000" />
       <workItem from="1731911987523" duration="9081000" />
-      <workItem from="1732101489275" duration="7131000" />
+      <workItem from="1732101489275" duration="7917000" />
     </task>
     <servers />
   </component>
