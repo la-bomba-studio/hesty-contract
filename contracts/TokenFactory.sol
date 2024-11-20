@@ -120,7 +120,7 @@ Constants {
     ){
 
         require(refFee_ < fee, "Ref fee invalid");
-        require(fee < BASIS_POINTS, "Invalid Platform Fee");
+        require(fee < MAX_FEE_POINTS, "Invalid Platform Fee");
 
         platformFeeBasisPoints  = fee;
         refFeeBasisPoints       = refFee_;
@@ -558,7 +558,7 @@ Constants {
     */
     function setPlatformFee(uint256 newFee) external onlyAdmin{
 
-        require(newFee < BASIS_POINTS && newFee > refFeeBasisPoints, "Fee must be valid");
+        require(newFee < MAX_FEE_POINTS && newFee > refFeeBasisPoints, "Fee must be valid");
         platformFeeBasisPoints = newFee;
 
         emit NewPlatformFee(newFee);
@@ -572,7 +572,7 @@ Constants {
     */
     function setOwnersFee(uint256 id, uint256 newFee) external onlyAdmin idMustBeValid(id){
 
-        require( newFee < BASIS_POINTS, "Fee must be valid");
+        require( newFee < MAX_FEE_POINTS, "Fee must be valid");
         ownersFeeBasisPoints[id] = newFee;
 
         emit NewOwnersFee(id, newFee);
@@ -585,7 +585,7 @@ Constants {
     */
     function setRefFee(uint256 newFee) external onlyAdmin{
 
-        require( newFee < platformFeeBasisPoints, "Fee must be valid");
+        require( newFee < platformFeeBasisPoints && newFee < MAX_FEE_POINTS, "Fee must be valid");
         refFeeBasisPoints = newFee;
 
         emit NewReferralFee(newFee);

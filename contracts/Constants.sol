@@ -9,6 +9,8 @@ abstract contract Constants {
     /// @notice Math Helper to get percentages amounts
     uint256 internal constant BASIS_POINTS = 100_00;
 
+    uint256 internal constant MAX_FEE_POINTS = 30_00;
+
     /// @notice Math Helper for getting EURC power of decimals
     uint256 internal constant WAD = 10 ** 6;
 
