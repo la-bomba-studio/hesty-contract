@@ -141,6 +141,12 @@
         "internalType": "address",
         "name": "referralCtr",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "ctrHestyIssuance_",
+        "type": "address"
       }
     ],
     "name": "InitializeFactory",
@@ -175,6 +181,19 @@
       }
     ],
     "name": "NewInvestment",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "newIssuanceCtr",
+        "type": "address"
+      }
+    ],
+    "name": "NewIssuanceContract",
     "type": "event"
   },
   {
@@ -569,6 +588,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "ctrHestyIssuance",
+    "outputs": [
+      {
+        "internalType": "contract IIssuance",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -651,6 +683,11 @@
       {
         "internalType": "address",
         "name": "referralSystemCtr_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "ctrHestyIssuance_",
         "type": "address"
       }
     ],
@@ -996,6 +1033,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newIssuanceCtr",
+        "type": "address"
+      }
+    ],
+    "name": "setIssuanceContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

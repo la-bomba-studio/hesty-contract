@@ -26,17 +26,17 @@
       },
       {
         "internalType": "address",
-        "name": "referrer",
+        "name": "ref",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "projectId",
+        "name": "boughtTokensPrice",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "id",
         "type": "uint256"
       }
     ],

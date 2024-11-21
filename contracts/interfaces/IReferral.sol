@@ -11,7 +11,7 @@ interface IReferral {
     function getReferrerDetails(address user) external view returns(uint256, uint256, uint256);
 
     /// @notice Adds Property Referral Rewards to the user
-    function addRewards(address onBehalfOf, address referrer, uint256 projectId, uint256 amount) external;
+    function addRewards(address onBehalfOf, address ref, uint256 boughtTokensPrice, uint256 id) external ;
 
     /// @notice Adds referral rewards to the user (not indexed to a property)
     function addGlobalRewards(address onBehalfOf, uint256 amount) external;

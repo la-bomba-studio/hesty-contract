@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/AccessControlDefaultAdminRules.sol";
 import "../interfaces/IReferral.sol";
 import "../interfaces/IHestyAccessControl.sol";
 import "../interfaces/ITokenFactory.sol";
+import {Constants} from "../Constants.sol";
 
 /*
     @title Hesty Referral System
@@ -18,7 +19,7 @@ import "../interfaces/ITokenFactory.sol";
 
     @author Pedro G. S. Ferreira
 */
-contract ReferralSystem is ReentrancyGuard, IReferral {
+contract ReferralSystem is ReentrancyGuard, IReferral, Constants {
 
     IHestyAccessControl public ctrHestyControl;                     // Hesty Global Access Control
     address             public rewardToken;                         // Token Contract Address of rewards
@@ -91,6 +92,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         ctrHestyControl.onlyAdmin(msg.sender);
         _;
     }
+
 
     /**
         @dev    Add Rewards Associated to a Property Project
@@ -183,7 +185,7 @@ contract ReferralSystem is ReentrancyGuard, IReferral {
         @dev    Return Number of user referrals and user referral revenues
         @param  user The user who referred others
     */
-    function getReferrerDetails(address user) external view returns(uint256, uint256, uint256){
+    function getReferrerDetails(address user) public view returns(uint256, uint256, uint256){
         return(numberOfRef[user], totalRewards[user], globalRewards[user]);
    }
 
