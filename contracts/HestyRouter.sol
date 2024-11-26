@@ -19,7 +19,7 @@ import "./Constants.sol";
 
 */
 
-contract HestyRouter is Constants, AccessControlDefaultAdminRules, IRouter{
+contract HestyRouter is Constants, IRouter{
 
     ITokenFactory public tokenFactory;
     IHestyAccessControl public hestyAccessControl;
@@ -34,10 +34,7 @@ contract HestyRouter is Constants, AccessControlDefaultAdminRules, IRouter{
         @param  tokenFactory_ Token Factory Contract
         @param  hestyAccessControl_ Hesty Access Control Contract
     */
-    constructor(address tokenFactory_, address hestyAccessControl_) AccessControlDefaultAdminRules(
-        3 days,
-        msg.sender // Explicit initial `DEFAULT_ADMIN_ROLE` holder
-    ){
+    constructor(address tokenFactory_, address hestyAccessControl_){
         tokenFactory        = ITokenFactory(tokenFactory_);
         hestyAccessControl  = IHestyAccessControl(hestyAccessControl_);
     }

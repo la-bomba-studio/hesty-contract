@@ -499,7 +499,7 @@ Constants {
 
         property[id].isCompleted = true;
 
-        SafeERC20.safeTransfer(p.paymentToken, treasury, refFee[id] - platformFee[id]);
+        SafeERC20.safeTransfer(p.paymentToken, treasury, platformFee[id] - refFee[id]);
         platformFee[id] = 0;
 
         SafeERC20.safeTransfer(p.paymentToken,treasury,  ownersPlatformFee[id]);

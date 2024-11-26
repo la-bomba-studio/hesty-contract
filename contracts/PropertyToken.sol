@@ -118,9 +118,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
 
         require(amount > BASIS_POINTS, "Amount too low");
 
-        (bool success) = rewardAsset.transferFrom(msg.sender, address(this), amount);
-
-        require(success, "Failed Transfer");
+        SafeERC20.safeTransferFrom(rewardAsset, msg.sender, address(this), amount);
 
         dividendPerToken += amount * MULTIPLIER / super.totalSupply();
 
