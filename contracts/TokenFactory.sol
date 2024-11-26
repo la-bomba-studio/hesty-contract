@@ -4,11 +4,11 @@ pragma solidity 0.8.19;
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {PropertyToken} from "./PropertyToken.sol";
-import "./interfaces/ITokenFactory.sol";
-import "./interfaces/IReferral.sol";
 import "./interfaces/IHestyAccessControl.sol";
-import "./Constants.sol";
+import "./interfaces/ITokenFactory.sol";
 import {IIssuance} from "./interfaces/IIssuance.sol";
+import "./interfaces/IReferral.sol";
+import "./Constants.sol";
 
 /*
 
@@ -47,7 +47,7 @@ Constants {
     uint256 public platformFeeBasisPoints;  // Investment Fee charged by Hesty (in Basis Points)
     uint256 public refFeeBasisPoints;       // Referral Fee charged by referrals (in Basis Points)
     address public treasury;                // Address that will receive Hesty fees revenue
-    bool    private initialized;            // Checks if the contract is already initialized
+    bool    public initialized;            // Checks if the contract is already initialized
 
     mapping(uint256 => PropertyInfo)    public property;                // Stores properties info
     mapping(uint256 => uint256)         public platformFee;             // (Property id => fee amount) The fee earned by the platform on every investment
@@ -55,11 +55,11 @@ Constants {
     mapping(uint256 => uint256)         public propertyOwnerShare;      // The amount reserved to propertyOwner
     mapping(uint256 => uint256)         public refFee;                  // The referral fee accumulated by each property before completing
     mapping(uint256 => uint256)         public ownersFeeBasisPoints;    // Owners Fee charged by Hesty (in Basis Points) in each project
+    mapping(uint256 => bool)            public deadProperty;            // After Canceled can no longer be approved
     mapping(address => bool)            public tokensWhitelist;         // Payment Token whitelist
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
     mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
-
 
     //Events
     event              InitializeFactory(address referralCtr, address ctrHestyIssuance_);
@@ -68,7 +68,7 @@ Constants {
     event           NewIssuanceContract(address newIssuanceCtr);
     event                    NewTreasury(address newTreasury);
     event   NewPropertyOwnerAddrReceiver(address newAddress);
-    event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 date);
+    event                  NewInvestment(uint256 indexed propertyId, address investor, uint256 amount, uint256 amountSpent, uint256 date);
     event                 RevenuePayment(uint256 indexed propertyId, uint256 amount);
     event                 CancelProperty(uint256 propertyId);
     event                 NewPlatformFee(uint256 newFee);
@@ -81,7 +81,7 @@ Constants {
     event                   ClaimProfits(address indexed user, uint256 propertyId);
     event                  CompleteRaise(uint256 propertyId);
     event                   RecoverFunds(address indexed user, uint256 propertyId);
-    event                ApproveProperty(uint256 propertyId);
+    event                ApproveProperty(uint256 propertyId, uint256 newDeadline);
     event            GetInvestmentTokens(address indexed user, uint256 propertyId);
     event              AddWhitelistToken(address token);
     event           RemoveWhitelistToken(address token);
@@ -89,14 +89,14 @@ Constants {
 
     struct PropertyInfo{
         uint256 price;          // Price for each property token
-        uint256 amountToSell;
+        uint256 amountToSell;   // Amount of tokens to sell
         uint256 threshold;      // Amount necessary to proceed with investment
-        uint256 raised;         // Amount raised until now
+        uint256 raised;         // Amount tokens sold
         uint256 raiseDeadline;  // When the fundraising ends
         bool    isCompleted;    // Checks if the raise is completed
         bool    approved;       // Checks if the raise can start
         bool    extended;       // Checks if the raise was already extended
-        address owner;          // Hesty
+        address owner;          // Hesty owner
         address ownerExchAddr;  // Property Owner/Manager exchange address to receive EUROC
         IERC20 paymentToken;    // Token used to buy property tokens/assets
         address asset;          // Property token contract
@@ -280,21 +280,19 @@ Constants {
 
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
-        require(amount * p.price >= minInvAmount, "Lower than min");
+        require(boughtTokensPrice >= minInvAmount, "Lower than min");
         require(property[id].approved && !property[id].isCompleted, "Property Not For Sale");
-        require(p.raised + boughtTokensPrice  < p.price * p.amountToSell, "Too much raised");
-
-        amount = (p.amountToSell - (p.raised / p.price) >= amount) ? amount : p.amountToSell - amount ;
+        require(p.raised + amount <= p.amountToSell, "Too much raised");
 
         // Calculate the investment fee and then get the total investment cost
-        uint256 fee               = boughtTokensPrice * platformFeeBasisPoints / BASIS_POINTS;
-        uint256 total             = boughtTokensPrice + fee;
+        uint256 fee    = boughtTokensPrice * platformFeeBasisPoints / BASIS_POINTS;
+        uint256 total  = boughtTokensPrice + fee;
 
         // Charge investment cost from user
         SafeERC20.safeTransferFrom(p.paymentToken,msg.sender, address(this), total);
 
         // Store Platform fee and user Invested Amount Paid
-        platformFee[id]  += fee;
+        platformFee[id]                += fee;
         userInvested[msg.sender][id]   += boughtTokensPrice;
         rightForTokens[onBehalfOf][id] += amount;
 
@@ -304,13 +302,12 @@ Constants {
         ownersPlatformFee[id]  += ownersFee;
         propertyOwnerShare[id] += boughtTokensPrice - ownersFee;
 
-
         referralRewards(onBehalfOf, ref, boughtTokensPrice, id);
 
-        p.raised     += boughtTokensPrice;
+        p.raised     += amount;
         property[id] = p;
 
-        emit NewInvestment(id, onBehalfOf, boughtTokensPrice, block.timestamp);
+        emit NewInvestment(id, onBehalfOf, amount, boughtTokensPrice, block.timestamp);
     }
 
     /**
@@ -418,7 +415,7 @@ Constants {
         PropertyInfo storage p = property[id];
 
         require(p.raiseDeadline < block.timestamp && !p.isCompleted, "Time not valid"); // @dev it must be < not <=
-        require(p.raised < p.threshold, "Threshold reached, cannot recover funds");
+        require(p.raised * p.price < p.threshold, "Threshold reached, cannot recover funds");
 
         uint256 amount         = userInvested[user][id];
         userInvested[user][id] = 0;
@@ -440,7 +437,7 @@ Constants {
         @return If it is already possible to claim referral rewards
     */
     function isRefClaimable(uint256 id) external view returns(bool){
-        return property[id].threshold <= property[id].raised && property[id].isCompleted;
+        return property[id].threshold <= property[id].raised * property[id].price && property[id].isCompleted;
     }
 
     /**
@@ -471,16 +468,17 @@ Constants {
 
         // Require that raise is still active and not expired
         require(p.raiseDeadline >= block.timestamp, "Raise expired");
+        require(p.raised + amount <= p.amountToSell, "Too much raised");
 
         // Calculate how much costs to buy tokens
         uint256 boughtTokensPrice = amount * p.price;
 
         rightForTokens[buyer][id] += amount;
 
-        p.raised += boughtTokensPrice;
+        p.raised += amount;
         property[id] = p;
 
-        emit NewInvestment(id, buyer, boughtTokensPrice, block.timestamp);
+        emit NewInvestment(id, buyer, amount, boughtTokensPrice, block.timestamp);
     }
 
     /**
@@ -495,7 +493,7 @@ Constants {
         PropertyInfo storage p = property[id];
 
         require(p.approved && !p.isCompleted, "Canceled or Already Completed");
-        require(p.raised >= property[id].threshold , "Threshold not met");
+        require(p.raised * p.price >= property[id].threshold , "Threshold not met");
 
         property[id].isCompleted = true;
 
@@ -525,11 +523,12 @@ Constants {
     function approveProperty(uint256 id, uint256 raiseDeadline) external onlyAdmin{
 
         require(!property[id].approved, "Already Approved");
+        require(!deadProperty[id], "Already Canceled");
 
         property[id].approved = true;
         property[id].raiseDeadline = raiseDeadline;
 
-        emit ApproveProperty(id);
+        emit ApproveProperty(id, raiseDeadline);
     }
 
     /**
@@ -542,6 +541,7 @@ Constants {
 
         property[id].raiseDeadline = 0; // Important to allow investors to recover funds
         property[id].approved = false;  // Prevent more investments
+        deadProperty[id] = true;
 
         emit CancelProperty(id);
     }
