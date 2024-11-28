@@ -462,7 +462,7 @@ Constants {
         @param  buyer The user who will receive the property tokens
         @param  amount The amount of property tokens to buy
     */
-    function adminBuyTokens(uint256 id, address buyer, uint256 amount) external nonReentrant onlyFundsManager{
+    function adminBuyTokens(uint256 id, address buyer, uint256 amount) whenKYCApproved(buyer) external nonReentrant onlyFundsManager{
 
         PropertyInfo storage p    = property[id];
 
