@@ -28,6 +28,10 @@ describe("Flow 1", function () {
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
     await referral.deployed()
 
+    Issuance = await ethers.getContractFactory("HestyAssetIssuance");
+    issuance = await Issuance.connect(owner).deploy(tokenFactory.address);
+    await issuance.deployed()
+
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.KYC_MANAGER(),
       addr2.address
@@ -48,7 +52,7 @@ describe("Flow 1", function () {
   describe("Flow 1 Start", function () {
     beforeEach(async function () {
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
     })
 

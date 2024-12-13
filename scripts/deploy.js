@@ -5,6 +5,7 @@ async function main() {
   let hestyAccessControl;
   let tokenFactory;
   let eurc;
+  let issuanceContract;
   let referralSystem;
   let hestyRouter;
 
@@ -16,7 +17,7 @@ async function main() {
   let vAddress0 = await hestyAccessControl.address;
   console.log("HestyAccessControl: " +  vAddress0)
 
-  tokenFactory = await ethers.deployContract("TokenFactory", [300, 1000, 100, "0x168090283962c5129A2CBc91E099369297f32437", 1, vAddress0]);
+  tokenFactory = await ethers.deployContract("TokenFactory", [300, 100, "0x168090283962c5129A2CBc91E099369297f32437", 1, vAddress0]);
   await tokenFactory.deployed();
   let vAddress = await tokenFactory.address;
   console.log("TokenFactory: " + vAddress)
@@ -31,12 +32,28 @@ async function main() {
   let vAddress3 = await referralSystem.address;
   console.log("ReferralSystem: " + vAddress3)
 
+  issuanceContract = await ethers.deployContract("HestyAssetIssuance", [vAddress]);
+  await issuanceContract.deployed();
+  let vAddress5 = await issuanceContract.address;
+  console.log("Issuance Contract: " + vAddress5)
+
   hestyRouter = await ethers.deployContract("HestyRouter", [vAddress, vAddress0]);
   await hestyRouter.deployed();
-  let vAddress4 = await referralSystem.address;
+  let vAddress4 = await hestyRouter.address;
   console.log("Hesty Router: " + vAddress4)
 
-  console.log("" +
+  await tokenFactory.initialize(vAddress3, vAddress5);
+
+  console.log('\x1b[32m%s\x1b[0m',
+    "                          .##.....##.########.########.#########.##....##.\n" +
+    "                          .##.....##.##.......##..........##......##..##.\n" +
+    "                          .##.....##.##.........##........##........##.\n" +
+    "                          .#########.########.....##......##........##.\n" +
+    "                          .##.....##.##..........##.......##........##.\n" +
+    "                          .##.....##.##.........##........##........##.\n" +
+    "                          .##.....##.########.########....##........##.\n" +
+    "                                                                                                        \n" +
+    "                                                                                                        \n" +
     "                                        .####.########.\n" +
     "                                        ..##..##........\n" +
     "                                        ..##..##........\n" +

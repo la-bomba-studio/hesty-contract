@@ -128,7 +128,7 @@ contract PropertyToken is ERC20Pausable, AccessControlDefaultAdminRules, Constan
     * @notice Claims users dividends
       @param  user User Address that will receive dividends
     */
-    function claimDividensExternal(address user) external whenPaused{
+    function claimDividensExternal(address user) external whenNotPaused{
         claimDividends(user);
     }
 

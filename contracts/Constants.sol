@@ -26,19 +26,19 @@ abstract contract Constants {
 
     /// @notice Role than can blacklist addresses
     /// @dev Secuirty Level: 3
-    bytes32 internal constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");
+    bytes32 public constant BLACKLIST_MANAGER   = keccak256("BLACKLIST_MANAGER");
 
     /// @notice Role that synchoronizes offchain investment
     /// @dev Secuirty Level: 1
-    bytes32 internal constant FUNDS_MANAGER       = keccak256("FUNDS_MANAGER");
+    bytes32 public constant FUNDS_MANAGER       = keccak256("FUNDS_MANAGER");
 
     /// @notice Role that approves users KYC done
     /// @dev Secuirty Level: 3
-    bytes32 internal constant KYC_MANAGER         = keccak256("KYC_MANAGER");
+    bytes32 public constant KYC_MANAGER         = keccak256("KYC_MANAGER");
 
     /// @notice Role that can pause transfers
     /// @dev Secuirty Level: 2
-    bytes32 internal constant PAUSER_MANAGER      = keccak256("PAUSER_MANAGER");
+    bytes32 public constant PAUSER_MANAGER      = keccak256("PAUSER_MANAGER");
 
 
 

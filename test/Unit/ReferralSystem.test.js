@@ -19,17 +19,22 @@ describe("Referral System", function () {
     tokenFactory = await TokenFactory.connect(owner).deploy(300, 100, owner.address, 1, hestyAccessControlCtr.address);
     await tokenFactory.deployed();
 
-    oken = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol:ERC20PresetMinterPauser");
+    Token = await ethers.getContractFactory("@openzeppelin/contracts/token/ERC20/presets/ERC20PresetMinterPauser.sol:ERC20PresetMinterPauser");
     token = await Token.connect(owner).deploy("name", "symbol");
     await token.deployed()
 
     Referral = await ethers.getContractFactory("ReferralSystem");
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
     await referral.deployed()
+   // console.log("KYC Manager "+ await hestyAccessControlCtr.KYC_MANAGER())
 
+    Issuance = await ethers.getContractFactory("HestyAssetIssuance");
+    issuance = await Issuance.connect(owner).deploy(tokenFactory.address);
+    await issuance.deployed()
 
     await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.KYC_MANAGER(),
+      "0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949",
+
       addr2.address
     );
 /*

@@ -25,23 +25,27 @@ describe("Property Token", function () {
     await token.deployed()
 
     PropertyToken = await ethers.getContractFactory("PropertyToken");
-    propertyToken = await PropertyToken.connect(owner).deploy(owner.address, 10, "Token", "TKN", token.address, hestyAccessControlCtr.address);
+    propertyToken = await PropertyToken.connect(owner).deploy(owner.address, 10, "Token", "TKN", token.address, hestyAccessControlCtr.address, owner.address);
 
     await propertyToken.deployed();
 
     // 1_000_000_000 it would mean a 1_000_000_000_000 total investment as ticker price is 1000€ min
     PropertyToken = await ethers.getContractFactory("PropertyToken");
-    propertyToken2 = await PropertyToken.connect(owner).deploy(owner.address, 1_000_000_000, "Token", "TKN", token.address, hestyAccessControlCtr.address);
+    propertyToken2 = await PropertyToken.connect(owner).deploy(owner.address, 1_000_000_000, "Token", "TKN", token.address, hestyAccessControlCtr.address, owner.address);
 
     await propertyToken2.deployed();
 
+    Issuance = await ethers.getContractFactory("HestyAssetIssuance");
+    issuance = await Issuance.connect(owner).deploy(tokenFactory.address);
+    await issuance.deployed()
+
     await propertyToken.grantRole(
-      await propertyToken.BLACKLIST_MANAGER(),
+      "0x46a5e99059e0b949704bc0cc0e3748d22c5f6ededc6f4a64b1e645b926d1163b",
       addr1.address
     );
 
     await propertyToken.grantRole(
-      await propertyToken.KYC_MANAGER(),
+      "0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949",
       addr2.address
     );
 
@@ -233,7 +237,7 @@ describe("Property Token", function () {
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address)
 
       await expect(propertyToken.transfer(propertyManager.address, 10)
-      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
+      ).to.be.revertedWith("Pausable: paused");
 
       await propertyToken.connect(addr3).unpause();
 
@@ -255,14 +259,16 @@ describe("Property Token", function () {
       await propertyToken.connect(addr3).pause();
 
       await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
+      ).to.be.revertedWith("Pausable: paused");
+
+      await propertyToken.connect(addr3).unpause();
+
+      await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
       ).to.be.revertedWith("ERC20: insufficient allowance");
 
       await propertyToken.connect(propertyManager).approve(owner.address, 10);
 
-      await expect(propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
-      ).to.be.revertedWith("ERC20Pausable: token transfer while paused");
 
-      await propertyToken.connect(addr3).unpause();
 
       await propertyToken.transferFrom(propertyManager.address, addr3.address, 10)
 

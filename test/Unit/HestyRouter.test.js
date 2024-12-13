@@ -32,13 +32,17 @@ describe("Hesty Router", function () {
     router = await Router.connect(owner).deploy(tokenFactory.address, hestyAccessControlCtr.address);
     await router.deployed()
 
+    Issuance = await ethers.getContractFactory("HestyAssetIssuance");
+    issuance = await Issuance.connect(owner).deploy(tokenFactory.address);
+    await issuance.deployed()
+
     await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.KYC_MANAGER(),
+      "0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949",
       addr2.address
     );
 
     await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.FUNDS_MANAGER(),
+      "0x93779bf6be703205517715c86297c193472c9d5533e90609b671022041168a4c",
       router.address
     );
     /*  await hestyAccessControlCtr.grantRole(
@@ -74,7 +78,9 @@ describe("Hesty Router", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
+
+      await tokenFactory.addWhitelistedToken(token.address);
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
 
@@ -126,7 +132,7 @@ describe("Hesty Router", function () {
       await expect(
         router.offChainBuyTokens(0, addr1.address, 20000)
       ).to.emit(tokenFactory, 'NewInvestment')
-        .withArgs(0, addr1.address, 80000, timestampBefore + 1);
+        .withArgs(0, addr1.address, 20000, 80000, timestampBefore + 1);
     });
 
 
@@ -137,16 +143,16 @@ describe("Hesty Router", function () {
     it("setHestyAccessControlCtr", async function () {
 
       await expect(
-        router.setHestyAccessControlCtr("0x0000000000000000000000000000000000000000")
+        router.proposeNewAccessControl( "0x0000000000000000000000000000000000000000")
       ).to.be.revertedWith("Not null");
 
       await expect(
-        router.connect(addr4).setHestyAccessControlCtr(addr1.address)
+        router.connect(addr4).proposeNewAccessControl(addr1.address)
       ).to.be.revertedWith("Not Admin Manager");
 
       await expect(
-        router.setHestyAccessControlCtr(addr1.address)
-      ).to.emit(router, 'NewHestyAccessControl')
+        router.proposeNewAccessControl(addr1.address)
+      ).to.emit(router, 'HestyAccessControlPending')
         .withArgs(addr1.address);
     });
 

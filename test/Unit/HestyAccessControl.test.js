@@ -13,6 +13,9 @@ describe("HestyAccessControl", function () {
     [owner, propertyManager, addr1, addr2, addr3] = await ethers.getSigners();
     HestyAccessControl = await ethers.getContractFactory("HestyAccessControl");
     hestyAccessControlCtr = await HestyAccessControl.connect(owner).deploy();
+
+ //   console.log('\x1b[32m%s\x1b[0m',"Blacklist Manager "+ await hestyAccessControlCtr.BLACKLIST_MANAGER())
+ //   console.log("Funds Manager "+ await hestyAccessControlCtr.FUNDS_MANAGER())
     await hestyAccessControlCtr.deployed();
     await hestyAccessControlCtr.grantRole(
       await hestyAccessControlCtr.BLACKLIST_MANAGER(),
@@ -20,7 +23,7 @@ describe("HestyAccessControl", function () {
     );
 
     await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.KYC_MANAGER(),
+      "0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949",
       addr2.address
     );
 

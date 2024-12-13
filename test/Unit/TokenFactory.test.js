@@ -28,8 +28,12 @@ describe("Token Factory", function () {
     referral = await Referral.connect(owner).deploy(token.address, hestyAccessControlCtr.address, tokenFactory.address);
     await referral.deployed()
 
+    Issuance = await ethers.getContractFactory("HestyAssetIssuance");
+    issuance = await Issuance.connect(owner).deploy(tokenFactory.address);
+    await issuance.deployed()
+
     await hestyAccessControlCtr.grantRole(
-      await hestyAccessControlCtr.KYC_MANAGER(),
+      "0x1df25ad963bcdf5796797f14b691a634f65032f90fca9c8f59fd3b590a07e949",
       addr2.address
     );
   /*  await hestyAccessControlCtr.grantRole(
@@ -63,12 +67,12 @@ describe("Token Factory", function () {
     expect(await tokenFactory.initialized()).to.equal(false);
 
     await expect(
-      tokenFactory.connect(propertyManager).initialize(referral.address)
+      tokenFactory.connect(propertyManager).initialize(referral.address, issuance.address)
     ).to.be.revertedWith("Not Admin Manager");
 
     expect(await tokenFactory.initialized()).to.equal(false);
 
-    await tokenFactory.initialize(referral.address)
+    await tokenFactory.initialize(referral.address, issuance.address)
 
     expect(await tokenFactory.initialized()).to.equal(true);
 
@@ -88,7 +92,7 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       expect(await tokenFactory.connect(propertyManager).referralSystemCtr()).to.equal(referral.address);
 
@@ -101,7 +105,7 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       expect(await tokenFactory.connect(addr2).propertyCounter()).to.equal(0);
 
@@ -114,7 +118,7 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       expect(await tokenFactory.connect(addr2).minInvAmount()).to.equal(1);
 
@@ -124,7 +128,6 @@ describe("Token Factory", function () {
 
       expect(await tokenFactory.maxNumberOfReferrals()).to.equal(20);
       expect(await tokenFactory.maxAmountOfRefRev()).to.equal(10000000000);
-      expect(await tokenFactory.REF_FEE_BASIS_POINTS()).to.equal(100); // 1%
 
     });
 
@@ -135,7 +138,7 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       expect(await tokenFactory.treasury()).to.equal(owner.address); //3%
 
@@ -143,7 +146,11 @@ describe("Token Factory", function () {
 
     it("Property", async function () {
 
+      await tokenFactory.initialize(referral.address, issuance.address)
+
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.addWhitelistedToken(token.address);
 
       await tokenFactory.connect(propertyManager).createProperty(1000000, 1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
@@ -165,9 +172,15 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.addWhitelistedToken(token.address);
+
+      await expect(
+        issuance.createPropertyToken(1000000, token.address, "token", "TKN", hestyAccessControlCtr.address, addr1.address)
+      ).to.be.revertedWith("Not TokenFactory");
 
       await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000, token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
@@ -192,9 +205,11 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.addWhitelistedToken(token.address);
 
       await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
@@ -219,9 +234,11 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.addWhitelistedToken(token.address);
 
       await tokenFactory.connect(propertyManager).createProperty(1000000, 1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
@@ -297,9 +314,11 @@ describe("Token Factory", function () {
       //Not yet initialized so therefore address(0)
       expect(await tokenFactory.referralSystemCtr()).to.equal("0x0000000000000000000000000000000000000000");
 
-      await tokenFactory.initialize(referral.address)
+      await tokenFactory.initialize(referral.address, issuance.address)
 
       await hestyAccessControlCtr.connect(addr2).approveUserKYC(propertyManager.address);
+
+      await tokenFactory.addWhitelistedToken(token.address);
 
       await tokenFactory.connect(propertyManager).createProperty(1000000,1000, 4, 10000000,  token.address, token.address, "token", "TKN", hestyAccessControlCtr.address)
 
@@ -362,7 +381,6 @@ describe("Token Factory", function () {
       ).to.emit(tokenFactory, 'NewPlatformFee')
         .withArgs(1000);
 
-      expect(await tokenFactory.FEE_BASIS_POINTS()).to.equal(1000);
 
     });
 
@@ -428,6 +446,27 @@ describe("Token Factory", function () {
       await expect(
         tokenFactory.setReferralContract(referral2.address)
       ).to.emit(tokenFactory, 'NewReferralSystemCtr')
+        .withArgs(referral2.address);
+
+    });
+
+    it("setIssuanceContract", async function () {
+
+      Issuance2 = await ethers.getContractFactory("HestyAssetIssuance");
+      issuance2 = await Issuance2.connect(owner).deploy(tokenFactory.address);
+      await issuance2.deployed()
+
+      await expect(
+        tokenFactory.setIssuanceContract("0x0000000000000000000000000000000000000000")
+      ).to.be.revertedWith("Not allowed");
+
+      await expect(
+        tokenFactory.connect(addr4).setIssuanceContract(referral2.address)
+      ).to.be.revertedWith("Not Admin Manager");
+
+      await expect(
+        tokenFactory.setIssuanceContract(referral2.address)
+      ).to.emit(tokenFactory, 'NewIssuanceContract')
         .withArgs(referral2.address);
 
     });
