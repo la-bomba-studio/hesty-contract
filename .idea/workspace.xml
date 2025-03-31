@@ -5,53 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/hesty-contract.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/hesty-contract.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.prettierrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierrc.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Constants.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Constants.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/HestyAccessControl.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/HestyAssetIssuance.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/HestyAssetIssuance.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/HestyRouter.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/HestyRouter.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/PropertyToken.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/PropertyToken.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/Referral/ReferralSystem.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/Referral/ReferralSystem.sol" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contracts/TokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/TokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IHestyAccessControl.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/interfaces/IIssuance.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IIssuance.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IReferral.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/interfaces/IRouter.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/IRouter.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/interfaces/ITokenFactory.sol" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coverage.json" beforeDir="false" afterPath="$PROJECT_DIR$/coverage.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/HestyAccessControl.sol/HestyAccessControl.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/HestyAccessControl.sol/HestyAccessControl.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/HestyRouter.sol/HestyRouter.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/HestyRouter.sol/HestyRouter.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/PropertyToken.sol/PropertyToken.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/Referral/ReferralSystem.sol/ReferralSystem.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/Referral/ReferralSystem.sol/ReferralSystem.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Constants.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Constants.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/HestyAccessControl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyAccessControl.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/HestyRouter.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/HestyRouter.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/PropertyToken.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/PropertyToken.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Referral/ReferralSystem.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Referral/ReferralSystem.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/TokenFactory.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/TokenFactory.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/interfaces/IHestyAccessControl.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/interfaces/IHestyAccessControl.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/interfaces/IReferral.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/interfaces/IReferral.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/interfaces/ITokenFactory.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/interfaces/ITokenFactory.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hardhat.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/hardhat.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/deploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/productionDeploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/productionDeploy.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Integration/Flow1.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Integration/Flow1.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/HestyAccessControl.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/HestyAccessControl.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/HestyRouter.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/HestyRouter.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/PropertyToken.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/PropertyToken.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/ReferralSystem.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/ReferralSystem.test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/test/Unit/TokenFactory.test.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,12 +48,13 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/pedro/Documents/GitHub/arcalis_index&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/pedro/Documents/GitHub/hesty-contract&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.compile.executor&quot;: &quot;Run&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\pedro\\AppData\\Local\\JetBrains\\WebStorm 2024.1.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -108,7 +65,17 @@
       <recent name="C:\Users\pedro\Documents\GitHub\hesty-contract\contracts\Referral" />
     </key>
   </component>
-  <component name="RunManager" selected="Mocha.Token Factory.Admin Setters">
+  <component name="RunManager" selected="npm.compile">
+    <configuration name="compile" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="compile" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="Hesty Router.Admin Distribution.adminDistribution" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -158,21 +125,6 @@
       </test-names>
       <method v="2" />
     </configuration>
-    <configuration name="Token Factory" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <mocha-package>$PROJECT_DIR$/../node_modules/mocha</mocha-package>
-      <working-directory>$PROJECT_DIR$</working-directory>
-      <pass-parent-env>true</pass-parent-env>
-      <ui>bdd</ui>
-      <extra-mocha-options />
-      <test-kind>SUITE</test-kind>
-      <test-file>$PROJECT_DIR$/test/Unit/TokenFactory.test.js</test-file>
-      <test-names>
-        <name value="Token Factory" />
-      </test-names>
-      <method v="2" />
-    </configuration>
     <configuration name="Token Factory.Admin Setters" type="mocha-javascript-test-runner" temporary="true" nameIsGenerated="true">
       <node-interpreter>project</node-interpreter>
       <node-options />
@@ -191,11 +143,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.compile" />
         <item itemvalue="Mocha.Token Factory.Admin Setters" />
         <item itemvalue="Mocha.Referral System.Setters" />
         <item itemvalue="Mocha.Hesty Router.Admin Distribution.adminDistribution" />
         <item itemvalue="Mocha.HestyAccessControl.SetSponsorAmount" />
-        <item itemvalue="Mocha.Token Factory" />
       </list>
     </recent_temporary>
   </component>
@@ -281,7 +233,15 @@
       <workItem from="1733136600297" duration="17751000" />
       <workItem from="1733875806303" duration="1843000" />
       <workItem from="1733928942860" duration="1845000" />
-      <workItem from="1733949740853" duration="16427000" />
+      <workItem from="1733949740853" duration="16631000" />
+      <workItem from="1734144327730" duration="4008000" />
+      <workItem from="1734288382163" duration="8447000" />
+      <workItem from="1734951500311" duration="4141000" />
+      <workItem from="1735559127801" duration="1750000" />
+      <workItem from="1735900802970" duration="4879000" />
+      <workItem from="1741931200406" duration="4292000" />
+      <workItem from="1743000310151" duration="4265000" />
+      <workItem from="1743428051633" duration="1073000" />
     </task>
     <servers />
   </component>

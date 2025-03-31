@@ -59,6 +59,7 @@ Constants {
     mapping(address => bool)            public tokensWhitelist;         // Payment Token whitelist
 
     mapping(address => mapping(uint256 => uint256)) public userInvested;    // Amount invested by each user in each property
+    mapping(address => mapping(uint256 => uint256)) public feeChargedToUser;// Fee charged to each user in each property
     mapping(address => mapping(uint256 => uint256)) public rightForTokens;  // Amount of tokens that each user bought
 
     //Events
@@ -294,6 +295,7 @@ Constants {
         // Store Platform fee and user Invested Amount Paid
         platformFee[id]                += fee;
         userInvested[msg.sender][id]   += boughtTokensPrice;
+        feeChargedToUser[msg.sender][id] += fee;
         rightForTokens[onBehalfOf][id] += amount;
 
         /// @dev Calculate owners fee
@@ -417,9 +419,10 @@ Constants {
         require(p.raiseDeadline < block.timestamp && !p.isCompleted, "Time not valid"); // @dev it must be < not <=
         require(p.raised * p.price < p.threshold, "Threshold reached, cannot recover funds");
 
-        uint256 amount         = userInvested[user][id];
+        uint256 amount         = userInvested[user][id] + feeChargedToUser[user][id];
         userInvested[user][id] = 0;
         rightForTokens[user][id] = 0;
+        feeChargedToUser[user][id] = 0;
 
         SafeERC20.safeTransfer(p.paymentToken, user, amount);
 
