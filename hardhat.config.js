@@ -37,6 +37,11 @@ module.exports = {
       accounts: [process.env.ROPSTEN_PRIVATE_KEY],
       gasPrice: 100000000,
     },
+    base: {
+      url: "https://base.llamarpc.com",
+      accounts: [process.env.ROPSTEN_PRIVATE_KEY],
+      gasPrice: 100000000,
+    },
     localhost: {
       url: "http://127.0.0.1:8545",
     },

@@ -48,7 +48,7 @@ async function main() {
 
   await tokenFactory.addWhitelistedToken("0x808456652fdb597867f38412077A9182bf77359F");
 
-  let v = tokenFactory.KYC_MANAGER();
+  let v = await tokenFactory.KYC_MANAGER();
 
   console.log(v)
 

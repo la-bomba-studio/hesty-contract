@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="06f565da-713b-4260-86d1-d7cb322b4423" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/abi/contracts/TokenFactory.sol/TokenFactory.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hardhat.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/hardhat.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/deploy.js" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/deploy.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -243,7 +243,7 @@
       <workItem from="1743000310151" duration="4265000" />
       <workItem from="1743428051633" duration="3456000" />
       <workItem from="1744124367577" duration="600000" />
-      <workItem from="1744218855111" duration="9447000" />
+      <workItem from="1744218855111" duration="15071000" />
     </task>
     <servers />
   </component>
