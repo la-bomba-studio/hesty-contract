@@ -44,6 +44,21 @@ async function main() {
 
   await tokenFactory.initialize(vAddress3, vAddress5);
 
+  await tokenFactory.addWhitelistedToken("0x808456652fdb597867f38412077A9182bf77359F");
+
+  await tokenFactory.addWhitelistedToken("0x808456652fdb597867f38412077A9182bf77359F");
+
+  let v = tokenFactory.KYC_MANAGER();
+
+  console.log(v)
+
+  await hestyAccessControl.grantRole(v, "0x168090283962c5129A2CBc91E099369297f32437");
+
+  await hestyAccessControl.approveKYCOnly("0x168090283962c5129A2CBc91E099369297f32437");
+  await hestyAccessControl.approveKYCOnly("0x123E01D39743EE3178732fd0fADF5e17A658b076");
+
+
+
   console.log('\x1b[32m%s\x1b[0m',
     "                          .##.....##.########.########.#########.##....##.\n" +
     "                          .##.....##.##.......##..........##......##..##.\n" +
