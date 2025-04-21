@@ -234,7 +234,7 @@ Constants {
             address(revenueToken),
             name,
             symbol,
-            admin,
+            address(ctrHestyControl),
             ctrHestyControl.owner() );
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
