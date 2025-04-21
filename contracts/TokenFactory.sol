@@ -238,7 +238,7 @@ Constants {
             ctrHestyControl.owner() );
 
         property[propertyCounter++] = PropertyInfo( tokenPrice,
-                                                    amount,
+                                                    amount * 1 ether,
                                                     threshold,
                                                     0,
                                                     0,
