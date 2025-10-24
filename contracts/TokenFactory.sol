@@ -381,7 +381,7 @@ Constants {
 
         // Transfer Asset to buyer
         if(rightForTokens[user][id] > 0){
-            SafeERC20.safeTransfer(IERC20(p.asset), user, rightForTokens[user][id]);
+            SafeERC20.safeTransfer(IERC20(p.asset), user, rightForTokens[user][id] * 1 ether);
             rightForTokens[user][id] = 0;
         }
 

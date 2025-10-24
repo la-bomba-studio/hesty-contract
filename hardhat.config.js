@@ -49,7 +49,8 @@ module.exports = {
   etherscan: {
     apiKey: {
       bscTestnet: process.env.BSC_TESTNET_API_KEY,
-      baseSepolia: "empty"
+      baseSepolia: "empty",
+      base: process.env.BSC_TESTNET_API_KEY
     },
     customChains: [
       {
@@ -57,6 +58,14 @@ module.exports = {
         chainId: 84532,
         urls: {
           apiURL: "https://base-sepolia.blockscout.com/api",
+          browserURL: "https://base-sepolia.blockscout.com"
+        }
+      },
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          apiURL: "https://base.llamarpc.com",
           browserURL: "https://base-sepolia.blockscout.com"
         }
       }
